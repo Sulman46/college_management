@@ -1,0 +1,3 @@
+
+double screenPaddingHori=16;
+
