@@ -8,21 +8,22 @@ import '../core/constants/app_assets.dart';
 import '../core/theme/AppColor.dart';
 
 class CustomImageCache extends StatelessWidget {
-   CustomImageCache({super.key,required this.url,this.height,this.width});
+   CustomImageCache({super.key,required this.url,this.radius,this.height,this.width});
 String url;
 double? width;
 double? height;
+double? radius;
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(500),
+      borderRadius: BorderRadius.circular(radius??500),
       child: Container(
         child: CachedNetworkImage(
           height: height??80,
           width: width??80,
           fit: BoxFit.cover,
           imageUrl:url,placeholder: (context, url) => ClipRRect(
-          borderRadius: BorderRadius.circular(500),
+          borderRadius: BorderRadius.circular(radius??500),
           child: Shimmer.fromColors(
             baseColor: AppColor.darkContainerShade.withOpacity(.5),
             highlightColor: AppColor.black,
@@ -33,7 +34,7 @@ double? height;
             ),
           ),
         ),errorWidget: (context, url, error) => ClipRRect(
-          borderRadius: BorderRadius.circular(500),
+          borderRadius: BorderRadius.circular(radius??500),
           child: Shimmer.fromColors(
             baseColor: AppColor.darkContainerShade.withOpacity(.5),
             highlightColor: AppColor.black,

@@ -11,6 +11,7 @@ class AppColor{
   static const Color black = Color(0xFF000000);
   static const Color white = Colors.white;
   static const Color transparent = Colors.transparent;
+  static const Color orange = Colors.orange;
   static const Color fieldGreyColor = Color(0xff292929);
   static  Color grey = HexColor('#817E77');
   static  Color greyLight = HexColor('#AEB0B3');
