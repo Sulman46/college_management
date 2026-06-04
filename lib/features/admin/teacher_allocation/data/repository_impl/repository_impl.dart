@@ -1,6 +1,8 @@
 
 import 'package:dartz/dartz.dart';
 import '../../domain/repository/repository.dart';
+import '../../../teacher_records/models/teacher_model.dart';
+import '../../models/teacher_allocation_model.dart';
 import '../datasource/datasource.dart';
 
 class TeacherAllocationRepositoryImpl extends TeacherAllocationRepository{
@@ -9,8 +11,25 @@ class TeacherAllocationRepositoryImpl extends TeacherAllocationRepository{
 
 
   @override
-  Future<Either<String, bool>> function1() {
-    return dataSource.function1();
+  Future<Either<String,TeacherAllocationModel>> post({required TeacherAllocationModel value})async{
+    return dataSource.post(value: value);
   }
+
+  @override
+  Future<Either<String,TeacherAllocationModel>> update({required TeacherAllocationModel value}){
+    return dataSource.update(value: value);
+  }
+
+  @override
+  Future<Either<String,bool>> delete({required TeacherAllocationModel value}){
+    return dataSource.delete(value: value);
+  }
+
+  @override
+  Future<Either<String,List<TeacherAllocationModel>>> get(){
+    return dataSource.get();
+  }
+
+
 
 }

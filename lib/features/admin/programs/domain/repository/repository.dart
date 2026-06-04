@@ -1,5 +1,11 @@
 import 'package:dartz/dartz.dart';
 
+import '../../models/program_model.dart';
+import '../../models/program_request_model.dart';
+
 abstract class AdminProgramsRepository{
-  Future<Either<String,bool>> function1();
+  Future<Either<String,ProgramModel>> addProgram({required ProgramRequestModel programRequestModel});
+  Future<Either<String,ProgramModel>> updateProgram({required ProgramRequestModel programRequestModel});
+  Future<Either<String,List<ProgramModel>>> getPrograms();
+  Future<Either<String,String>> deleteProgram({required String id});
 }

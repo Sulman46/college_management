@@ -1,6 +1,9 @@
 import 'dart:developer';
+import 'package:college_management/core/helper/share_pref/auth_sharepref_helper.dart';
+import 'package:college_management/core/helper/show_message.dart';
 import 'package:dio/dio.dart';
 import 'package:college_management/core/constants/app_apis.dart';
+import 'package:flutter/cupertino.dart';
 
 class DioHelper {
   static Dio _dio = Dio();
@@ -17,7 +20,12 @@ class DioHelper {
 
     // Add interceptors (logging, error handling)
     _dio.interceptors.add(InterceptorsWrapper(
-      onRequest: (options, handler) {
+      onRequest: (options, handler) async{
+        String? token=await AuthShareprefHelper.getToken();
+        if(token!=null){
+          options.headers['Authorization'] =
+          'Bearer $token';
+        }
         // print('Request: ${options.method} ${options.uri}');
         return handler.next(options); // Proceed with the request
       },
@@ -45,7 +53,82 @@ class DioHelper {
 
       // Check if response status is not 2xx (client or server error)
       if (response.statusCode! < 200 || response.statusCode! >= 300) {
-        log("API error: ${response.statusCode} ${response.statusMessage}");
+        log("345678989 error: ${response.statusCode} ${response.statusMessage}");
+        return _handleApiError(response);
+      }
+
+      return response; // Return response if status is in 2xx range
+    } on DioError catch (e) {
+      log("@#43242: $e");
+      // Handle DioError exceptions like timeouts, network issues, etc.
+      return _handleError(e);
+    }
+  }
+  Future<Response> postWithFile(String endpoint, {FormData? data}) async {
+    try {
+      // Make POST request
+      Response response = await _dio.post(endpoint, data: data);
+
+      // Check if response status is not 2xx (client or server error)
+      if (response.statusCode! < 200 || response.statusCode! >= 300) {
+        log("345678989 error: ${response.statusCode} ${response.statusMessage}");
+        return _handleApiError(response);
+      }
+
+      return response; // Return response if status is in 2xx range
+    } on DioError catch (e) {
+      // Handle DioError exceptions like timeouts, network issues, etc.
+      return _handleError(e);
+    }
+  }
+
+  // Put method with improved error handling
+  Future<Response> put(String endpoint, {Map<String, dynamic>? data}) async {
+    try {
+      // Make POST request
+      Response response = await _dio.put(endpoint, data: data);
+
+      // Check if response status is not 2xx (client or server error)
+      if (response.statusCode! < 200 || response.statusCode! >= 300) {
+        log("345678989 error: ${response.statusCode} ${response.statusMessage}");
+        return _handleApiError(response);
+      }
+
+      return response; // Return response if status is in 2xx range
+    } on DioError catch (e) {
+      // Handle DioError exceptions like timeouts, network issues, etc.
+      return _handleError(e);
+    }
+  }
+
+  // Get method with improved error handling
+  Future<Response> get(String endpoint, {Map<String, dynamic>? data}) async {
+    try {
+      // Make POST request
+      Response response = await _dio.get(endpoint, data: data);
+
+      // Check if response status is not 2xx (client or server error)
+      if (response.statusCode! < 200 || response.statusCode! >= 300) {
+        log("2365945678: ${response.statusCode} ${response.statusMessage}");
+        return _handleApiError(response);
+      }
+
+      return response; // Return response if status is in 2xx range
+    } on DioError catch (e) {
+      // Handle DioError exceptions like timeouts, network issues, etc.
+      return _handleError(e);
+    }
+  }
+
+  // delete method with improved error handling
+  Future<Response> delete(String endpoint, {Map<String, dynamic>? data}) async {
+    try {
+      // Make POST request
+      Response response = await _dio.delete(endpoint, data: data);
+
+      // Check if response status is not 2xx (client or server error)
+      if (response.statusCode! < 200 || response.statusCode! >= 300) {
+        log("34763796789: ${response.statusCode} ${response.statusMessage}");
         return _handleApiError(response);
       }
 

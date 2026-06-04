@@ -25,7 +25,7 @@ class TeacherAttendanceAdminHeader extends StatelessWidget {
           child: Icon(Icons.arrow_back_outlined,size: 25,color: AppColor.white,)),
       // title:,
       centerTitle: true,
-      title:  AppText(text: "Timetable Dashboard",fontSize: 13,color: AppColor.white,),
+      title:  AppText(text: "Teacher attendance",fontSize: 13,color: AppColor.white,),
       actionsPadding: EdgeInsets.only(right: screenPaddingHori),
       actions: [
         InkWell(

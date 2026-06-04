@@ -124,9 +124,9 @@ class _AdminLeaveRequestScreenState extends State<AdminLeaveRequestScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      StatCard(title: "Pending", value: "0", color: Colors.blue),
-                      StatCard(title: "Approved", value: "0", color: Colors.green),
-                      StatCard(title: "Reject", value: "0", color: Colors.red),
+                      StatCard(title: "Pending", value: "0", color: AppColor.blue),
+                      StatCard(title: "Approved", value: "0", color: AppColor.green),
+                      StatCard(title: "Reject", value: "0", color: AppColor.red),
                     ],
                   ),
 

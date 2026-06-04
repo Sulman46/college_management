@@ -1,3 +1,5 @@
+import 'package:college_management/core/helper/date_to_string_helper.dart';
+import 'package:college_management/widgets/active_inactive_status_widget.dart';
 import 'package:college_management/widgets/more_vert_pop_menu_button.dart';
 import 'package:flutter/material.dart';
 
@@ -47,7 +49,7 @@ class DepartmentItemWidget extends StatelessWidget {
                 ),
                 SizedBox(height: 2),
                 AppText(
-                  text: model.date,
+                  text: DateToStringHelper.dateMonthYearConvert(model.date??DateTime.now()),
                   fontSize: 11,
                   color: AppColor.greyLight,
                 ),
@@ -55,12 +57,20 @@ class DepartmentItemWidget extends StatelessWidget {
             ),
           ),
 
-          CustomPopMenuButton(
-            menus: ["Edit","Delete"],
-            onSelected: (value) {
-            if (value == 0) onEdit();
-            if (value == 1) onDelete();
-          },),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              CustomPopMenuButton(
+                menus: ["Edit","Delete"],
+                onSelected: (value) {
+                if (value == 0) onEdit();
+                if (value == 1) onDelete();
+              },),
+              SizedBox(height: 20,),
+              ActiveInactiveStatusWidget(isActive: model.status==DepartmentStatus.Active),
+            ],
+          ),
         ],
       ),
     );

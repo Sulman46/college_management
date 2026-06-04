@@ -1,6 +1,8 @@
 
 import 'package:dartz/dartz.dart';
 import '../../domain/repository/repository.dart';
+import '../../models/program_model.dart';
+import '../../models/program_request_model.dart';
 import '../datasource/datasource.dart';
 
 class AdminProgramsRepositoryImpl extends AdminProgramsRepository{
@@ -9,8 +11,23 @@ class AdminProgramsRepositoryImpl extends AdminProgramsRepository{
 
 
   @override
-  Future<Either<String, bool>> function1() {
-    return dataSource.function1();
+  Future<Either<String,List<ProgramModel>>> getPrograms() async{
+    return dataSource.getPrograms();
+  }
+
+  @override
+  Future<Either<String,ProgramModel>> addProgram({required ProgramRequestModel programRequestModel}) async{
+    return dataSource.addProgram(programRequestModel: programRequestModel);
+  }
+
+  @override
+  Future<Either<String,ProgramModel>> updateProgram({required ProgramRequestModel programRequestModel}) async{
+    return dataSource.updateProgram(programRequestModel: programRequestModel);
+  }
+
+  @override
+  Future<Either<String,String>> deleteProgram({required String id}) async{
+    return dataSource.deleteProgram(id: id);
   }
 
 }

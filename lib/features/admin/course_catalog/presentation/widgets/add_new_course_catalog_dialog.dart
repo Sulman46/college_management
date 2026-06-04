@@ -1,21 +1,29 @@
 import 'package:college_management/core/constants/app_text_style.dart';
 import 'package:college_management/core/constants/app_widgets_size.dart';
 import 'package:college_management/core/constants/media_query.dart';
+import 'package:college_management/core/helper/show_message.dart';
+import 'package:college_management/features/admin/course_catalog/models/course_catalog_model.dart';
+import 'package:college_management/features/admin/course_catalog/presentation/controller/cubit.dart';
+import 'package:college_management/features/admin/course_catalog/presentation/widgets/catalog_depart_widget.dart';
 import 'package:college_management/widgets/drop_down_field_widget.dart';
 import 'package:college_management/widgets/more_vert_pop_menu_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../../core/app/di_container.dart';
 import '../../../../../core/theme/AppColor.dart';
 import '../../../../../widgets/app_text.dart';
 import '../../../../../widgets/custom_button.dart';
 import '../../../../../widgets/custom_text_form.dart';
+import '../../../departments/presentation/controller/cubit.dart';
 
 
 
 class AddNewCourseCatalogDialog extends StatefulWidget {
-  const AddNewCourseCatalogDialog({super.key});
-
+   AddNewCourseCatalogDialog({super.key,this.courseCatalogModel});
+CourseCatalogModel? courseCatalogModel;
   @override
   State<AddNewCourseCatalogDialog> createState() => _AddNewCourseCatalogDialogState();
 }
@@ -24,8 +32,25 @@ class _AddNewCourseCatalogDialogState extends State<AddNewCourseCatalogDialog> {
   final TextEditingController codeController = TextEditingController();
   final TextEditingController titleController = TextEditingController();
   final TextEditingController creditHour = TextEditingController();
+  var _departmentCubit = DiContainer().sl<AdminDepartmentCubit>();
+  var _courseCatalogCubit = DiContainer().sl<CourseCatalogAdminCubit>();
 
-  String status = "Active";
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if(widget.courseCatalogModel !=null){
+        titleController.text=widget.courseCatalogModel?.courseTitle??"";
+        creditHour.text="${widget.courseCatalogModel?.creditHours??""}";
+        codeController.text=widget.courseCatalogModel?.courseCode??"";
+        _courseCatalogCubit.getDepartment(depart: widget.courseCatalogModel?.departments??[], type: widget.courseCatalogModel?.type??"", category: widget.courseCatalogModel?.category??"");
+
+      }else{
+        _courseCatalogCubit.getDepartment(depart: [], type: "", category: "");
+      }
+    },);
+    // TODO: implement initState
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -34,185 +59,224 @@ class _AddNewCourseCatalogDialogState extends State<AddNewCourseCatalogDialog> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
       ),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal:10,vertical: 15),
-        decoration: AppColor.decorationDialog,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            /// 🔹 HEADER
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: BlocBuilder(
+        bloc: _courseCatalogCubit,
+        builder: (context,statesnkks) {
+          return Container(
+            padding: EdgeInsets.symmetric(horizontal:10,vertical: 15),
+            decoration: AppColor.decorationDialog,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                AppText(
-                  text: "Add New Course",
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
+                /// 🔹 HEADER
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    AppText(
+                      text:widget.courseCatalogModel!=null?"Update Course Catalog": "Add New Course",
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    InkWell(
+                      onTap: () => Navigator.pop(context),
+                      child: Icon(Icons.close, color: AppColor.grey),
+                    )
+                  ],
                 ),
-                InkWell(
-                  onTap: () => Navigator.pop(context),
-                  child: Icon(Icons.close, color: AppColor.grey),
+
+                SizedBox(height: 10),
+
+                CustomTextFormField(
+                  title: "Course Title:",
+                  controller: titleController,
+                  subTitle: "Title..",
+                  isHintText: true,
+                ),
+
+                SizedBox(height: 15),
+
+
+                BlocBuilder(
+                    bloc: _departmentCubit,
+                    builder: (context,statesbjbl) {
+                      return _departmentCubit.departmentList.isEmpty
+                          ? InkWell(
+                        onTap: () async {
+                          await _departmentCubit
+                              .getDepartments();
+                        },
+                        child: DropDownFieldWidget(
+                          title: "Department :",
+
+                          text:"Dept..", isFilled: false,
+                        ),
+                      ): CustomPopMenuButton(
+                        onSelected: (p0) {
+                          var list=_courseCatalogCubit.department;
+                          list.add(_departmentCubit
+                              .departmentList
+                              .map((e) => e.name)
+                              .toList()[p0]);
+                          _courseCatalogCubit.getDepartment(
+                            depart:list ,
+                            type: _courseCatalogCubit
+                                .courseType,
+                            category: _courseCatalogCubit.courseCategory,
+                          );
+                        },
+                        menus: _departmentCubit.departmentList
+                            .map((e) => e.name)
+                            .toList(),offset: Offset(0, 30),widget: SizedBox(
+                          width: mdWidth(context),
+                          child: DropDownFieldWidget(
+                              title: "Department :",
+                              text:"Dept..",maxLine: 1, isFilled: false)),);
+                    }
+                ),
+
+
+                if(_courseCatalogCubit.department.isNotEmpty)
+              Wrap(
+                  children: _courseCatalogCubit.department.map((e) => CatalogDepartWidget(text: e, onTap: () {
+                    _courseCatalogCubit.removeDepartment(e);
+                  },),).toList() ),
+                SizedBox(height: 15),
+
+                /// 🔹 NAME
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomTextFormField(
+                            title:"Course Code:" ,
+                            controller: codeController,
+                            subTitle: "CS-101",
+                            isHintText: true,
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(width: 15),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomTextFormField(
+                            title: "Credit Hour :",
+                            controller: creditHour,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                RegExp(r'^\d*\.?\d{0,2}'),
+                              ),
+                            ],
+                            subTitle: "e.g., 1",
+                            isHintText: true,
+                          ),
+                        ],
+                      ),
+                    ),
+
+                  ],
+                ),
+
+                SizedBox(height: 15),
+
+                /// 🔹 NAME
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomPopMenuButton(
+                            title:  "Category :",
+                            onSelected: (p0) {
+                              _courseCatalogCubit.getDepartment(
+                                depart: _courseCatalogCubit.department,
+                                type: _courseCatalogCubit
+                                    .courseType,
+                                category: ['Core', 'Supporting', 'Elective', 'General'][p0],
+                              );
+                            },
+                            menus: ['Core', 'Supporting', 'Elective', 'General'],offset: Offset(0, 30),widget: SizedBox(
+                              width: mdWidth(context),
+                              child: DropDownFieldWidget(text:_courseCatalogCubit.courseCategory!=""?_courseCatalogCubit.courseCategory: "Category..",maxLine: 1, isFilled: false)),),
+                        ],
+                      ),
+                    ),
+
+                    SizedBox(width: 15),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+
+                          CustomPopMenuButton(
+                            title: "Type :",
+                            onSelected:  (p0) {
+                              _courseCatalogCubit.getDepartment(
+                                depart: _courseCatalogCubit.department,
+                                type: ['Theory', 'Lab', 'Theory + Lab'][p0],
+                                category: _courseCatalogCubit
+                                    .courseCategory,
+                              );
+                            },
+                            menus:  ['Theory', 'Lab', 'Theory + Lab'],offset: Offset(0, 30),widget: SizedBox(
+                              width: mdWidth(context),
+                              child: DropDownFieldWidget(text:_courseCatalogCubit.courseType!=""?_courseCatalogCubit.courseType: "Type..",maxLine: 1, isFilled: false)),),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+
+                SizedBox(height: 25),
+
+                /// 🔹 BUTTONS
+                Row(
+                  children: [
+                    Expanded(
+                      child: CustomElevatedButton(
+                        onPressed: () => Navigator.pop(context),
+                        text: "Discard",
+                        bgColor: AppColor.white,
+                        textColor: AppColor.red,
+                        borderColor: AppColor.red,
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: CustomElevatedButton(
+                        onPressed: ()async {
+                          if(_courseCatalogCubit.courseCategory=="" || _courseCatalogCubit.department.isEmpty || _courseCatalogCubit.courseType==""|| codeController.text.isEmpty || titleController.text.isEmpty || creditHour.text.isEmpty){
+                            showMessage("Please fill all fields");
+                            return ;
+                          }
+                          CourseCatalogModel model=
+                          widget.courseCatalogModel!=null? CourseCatalogModel(id: widget.courseCatalogModel?.id??"",status: widget.courseCatalogModel?.status??"Inactive",category: _courseCatalogCubit.courseCategory,courseCode: codeController.text,courseTitle: titleController.text,departments: _courseCatalogCubit.department,type: _courseCatalogCubit.courseType,creditHours: double.parse(creditHour.text)):
+                          CourseCatalogModel(category: _courseCatalogCubit.courseCategory,courseCode: codeController.text,courseTitle: titleController.text,departments: _courseCatalogCubit.department,type: _courseCatalogCubit.courseType,creditHours: double.parse(creditHour.text));
+
+                      var respo= widget.courseCatalogModel!=null?
+                      await _courseCatalogCubit.updateCatalog(val: model)
+                          :await _courseCatalogCubit.addCourseCatalog(val: model);
+                      if(respo){
+                        context.pop();
+                      }
+                          // TODO: Submit logic
+                        },
+                        text: "Save",
+                      ),
+                    ),
+                  ],
                 )
               ],
             ),
-
-            SizedBox(height: 10),
-
-            AppText(
-              text: "Course Code:",
-              fontSize: 11,
-              color: AppColor.grey,
-            ),
-            SizedBox(height: 6),
-
-            CustomTextFormField(
-              controller: codeController,
-              subTitle: "CS-101",
-              isHintText: true,
-            ),
-
-
-            SizedBox(height: 15),
-
-            AppText(
-              text: "Course Title:",
-              fontSize: 11,
-              color: AppColor.grey,
-            ),
-            SizedBox(height: 6),
-
-            CustomTextFormField(
-              controller: titleController,
-              subTitle: "Title..",
-              isHintText: true,
-            ),
-
-
-            SizedBox(height: 15),
-
-            /// 🔹 NAME
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      AppText(
-                        text: "Credit Hour :",
-                        fontSize: 11,
-                        color: AppColor.grey,
-                      ),
-                      SizedBox(height: 6),
-                  
-                      CustomTextFormField(
-                        controller: creditHour,
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly
-                        ],
-                        subTitle: "e.g., 1",
-                        isHintText: true,
-                      ),
-                    ],
-                  ),
-                ),
-
-                SizedBox(width: 15),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      AppText(
-                        text: "Department :",
-                        fontSize: 11,
-                        color: AppColor.grey,
-                      ),
-                  
-                      SizedBox(height: 6),
-                  
-                      CustomPopMenuButton(menus: ['Faculty of Computing','Faculty of Bialogy'],offset: Offset(0, 30),widget: SizedBox(
-                          width: mdWidth(context),
-                          child: DropDownFieldWidget(text: "Dept..",maxLine: 1, isFilled: false)),),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-
-            SizedBox(height: 15),
-
-            /// 🔹 NAME
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      AppText(
-                        text: "Category :",
-                        fontSize: 11,
-                        color: AppColor.grey,
-                      ),
-
-                      SizedBox(height: 6),
-
-                      CustomPopMenuButton(menus: ['Core','Supporting'],offset: Offset(0, 30),widget: SizedBox(
-                          width: mdWidth(context),
-                          child: DropDownFieldWidget(text: "Category..",maxLine: 1, isFilled: false)),),
-                    ],
-                  ),
-                ),
-
-                SizedBox(width: 15),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      AppText(
-                        text: "Type :",
-                        fontSize: 11,
-                        color: AppColor.grey,
-                      ),
-
-                      SizedBox(height: 6),
-
-                      CustomPopMenuButton(menus: ['Theory','Theory + Lab'],offset: Offset(0, 30),widget: SizedBox(
-                          width: mdWidth(context),
-                          child: DropDownFieldWidget(text: "Type..",maxLine: 1, isFilled: false)),),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-
-            SizedBox(height: 25),
-
-            /// 🔹 BUTTONS
-            Row(
-              children: [
-                Expanded(
-                  child: CustomElevatedButton(
-                    onPressed: () => Navigator.pop(context),
-                    text: "Discard",
-                    bgColor: AppColor.white,
-                    textColor: AppColor.red,
-                    borderColor: AppColor.red,
-                  ),
-                ),
-                SizedBox(width: 10),
-                Expanded(
-                  child: CustomElevatedButton(
-                    onPressed: () {
-                      // TODO: Submit logic
-                    },
-                    text: "Save",
-                  ),
-                ),
-              ],
-            )
-          ],
-        ),
+          );
+        }
       ),
     );
   }

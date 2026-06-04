@@ -1,15 +1,17 @@
+import 'package:college_management/core/app/di_container.dart';
 import 'package:college_management/core/constants/app_widgets_size.dart';
-import 'package:college_management/features/admin/programs/presentation/page/add_new_program_screen.dart';
+import 'package:college_management/features/admin/semesters/presentation/controller/cubit.dart';
 import 'package:college_management/features/admin/semesters/presentation/page/add_semester_screen.dart';
-import 'package:college_management/features/admin/semesters/presentation/widgets/add_semester_dialog.dart';
+import 'package:college_management/widgets/data_not_found_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:college_management/widgets/custom_text_form.dart';
 import 'package:college_management/widgets/custom_top_bar.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../../core/app/myapp.dart';
 import '../../../../../core/constants/media_query.dart';
 import '../../../../../widgets/custom_button.dart';
-import '../../../course_mapping/presentation/widgets/course_mapping_widget.dart';
 import '../widgets/program_time_line_widget.dart';
 
 class SemesterAdminScreen extends StatefulWidget {
@@ -23,11 +25,13 @@ class SemesterAdminScreen extends StatefulWidget {
 class _SemesterAdminScreenState
     extends State<SemesterAdminScreen> {
 
-  TextEditingController searchController = TextEditingController();
-
+  var _semesterCubit=DiContainer().sl<SemesterAdminCubit>();
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+     await _semesterCubit.getSemesterList();
+    },);
   }
 
 
@@ -37,81 +41,78 @@ class _SemesterAdminScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: Stack(
-        children: [
-          Column(
+      body: BlocBuilder(bloc: _semesterCubit,
+        builder: (context,statesbhjklk) {
+          return Stack(
             children: [
-              /// 🔹 TOP BAR
-              CustomTopBar(text: "Semesters"),
+              Column(
+                children: [
+                  /// 🔹 TOP BAR
+                  CustomTopBar(text: "Semesters"),
 
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal:screenPaddingHori),
-                    child: Column(
-                      children: [
-                        SizedBox(height: 10,),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal:screenPaddingHori),
+                        child: Column(
+                          children: [
+                            SizedBox(height: 10,),
 
-                        /// 🔹 SEARCH
-                        CustomTextFormField(
-                          controller: searchController,
-                          subTitle: "Search...",
-                          isHintText: true,
-                          onChanged: (p0) {},
-                          borderSize: 1,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 5,vertical: 10),
+                            /// 🔹 SEARCH
+                            CustomTextFormField(
+                              controller: _semesterCubit.searchController,
+                              subTitle: "Search...",
+                              isHintText: true,
+                              onChanged: (p0) {
+                                _semesterCubit.filterData(p0.toLowerCase());
+                              },
+                              borderSize: 1,
+                              contentPadding: EdgeInsets.symmetric(horizontal: 5,vertical: 10),
+                            ),
+
+                            SizedBox(height: 15,),
+
+                            if(_semesterCubit.filterSemesterList.isNotEmpty)
+                            ...List.generate(_semesterCubit.filterSemesterList.length, (index) => ProgramTimelineCard(
+                              semesterLevelsModel: _semesterCubit.filterSemesterList[index],),)
+                            else
+                              DataNotFoundWidget(onTap: ()async{
+                              await  _semesterCubit.getSemesterList();
+                              }),
+                            SafeArea(
+                                top: false,
+                                child: SizedBox(height: 30,)),
+                          ],
                         ),
-
-                        SizedBox(height: 15,),
-
-                        /// 🔹 LIST
-                        ...List.generate(5, (index) => ProgramTimelineCard(
-                          session: "2022-2026",
-                          degree: "BS",
-                          university: "Bahauddin Zakariya University (BZU)",
-                          program: "Cyber Security",
-                          faculty: "Faculty of Computing",
-                          section: "Sec A",
-                          totalSteps: 8,
-                          currentStep: index, // 🔥 change dynamically
-                          status: "ACTIVE",
-                          semesterTime: "04/05/2026 - 07/15/2026",
-                        ),),
-                        SafeArea(
-                            top: false,
-                            child: SizedBox(height: 30,)),
-                      ],
+                      ),
                     ),
+                  )
+                ],
+              ),
+              AnimatedPositioned(
+                duration: Duration(milliseconds: 100),
+                top: _semesterCubit.top,
+                right: _semesterCubit.right,
+                child: GestureDetector(
+                  onPanUpdate: (details) {
+                    _semesterCubit.getButtonPosition(topVal: details.delta.dy, rightVal: details.delta.dx);
+
+                  },
+                  child: CustomElevatedButton(
+                    onPressed: () {
+                      context.push("/Admin-add-semester-screen");
+                      },
+                    text: "Add New",
+                    fontSize: 15,
+                    width: 110,
+                    height: 50,
                   ),
                 ),
-              )
-            ],
-          ),
-          AnimatedPositioned(
-            duration: Duration(milliseconds: 100),
-            top: top,
-            left: left,
-            child: GestureDetector(
-              onPanUpdate: (details) {
-                setState(() {
-                  top += details.delta.dy;
-                  left += details.delta.dx;
-                });
-              },
-              child: CustomElevatedButton(
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => AddSemesterScreen(),));
-                  // showDialog(context: context, builder: (context) => AddSemesterDialog(),);
-                },
-                text: "Add New",
-                fontSize: 15,
-                width: 110,
-                height: 50,
               ),
-            ),
-          ),
 
-        ],
+            ],
+          );
+        }
       ),
     );
   }

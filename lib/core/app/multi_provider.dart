@@ -5,8 +5,7 @@ import 'package:flutter/cupertino.dart';
 Future<Widget> provider() async {
 
   WidgetsFlutterBinding.ensureInitialized();
-  final diContainer = DiContainer();
-  await diContainer.init();
+
   return MyApp();
 
 }

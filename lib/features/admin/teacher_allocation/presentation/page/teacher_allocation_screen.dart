@@ -1,14 +1,16 @@
+import 'package:college_management/core/app/di_container.dart';
 import 'package:college_management/core/constants/app_widgets_size.dart';
-import 'package:college_management/features/admin/teacher_records/presentation/page/add_teacher_record_screen.dart';
-import 'package:college_management/features/admin/teacher_records/presentation/widgets/teacher_record_item_widget.dart';
+import 'package:college_management/features/admin/teacher_allocation/presentation/controller/cubit.dart';
+import 'package:college_management/widgets/data_not_found_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:college_management/widgets/custom_text_form.dart';
 import 'package:college_management/widgets/custom_top_bar.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../../core/app/myapp.dart';
 import '../../../../../core/constants/media_query.dart';
 import '../../../../../widgets/custom_button.dart';
 import '../widgets/teacher_allocation_item.dart';
-import 'new_allocation_screen.dart';
 
 
 class TeacherAllocationScreen extends StatefulWidget {
@@ -20,11 +22,13 @@ class TeacherAllocationScreen extends StatefulWidget {
 }
 
 class _TeacherAllocationScreenState extends State<TeacherAllocationScreen> {
-
-  TextEditingController searchController = TextEditingController();
+var _allocationCubit=DiContainer().sl<TeacherAllocationCubit>();
 
   @override
   void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+     await _allocationCubit.get();
+    },);
     super.initState();
   }
 
@@ -35,69 +39,79 @@ class _TeacherAllocationScreenState extends State<TeacherAllocationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: Stack(
-        children: [
-          Column(
+      body: BlocBuilder(
+          bloc: _allocationCubit,
+        builder: (context,statesbkk) {
+          return Stack(
             children: [
-              /// 🔹 TOP BAR
-              CustomTopBar(text: "Teacher Allocation"),
+              Column(
+                children: [
+                  /// 🔹 TOP BAR
+                  CustomTopBar(text: "Teacher Allocation"),
 
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal:screenPaddingHori),
-                    child: Column(
-                      children: [
-                        SizedBox(height: 10,),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal:screenPaddingHori),
+                        child: Column(
+                          children: [
+                            SizedBox(height: 10,),
 
-                        /// 🔹 SEARCH
-                        CustomTextFormField(
-                          controller: searchController,
-                          subTitle: "Search...",
-                          isHintText: true,
-                          onChanged: (p0) {},
-                          borderSize: 1,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 5,vertical: 10),
+                            /// 🔹 SEARCH
+                            CustomTextFormField(
+                              controller: _allocationCubit.searchController,
+                              subTitle: "Search...",
+                              isHintText: true,
+                              onChanged: (p0) {
+                                _allocationCubit.filterData(p0.toLowerCase());
+                              },
+                              borderSize: 1,
+                              contentPadding: EdgeInsets.symmetric(horizontal: 5,vertical: 10),
+                            ),
+
+                            SizedBox(height: 15,),
+
+                            /// 🔹 LIST
+                            if(_allocationCubit.filterTeacherAllocation.isNotEmpty)
+                            ...List.generate(_allocationCubit.filterTeacherAllocation.length, (index) => TeacherAllocationItem(model: _allocationCubit.filterTeacherAllocation[index],),)
+                            else
+                              DataNotFoundWidget(onTap: () async{
+                               await _allocationCubit.get();
+                              },),
+                            SafeArea(
+                                top: false,
+                                child: SizedBox(height: 30,)),
+                          ],
                         ),
-
-                        SizedBox(height: 15,),
-
-                        /// 🔹 LIST
-                        ...List.generate(5, (index) => TeacherAllocationItem(),),
-                        SafeArea(
-                            top: false,
-                            child: SizedBox(height: 30,)),
-                      ],
+                      ),
                     ),
+                  )
+                ],
+              ),
+              AnimatedPositioned(
+                duration: Duration(milliseconds: 100),
+                top: _allocationCubit.top,
+                right: _allocationCubit.right,
+                child: GestureDetector(
+                  onPanUpdate: (details) {
+                    _allocationCubit.getButtonPosition(topVal: details.delta.dy, rightVal: details.delta.dx);
+
+                  },
+                  child: CustomElevatedButton(
+                    onPressed: () {
+                      context.push("/Admin-add-teacher-allocation");
+                    },
+                    text: "Add New",
+                    fontSize: 15,
+                    width: 110,
+                    height: 50,
                   ),
                 ),
-              )
-            ],
-          ),
-          AnimatedPositioned(
-            duration: Duration(milliseconds: 100),
-            top: top,
-            left: left,
-            child: GestureDetector(
-              onPanUpdate: (details) {
-                setState(() {
-                  top += details.delta.dy;
-                  left += details.delta.dx;
-                });
-              },
-              child: CustomElevatedButton(
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => NewAllocationScreen(),));
-                },
-                text: "Add New",
-                fontSize: 15,
-                width: 110,
-                height: 50,
               ),
-            ),
-          ),
 
-        ],
+            ],
+          );
+        }
       ),
     );
   }

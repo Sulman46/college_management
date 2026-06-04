@@ -7,7 +7,9 @@ class AppColor{
   AppColor._();
 
   // static  Color primary = HexColor("#972cb7");
-  static  Color primary = HexColor("#20a075");
+  static  Color primary = HexColor("#db2e23");
+  static  Color secondaryColor = HexColor("#2f1e73");
+  static Color bgPrimary=whiteLight;
   static const Color black = Color(0xFF000000);
   static const Color white = Colors.white;
   static const Color transparent = Colors.transparent;
@@ -18,7 +20,6 @@ class AppColor{
   static  Color greyLight1 = HexColor('#cccccc');
   static const Color red = Color(0xFFD63434);
   static Color whiteLight=HexColor("#F7F2EE");
-  static Color bgPrimary=whiteLight;
   static Color fieldYellowBorder=Color(0xffebe3d8);
   static  Color blue = Color(0xFF007aff);
   static Color darkContainerShade=Color(0xff232333);

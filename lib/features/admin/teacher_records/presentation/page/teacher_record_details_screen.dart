@@ -1,24 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../../core/app/di_container.dart';
 import '../../../../../core/constants/app_widgets_size.dart';
 import '../../../../../core/theme/AppColor.dart';
 import '../../../../../widgets/app_text.dart';
 import '../../../../../widgets/custom_top_bar.dart';
 import '../../../../../widgets/more_vert_pop_menu_button.dart';
+import '../../models/teacher_model.dart';
+import '../controller/cubit.dart';
 
 class TeacherRecordDetailsScreen extends StatelessWidget {
-  const TeacherRecordDetailsScreen({super.key});
-
+   TeacherRecordDetailsScreen({super.key,required this.model});
+  TeacherModel model;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.bgPrimary,
       body: Column(
         children: [
-          CustomTopBar(text: "Teacher Details",suffix: CustomPopMenuButton(
+          CustomTopBar(text: "Faculty Details",suffix: CustomPopMenuButton(
             menus: ["Edit","Delete"],
-            onSelected: (value) {
-
+            onSelected: (value) async{
+              var teacherRecordCubit=DiContainer().sl<TeacherRecordsCubit>();
+              if(value==0){
+                context.push('/Admin-add-teacher-record',extra: model);
+              }else{
+                await  teacherRecordCubit.delete(model);
+              }
             },widget: Icon(Icons.more_vert,size: 20,color: AppColor.white,),),),
 
           Expanded(
@@ -37,9 +46,9 @@ class TeacherRecordDetailsScreen extends StatelessWidget {
                   _sectionCard(
                     "Basic Information",
                     [
-                      _row("Name", "Ali Raza"),
-                      _row("Job Type", "Permanent"),
-                      _row("Gender", "Male"),
+                      _row("Name", model.teacherName??""),
+                      _row("Job Type", model.teacherType??""),
+                      _row("Gender", model.gender??""),
                     ],
                   ),
 
@@ -49,7 +58,7 @@ class TeacherRecordDetailsScreen extends StatelessWidget {
                   _sectionCard(
                     "Academic Details",
                     [
-                      _row("Education", "MPhil AI"),
+                      _row("Education", model.specialization??""),
                     ],
                   ),
 
@@ -59,9 +68,9 @@ class TeacherRecordDetailsScreen extends StatelessWidget {
                   _sectionCard(
                     "Department Role",
                     [
-                      _row("Department", "Faculty of Computing"),
-                      _row("Designation", "Professor"),
-                      _row("Joining Date", "12 Jan 2022"),
+                      _row("Department", model.department?.join(", ")??""),
+                      _row("Designation", model.designation??""),
+                      _row("Joining Date", model.joiningDate??""),
                     ],
                   ),
 
@@ -71,8 +80,8 @@ class TeacherRecordDetailsScreen extends StatelessWidget {
                   _sectionCard(
                     "Contact Information",
                     [
-                      _row("Email", "ali@gmail.com"),
-                      _row("Phone", "+92 300 1234567"),
+                      _row("Email", model.email??""),
+                      _row("Phone", model.phone??""),
                     ],
                   ),
 
@@ -82,8 +91,8 @@ class TeacherRecordDetailsScreen extends StatelessWidget {
                   _sectionCard(
                     "Bank Details",
                     [
-                      _row("Bank Name", "HBL"),
-                      _row("Account No", "1234567890"),
+                      _row("Bank Name", model.bankName??""),
+                      _row("Account No", model.accountNo??""),
                     ],
                   ),
 
@@ -93,8 +102,8 @@ class TeacherRecordDetailsScreen extends StatelessWidget {
                   _sectionCard(
                     "Finance",
                     [
-                      _row("Per Lecture", "500 PKR"),
-                      _row("Weekly Hours", "10 hrs/week"),
+                      _row("Per Lecture", "${model.ratePerLecture??""} PKR"),
+                      _row("Weekly Hours", "${model.targetWorkload??""} hrs/week"),
                     ],
                   ),
 
@@ -104,7 +113,7 @@ class TeacherRecordDetailsScreen extends StatelessWidget {
                   _sectionCard(
                     "Status",
                     [
-                      _statusRow("Active"),
+                      _statusRow(model.status??""),
                     ],
                   ),
 
@@ -134,20 +143,20 @@ class TeacherRecordDetailsScreen extends StatelessWidget {
           CircleAvatar(
             radius: 25,
             backgroundColor: AppColor.primary.withOpacity(.1),
-            child: Icon(Icons.person, color: AppColor.primary),
+            child: AppText(text: model.teacherName?[0]??"",fontSize: 15,color: AppColor.primary,),
           ),
           SizedBox(width: 12),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AppText(
-                text: "Ali Raza",
+                text: model.teacherName??"",
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
               ),
               SizedBox(height: 3),
               AppText(
-                text: "Professor • Faculty of Computing",
+                text: "${model.designation??""} • Faculty of ${model.department?.join(", ")??""}",
                 fontSize: 11,
                 color: AppColor.grey,
               ),

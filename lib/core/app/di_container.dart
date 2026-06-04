@@ -1,10 +1,52 @@
+import 'package:college_management/core/controllers/screen_resizing/screen_resize_cubit.dart';
 import 'package:college_management/core/domain/connectivity/data/datasource/datasource.dart';
 import 'package:college_management/core/domain/connectivity/data/repository_impl/repository_impl.dart';
 import 'package:college_management/core/domain/connectivity/domain/repository/repository.dart';
 import 'package:college_management/core/domain/connectivity/domain/usecase/usecase.dart';
+import 'package:college_management/features/admin/course_catalog/data/datasource/datasource.dart';
+import 'package:college_management/features/admin/course_mapping/presentation/controller/cubit.dart';
+import 'package:college_management/features/admin/departments/presentation/controller/cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import '../../features/Authentication/data/datasource/datasource.dart';
+import '../../features/Authentication/data/repository_impl/repository_impl.dart';
+import '../../features/Authentication/domain/repository/repository.dart';
+import '../../features/Authentication/domain/usecase/usecase.dart';
+import '../../features/Authentication/presentation/controller/cubit.dart';
+import '../../features/admin/course_catalog/data/repository_impl/repository_impl.dart';
+import '../../features/admin/course_catalog/domain/repository/repository.dart';
+import '../../features/admin/course_catalog/domain/usecase/usecase.dart';
+import '../../features/admin/course_catalog/presentation/controller/cubit.dart';
+import '../../features/admin/course_mapping/data/datasource/datasource.dart';
+import '../../features/admin/course_mapping/data/repository_impl/repository_impl.dart';
+import '../../features/admin/course_mapping/domain/repository/repository.dart';
+import '../../features/admin/course_mapping/domain/usecase/usecase.dart';
+import '../../features/admin/departments/data/datasource/datasource.dart';
+import '../../features/admin/departments/data/repository_impl/repository_impl.dart';
+import '../../features/admin/departments/domain/repository/repository.dart';
+import '../../features/admin/departments/domain/usecase/usecase.dart';
+import '../../features/admin/programs/data/datasource/datasource.dart';
+import '../../features/admin/programs/data/repository_impl/repository_impl.dart';
+import '../../features/admin/programs/domain/repository/repository.dart';
+import '../../features/admin/programs/domain/usecase/usecase.dart';
+import '../../features/admin/programs/presentation/controller/cubit.dart';
+import '../../features/admin/semesters/data/datasource/datasource.dart';
+import '../../features/admin/semesters/data/repository_impl/repository_impl.dart';
+import '../../features/admin/semesters/domain/repository/repository.dart';
+import '../../features/admin/semesters/domain/usecase/usecase.dart';
+import '../../features/admin/semesters/presentation/controller/cubit.dart';
+import '../../features/admin/teacher_allocation/data/datasource/datasource.dart';
+import '../../features/admin/teacher_allocation/data/repository_impl/repository_impl.dart';
+import '../../features/admin/teacher_allocation/domain/repository/repository.dart';
+import '../../features/admin/teacher_allocation/domain/usecase/usecase.dart';
+import '../../features/admin/teacher_allocation/presentation/controller/cubit.dart';
+import '../../features/admin/teacher_records/data/datasource/datasource.dart';
+import '../../features/admin/teacher_records/data/repository_impl/repository_impl.dart';
+import '../../features/admin/teacher_records/domain/repository/repository.dart';
+import '../../features/admin/teacher_records/domain/usecase/usecase.dart';
+import '../../features/admin/teacher_records/presentation/controller/cubit.dart';
 import '../../features/admin/university_profile/data/datasource/datasource.dart';
 import '../../features/admin/university_profile/data/repository_impl/repository_impl.dart';
 import '../../features/admin/university_profile/domain/repository/repository.dart';
@@ -19,8 +61,9 @@ class DiContainer{
   Future<void> init()async{
     WidgetsFlutterBinding.ensureInitialized();
     // sl.registerLazySingleton(() => LocalizationGetx(),);
-    executeFirstTime();
+    await executeFirstTime();
     cubits();
+    sl<AuthenticationCubit>().initFunction();
   }
 
   Future<void> executeFirstTime()async{
@@ -41,6 +84,51 @@ class DiContainer{
     sl.registerLazySingleton(() => UniversityProfileUseCase(repository: sl()),);
 
 
+    // authentications
+    sl.registerLazySingleton<AuthenticationDataSource>(() => FunctionClassAuthentication(),);
+    sl.registerLazySingleton<AuthenticationRepository>(() => AuthenticationRepositoryImpl(dataSource: sl()),);
+    sl.registerLazySingleton(() => AuthenticationUseCase(repository: sl()),);
+
+
+    // admin department
+    sl.registerLazySingleton<AdminDepartmentDataSource>(() => FunctionClassAdminDepartment(),);
+    sl.registerLazySingleton<AdminDepartmentRepository>(() => AdminDepartmentRepositoryImpl(dataSource: sl()),);
+    sl.registerLazySingleton(() => AdminDepartmentUseCase(repository: sl()),);
+
+
+    // admin programs
+    sl.registerLazySingleton<AdminProgramsDataSource>(() => FunctionClassAdminPrograms(),);
+    sl.registerLazySingleton<AdminProgramsRepository>(() => AdminProgramsRepositoryImpl(dataSource: sl()),);
+    sl.registerLazySingleton(() => AdminProgramsUseCase(repository: sl()),);
+
+    // admin course catalog
+    sl.registerLazySingleton<CourseCatalogAdminDataSource>(() => FunctionClassCourseCatalogAdmin(),);
+    sl.registerLazySingleton<CourseCatalogAdminRepository>(() => CourseCatalogAdminRepositoryImpl(dataSource: sl()),);
+    sl.registerLazySingleton(() => CourseCatalogAdminUseCase(repository: sl()),);
+
+
+    // admin semester
+    sl.registerLazySingleton<SemesterAdminDataSource>(() => FunctionClassSemesterAdmin(),);
+    sl.registerLazySingleton<SemesterAdminRepository>(() => SemesterAdminRepositoryImpl(dataSource: sl()),);
+    sl.registerLazySingleton(() => SemesterAdminUseCase(repository: sl()),);
+
+    // admin course mapping
+    sl.registerLazySingleton<CourseMappingDataSource>(() => FunctionClassCourseMapping(),);
+    sl.registerLazySingleton<CourseMappingRepository>(() => CourseMappingRepositoryImpl(dataSource: sl()),);
+    sl.registerLazySingleton(() => CourseMappingUseCase(repository: sl()),);
+
+
+    // admin teacher records
+    sl.registerLazySingleton<TeacherRecordsDataSource>(() => FunctionClassTeacherRecords(),);
+    sl.registerLazySingleton<TeacherRecordsRepository>(() => TeacherRecordsRepositoryImpl(dataSource: sl()),);
+    sl.registerLazySingleton(() => TeacherRecordsUseCase(repository: sl()),);
+
+    // admin teacher allocation
+    sl.registerLazySingleton<TeacherAllocationDataSource>(() => FunctionClassTeacherAllocation(),);
+    sl.registerLazySingleton<TeacherAllocationRepository>(() => TeacherAllocationRepositoryImpl(dataSource: sl()),);
+    sl.registerLazySingleton(() => TeacherAllocationUseCase(repository: sl()),);
+
+
     ConnectivityController().init();
     await sl.allReady();
   }
@@ -48,6 +136,16 @@ class DiContainer{
   //// cubits
   void cubits()async{
     sl.registerLazySingleton(() => UniversityProfileCubit(sl()),);
+    sl.registerLazySingleton(() => AuthenticationCubit(sl()),);
+    sl.registerLazySingleton(() => AdminDepartmentCubit(sl()),);
+    sl.registerLazySingleton(() => AdminProgramsCubit(sl()),);
+    sl.registerLazySingleton(() => CourseCatalogAdminCubit(sl()),);
+    sl.registerLazySingleton(() => SemesterAdminCubit(sl()),);
+    sl.registerLazySingleton(() => CourseMappingCubit(sl()),);
+    sl.registerLazySingleton(() => TeacherRecordsCubit(sl()),);
+    sl.registerLazySingleton(() => TeacherAllocationCubit(sl()),);
 
+    sl.registerLazySingleton(() => ScreenResizeCubit(),);
   }
+
 }

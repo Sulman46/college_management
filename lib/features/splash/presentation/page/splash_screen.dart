@@ -1,11 +1,16 @@
 import 'dart:async';
 import 'dart:developer';
+import 'package:college_management/core/app/di_container.dart';
+import 'package:college_management/features/Authentication/models/user_model.dart';
+import 'package:college_management/features/Authentication/presentation/controller/cubit.dart';
 import 'package:college_management/features/Authentication/presentation/page/login.dart';
 import 'package:flutter/material.dart';
 import 'package:college_management/widgets/app_text.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/media_query.dart';
+import '../../../../core/helper/share_pref/auth_sharepref_helper.dart';
 import '../../../../core/theme/AppColor.dart';
 import 'package:animated_text_kit/animated_text_kit.dart' as animatedText;
 
@@ -36,8 +41,13 @@ class _SplashScreenState extends State<SplashScreen>
     super.initState();
 
     timer = Timer(Duration(seconds: 2), () async {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen(),));
+     UserModel? userModel=await AuthShareprefHelper.getUser();
+      if(userModel==null) {
+        context.pushReplacement("/login");
+      }else{
+        context.pushReplacement("/Admin-dashboard");
 
+      }
     });
 
     controllerArch = AnimationController(
@@ -114,7 +124,7 @@ class _SplashScreenState extends State<SplashScreen>
                   displayFullTextOnTap: true,
                   isRepeatingAnimation: false,
                   animatedTexts: [
-                    animatedText.TyperAnimatedText("Class",textAlign:TextAlign.start ,textStyle:  TextStyle(
+                    animatedText.TyperAnimatedText("City",textAlign:TextAlign.start ,textStyle:  TextStyle(
                         fontSize: 13,color: AppColor.blue,
                         decorationColor:AppColor.primary,
                         fontWeight:FontWeight.w400
@@ -124,7 +134,7 @@ class _SplashScreenState extends State<SplashScreen>
                 animatedText.AnimatedTextKit(
                   isRepeatingAnimation: false,
                   animatedTexts: [
-                    animatedText.TyperAnimatedText(" Master",textAlign:TextAlign.start ,textStyle:  TextStyle(
+                    animatedText.TyperAnimatedText(" College",textAlign:TextAlign.start ,textStyle:  TextStyle(
                         fontSize: 13,color: AppColor.primary,
                         decorationColor:AppColor.primary,
                         fontWeight:FontWeight.w400

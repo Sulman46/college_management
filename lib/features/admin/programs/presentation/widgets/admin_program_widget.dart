@@ -1,13 +1,18 @@
+import 'package:college_management/core/enums/status_enum.dart';
+import 'package:college_management/features/admin/programs/models/program_model.dart';
 import 'package:college_management/widgets/active_inactive_status_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../../core/app/di_container.dart';
 import '../../../../../core/theme/AppColor.dart';
 import '../../../../../widgets/app_text.dart';
 import '../../../../../widgets/more_vert_pop_menu_button.dart';
+import '../controller/cubit.dart';
 
 class AdminProgramWidget extends StatelessWidget {
-  const AdminProgramWidget({super.key});
-
+   AdminProgramWidget({super.key,required this.model});
+ProgramModel model;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -33,7 +38,7 @@ class AdminProgramWidget extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: AppText(
-                  text: "CC - 01",
+                  text: model.code,
                   fontSize: 11,
                   color: AppColor.primary,
                 ),
@@ -43,7 +48,11 @@ class AdminProgramWidget extends StatelessWidget {
               CustomPopMenuButton(
                 menus: ["Edit","Delete"],
                 onSelected: (value) {
-
+                  if(["Edit","Delete"][value]=="Edit"){
+                    context.push("/Admin-program-create",extra: model);
+                  }else{
+                    _programsCubit.deletePrograms(model);
+                  }
                 },),
             ],
           ),
@@ -52,7 +61,7 @@ class AdminProgramWidget extends StatelessWidget {
 
           /// 🔹 TITLE
           AppText(
-            text: "Cyber Security",
+            text: model.name,
             fontSize: 15,
             fontWeight: FontWeight.w600,
           ),
@@ -61,7 +70,7 @@ class AdminProgramWidget extends StatelessWidget {
 
           /// 🔹 SUBTITLE
           AppText(
-            text: "Dept. of Faculty Of Computing",
+            text: "Dept. of ${model.department}",
             fontSize: 11,
             color: AppColor.grey,
           ),
@@ -77,11 +86,11 @@ class AdminProgramWidget extends StatelessWidget {
             ),
             child: Row(
               children: [
-                infoItem("SECTION", "A"),
+                infoItem("SECTION", model.section),
                 divider(),
-                infoItem("DEGREE", "BS"),
+                infoItem("DEGREE", model.degree),
                 divider(),
-                infoItem("SESSION", "2022-2026"),
+                infoItem("SESSION", model.session),
               ],
             ),
           ),
@@ -93,12 +102,12 @@ class AdminProgramWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               AppText(
-                text: "Theory: 30/10/60",
+                text: "Theory: ${model.mids}(Mid)+${model.sessional}(Sessional)+${model.finalMarks}(Final)=${model.totalTheory}",
                 fontSize: 10,
                 color: AppColor.grey,
               ),
               AppText(
-                text: "Pass: 50%",
+                text: "Pass: ${model.theoryPassPercentage}%",
                 fontSize: 11,
                 color: AppColor.primary,
               ),
@@ -111,12 +120,12 @@ class AdminProgramWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               AppText(
-                text: "Practical: 100 Marks",
+                text: "Practical: ${model.practicalMax} Marks",
                 fontSize: 10,
                 color: AppColor.grey,
               ),
               AppText(
-                text: "Pass: 50%",
+                text: "Pass: ${model.practicalPassPercentage}%",
                 fontSize: 11,
                 color: AppColor.primary,
               ),
@@ -140,7 +149,7 @@ class AdminProgramWidget extends StatelessWidget {
                     SizedBox(width: 6),
                     Expanded(
                       child: AppText(
-                        text: "Bahauddin Zakariya University (BZU)",
+                        text: model.affiliationName,
                         fontSize: 11,
                         color: AppColor.grey,
                       ),
@@ -148,7 +157,7 @@ class AdminProgramWidget extends StatelessWidget {
                   ],
                 ),
               ),
-              ActiveInactiveStatusWidget(isActive: true,),
+              ActiveInactiveStatusWidget(isActive:model.status== StatusEnum.Active,),
             ],
           ),
         ],
@@ -189,3 +198,4 @@ Widget divider() {
     color: AppColor.greyLight1,
   );
 }
+var _programsCubit=DiContainer().sl<AdminProgramsCubit>();

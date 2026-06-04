@@ -1,0 +1,3 @@
+enum StatusEnum {
+  Active,Inactive
+}

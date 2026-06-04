@@ -1,16 +1,20 @@
+import 'package:college_management/core/app/di_container.dart';
 import 'package:college_management/core/constants/app_assets.dart';
 import 'package:college_management/core/models/admin_drawer_button_model.dart';
-import 'package:college_management/features/admin/affiliated_university/presentation/page/affiliated_universities_screen.dart';
+import 'package:college_management/features/Authentication/presentation/controller/cubit.dart';
+import 'package:college_management/features/admin/university_profile/presentation/page/affiliation/affiliated_universities_screen.dart';
 import 'package:college_management/features/admin/programs/presentation/page/admin_program_screen.dart';
 import 'package:college_management/features/admin/teacher_allocation/presentation/page/teacher_allocation_screen.dart';
 import 'package:college_management/features/admin/university_profile/presentation/page/university_profile_screen.dart';
 import 'package:college_management/widgets/custom_image_cache.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../../core/constants/media_query.dart';
+import '../../../../../core/controllers/screen_resizing/screen_resize_cubit.dart';
 import '../../../../../core/theme/AppColor.dart';
 import '../../../../../widgets/app_text.dart';
 import '../../../announcements/presentation/page/announcement_screen.dart';
-import '../../../attendance_notification_screen/presentation/page/attendance_notification_admin_screen.dart';
+import '../../../university_profile/presentation/page/attendance_notification_admin_screen.dart';
 import '../../../course_catalog/presentation/page/course_catalog_admin_screen.dart';
 import '../../../course_mapping/presentation/page/course_mapping_screen.dart';
 import '../../../departments/presentation/page/admin_department_screen.dart';
@@ -18,7 +22,9 @@ import '../../../faculty_workload/presentation/page/faculty_workload_screen.dart
 import '../../../hod_assignment/presentation/page/hod_assignment_screen.dart';
 import '../../../leave_request/presentation/page/admin_leave_request_screen.dart';
 import '../../../neural_generator/presentation/page/neural_generator_screen.dart';
+import '../../../pay_roll_and_salary_management/presentation/page/payroll_and_salary_management_screen.dart';
 import '../../../semesters/presentation/page/semester_admin_screen.dart';
+import '../../../student_enrollment/presentation/page/student_enrollment_screen.dart';
 import '../../../student_registrations/presentation/page/registered_student_list_screen.dart';
 import '../../../teacher_attendance/presentation/page/teacher_attendance_admin_screen.dart';
 import '../../../teacher_records/presentation/page/teacher_records_admin_screen.dart';
@@ -36,6 +42,7 @@ class AdminDashboardDrawar extends StatefulWidget {
 class _AdminDashboardDrawarState extends State<AdminDashboardDrawar> {
   final ScrollController _scrollController = ScrollController();
 
+  var sizeCubit=DiContainer().sl<ScreenResizeCubit>();
   @override
   Widget build(BuildContext context) {
     List<AdminDrawerButtonModel> itemsList=[
@@ -54,16 +61,13 @@ class _AdminDashboardDrawarState extends State<AdminDashboardDrawar> {
             },),
           ]),
       AdminDrawerButtonModel(title: "Department", icon: Icons.category,onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => AdminDepartmentScreen(),));
-
+        context.push("/Admin-department");
       }),
       AdminDrawerButtonModel(title: "Programs", icon: Icons.class_,onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => AdminProgramScreen(),));
-
+        context.push("/Admin-program");
       }),
       AdminDrawerButtonModel(title: "Course Catalog", icon: Icons.menu_book_sharp,onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => CourseCatalogAdminScreen(),));
-
+        context.push("/Admin-Course-catalog");
       }),
       AdminDrawerButtonModel(title: "Course Mapping", icon: Icons.map,onTap: (){
         Navigator.push(context, MaterialPageRoute(builder: (context) => CourseMappingScreen(),));
@@ -113,11 +117,23 @@ class _AdminDashboardDrawarState extends State<AdminDashboardDrawar> {
         Navigator.push(context, MaterialPageRoute(builder: (context) => RegisteredStudentListScreen(),));
 
       }),
-      AdminDrawerButtonModel(title: "Logout", icon: Icons.logout,onTap: (){}),
+      AdminDrawerButtonModel(title: "Student Enrollment", icon: Icons.workspaces,onTap: (){
+        Navigator.push(context, MaterialPageRoute(builder: (context) => StudentEnrollmentScreen(),));
+
+      }),
+      AdminDrawerButtonModel(title: "Payroll & Salary Management", icon: Icons.payment,onTap: (){
+        Navigator.push(context, MaterialPageRoute(builder: (context) => PayrollAndSalaryManagementScreen(),));
+
+      }),
+      AdminDrawerButtonModel(title: "Logout", icon: Icons.logout,onTap: ()async{
+        var authCubit=DiContainer().sl<AuthenticationCubit>();
+       await authCubit.logout();
+        context.go("/login");
+      }),
     ];
 
     return Drawer(
-      width: mdWidth(context) * .7,
+      width:sizeCubit.isLargeScreen? mdWidth(context)*.4:mdWidth(context) * .7,
       // shape: Border(right: BorderSide(color: AppColor.primary.withOpacity(.5),width: 1)),
       backgroundColor: AppColor.bgPrimary,
       child: Column(
@@ -180,7 +196,7 @@ class _AdminDashboardDrawarState extends State<AdminDashboardDrawar> {
                 thickness: 3,
                 radius: Radius.circular(10),
                 child: SingleChildScrollView(
-                  padding: EdgeInsets.zero,
+                  padding:sizeCubit.isLargeScreen? EdgeInsets.symmetric(horizontal: 10): EdgeInsets.zero,
                   controller: _scrollController,
                   child: Column(
                     children: [
@@ -189,7 +205,7 @@ class _AdminDashboardDrawarState extends State<AdminDashboardDrawar> {
                         children: List.generate(itemsList.length, (index) {
                           bool isLast = index == itemsList.length - 1;
                           return DrawerButtonWidget(
-                            title: index==0?"Main":index==16?"Misc":null,
+                            title: index==0?"Main":index==18?"Misc":null,
                             model: itemsList[index],
                           );
                         }),

@@ -7,11 +7,12 @@ import '../core/constants/app_text_style.dart';
 import '../core/theme/AppColor.dart';
 
 class DropDownFieldWidget extends StatelessWidget {
-   DropDownFieldWidget({super.key,required this.text,this.title,this.maxLine,required this.isFilled});
+   DropDownFieldWidget({super.key,required this.text, this.canTap=true,this.title,this.maxLine,required this.isFilled});
 String text;
 bool isFilled;
    final String? title;
 int? maxLine;
+bool canTap;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -28,11 +29,11 @@ int? maxLine;
             ),
             SizedBox(height: 6),],
         Container(
-          padding: EdgeInsets.symmetric(vertical: 8,horizontal: 5),
+          padding: EdgeInsets.symmetric(vertical: 4,horizontal: 5),
           decoration: BoxDecoration(
-            color: AppColor.primary.withOpacity(.1),
+            color:canTap? AppColor.primary.withOpacity(.1):AppColor.grey.withOpacity(.1),
               borderRadius: BorderRadius.circular(8),
-              border:  Border.all(color:AppColor.primary.withOpacity(.5),width: .5)
+              border:  Border.all(color:canTap?AppColor.primary.withOpacity(.5):AppColor.grey.withOpacity(.5),width: .5)
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,

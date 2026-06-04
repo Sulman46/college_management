@@ -1,4 +1,8 @@
+import 'package:college_management/core/app/di_container.dart';
+import 'package:college_management/features/admin/course_mapping/model/course_mapping_model.dart';
+import 'package:college_management/features/admin/course_mapping/presentation/controller/cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../../core/theme/AppColor.dart';
 import '../../../../../widgets/active_inactive_status_widget.dart';
@@ -6,8 +10,8 @@ import '../../../../../widgets/app_text.dart';
 import '../../../../../widgets/more_vert_pop_menu_button.dart';
 
 class CourseMappingWidget extends StatelessWidget {
-  const CourseMappingWidget({super.key});
-
+   CourseMappingWidget({super.key,required this.model});
+CourseMappingModel model;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -37,14 +41,21 @@ class CourseMappingWidget extends StatelessWidget {
                       children: [
                         Expanded(
                           child: AppText(
-                            text: "Computer Science",
+                            text: model.program??"",
                             fontWeight: FontWeight.w600,
                             fontSize: 14,
                           ),
                         ),
                         CustomPopMenuButton(
                           menus: ["Edit", "Delete"],
-                          onSelected: (val) {},
+                          onSelected: (val) async {
+                            if(val==0){
+                              context.push('/Admin-add-course-mapping',extra: model);
+                            }else{
+                              var courseMapping=DiContainer().sl<CourseMappingCubit>();
+                              await courseMapping.delete(model);
+                            }
+                          },
                         )
                       ],
                     ),
@@ -53,7 +64,7 @@ class CourseMappingWidget extends StatelessWidget {
 
                     /// SUBTITLE
                     AppText(
-                      text: "Faculty of Computing",
+                      text: "Faculty of ${model.department??""}",
                       fontSize: 11,
                       color: AppColor.grey,
                     ),
@@ -65,9 +76,9 @@ class CourseMappingWidget extends StatelessWidget {
                       spacing: 10,
                       runSpacing: 5,
                       children: [
-                        smallTag("BS"),
-                        smallTag("2022-2026"),
-                        smallTag("Section A"),
+                        smallTag("${model.degree??""}"),
+                        smallTag("${model.session??""}"),
+                        smallTag("Section ${model.section??""}"),
                       ],
                     ),
                   ],
@@ -94,7 +105,7 @@ class CourseMappingWidget extends StatelessWidget {
 
                 /// COURSE NAME
                 AppText(
-                  text: "Data Structure",
+                  text: model.courseTitle??"",
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
                 ),
@@ -103,7 +114,7 @@ class CourseMappingWidget extends StatelessWidget {
 
                 /// CODE + CH
                 AppText(
-                  text: "CS-01 (4 CH)",
+                  text: model.courseCode??"",
                   fontSize: 11,
                   color: AppColor.primary,
                   fontWeight: FontWeight.w500,
@@ -117,11 +128,11 @@ class CourseMappingWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     AppText(
-                      text: "Theory + Lab",
+                      text: model.courseType??"",
                       fontSize: 10,
                       color: AppColor.grey,
                     ),
-                    typeTag("CORE", isCore: true),
+                    typeTag(model.courseCategory??"", isCore: true),
                   ],
                 ),
               ],
@@ -142,14 +153,14 @@ class CourseMappingWidget extends StatelessWidget {
                 child: Container(
                   margin: EdgeInsets.only(top: 3),
                   child: AppText(
-                    text: "Bahauddin Zakariya University (BZU)",
+                    text: model.affiliation??"",
                     fontSize: 11,
                     color: AppColor.grey,
                   ),
                 ),
               ),
               SizedBox(width: 5),
-              smallTag("Sem 2"),
+              smallTag(model.semesterName??""),
             ],
           ),
         ],

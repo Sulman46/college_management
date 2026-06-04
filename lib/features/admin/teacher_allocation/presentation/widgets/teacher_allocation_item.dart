@@ -1,4 +1,8 @@
+import 'package:college_management/core/app/di_container.dart';
+import 'package:college_management/features/admin/teacher_allocation/models/teacher_allocation_model.dart';
+import 'package:college_management/features/admin/teacher_allocation/presentation/controller/cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../../core/theme/AppColor.dart';
 import '../../../../../widgets/active_inactive_status_widget.dart';
@@ -6,8 +10,8 @@ import '../../../../../widgets/app_text.dart';
 import '../../../../../widgets/more_vert_pop_menu_button.dart';
 
 class TeacherAllocationItem extends StatelessWidget {
-  const TeacherAllocationItem({super.key});
-
+   TeacherAllocationItem({super.key,required this.model});
+  TeacherAllocationModel model;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -37,14 +41,21 @@ class TeacherAllocationItem extends StatelessWidget {
                       children: [
                         Expanded(
                           child: AppText(
-                            text: "Ali Hassan",
+                            text: model.teacherName??"",
                             fontWeight: FontWeight.w600,
                             fontSize: 14,
                           ),
                         ),
                         CustomPopMenuButton(
                           menus: ["Edit", "Delete"],
-                          onSelected: (val) {},
+                          onSelected: (val) async {
+                            if(val==0){
+                              context.push("/Admin-add-teacher-allocation",extra: model);
+                            }else{
+                              var allocationCubit=DiContainer().sl<TeacherAllocationCubit>();
+                             await allocationCubit.delete(model);
+                            }
+                          },
                         )
                       ],
                     ),
@@ -53,7 +64,7 @@ class TeacherAllocationItem extends StatelessWidget {
 
                     /// SUBTITLE
                     AppText(
-                      text: "Faculty of Computing",
+                      text: model.department??"",
                       fontSize: 11,
                       color: AppColor.grey,
                     ),
@@ -80,7 +91,7 @@ class TeacherAllocationItem extends StatelessWidget {
                     color: AppColor.bgPrimary
                 ),
                 child: AppText(
-                  text: "OP-01",
+                  text: model.courseCode??"",
                   fontSize: 11,
                   color: AppColor.primary,
                   fontWeight: FontWeight.w500,
@@ -88,9 +99,17 @@ class TeacherAllocationItem extends StatelessWidget {
               ),
               SizedBox(width: 4),
               AppText(
-                text: "OOP",
+                text: "Type: ${model.allocationType}",
                 fontWeight: FontWeight.w600,
-                fontSize: 13,
+                color: AppColor.grey,
+                fontSize: 10,
+              ),
+              SizedBox(width: 10),
+              AppText(
+                text: "Credit Hour: ${model.creditHours}",
+                fontWeight: FontWeight.w600,
+                color: AppColor.grey,
+                fontSize: 10,
               ),
             ],
           ),
@@ -106,34 +125,43 @@ class TeacherAllocationItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
 
-                AppText(
-                  text: "BS. Cyber Security",
-                  fontWeight: FontWeight.w600,
-                  fontSize: 13,
-                ),
+                model.combinedPrograms!=null&&model.combinedPrograms!.isNotEmpty?
+                Wrap(
+                  children: [
+                    ...List.generate(model.combinedPrograms?.length??0, (index) => AppText(
+                      text: model.combinedPrograms![index],
+                      fontWeight: FontWeight.w600,
+                      fontSize: 13,
+                    ),)
+                  ],
+                ): AppText(
+    text: model.programName??"",
+      fontWeight: FontWeight.w600,
+      fontSize: 13,
+    ),
 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     AppText(
-                      text: "Section: A",
+                      text: "Section: ${model.section??""}",
                       fontWeight: FontWeight.w600,
                       fontSize: 12,
                       color: AppColor.black.withOpacity(.7),
                     ),
                     AppText(
-                      text: "Batch: 2022-2026",
+                      text: "Batch: ${model.batch}",
                       fontWeight: FontWeight.w600,
                       fontSize: 12,
                       color: AppColor.black.withOpacity(.7),
                     ),
-                    smallTag("Sem 2"),
+                    smallTag(model.semester??""),
 
                   ],
                 ),
                 SizedBox(height: 3),
                 AppText(
-                  text: "Bahauddin Zakariya University (BZU)",
+                  text: model.affiliation??"",
                   fontSize: 11,
                   color: AppColor.grey,
                 ),

@@ -13,7 +13,7 @@ class HodAssignmentItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => TeacherRecordDetailsScreen(),));
+        // Navigator.push(context, MaterialPageRoute(builder: (context) => TeacherRecordDetailsScreen(),));
       },
       child: Container(
         margin: EdgeInsets.only(bottom: 10),

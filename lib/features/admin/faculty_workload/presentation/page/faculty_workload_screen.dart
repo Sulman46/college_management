@@ -122,7 +122,7 @@ class _FacultyWorkloadScreenState extends State<FacultyWorkloadScreen> {
                                 width: 8,
                                 height: 8,
                                 decoration: BoxDecoration(
-                                  color: Colors.green,
+                                  color: AppColor.green,
                                   shape: BoxShape.circle,
                                 ),
                               ),
@@ -130,7 +130,7 @@ class _FacultyWorkloadScreenState extends State<FacultyWorkloadScreen> {
                               AppText(
                                 text: "LIVE SYNC ACTIVE",
                                 fontSize: 10,
-                                color: Colors.greenAccent,
+                                color: AppColor.green,
                                 fontWeight: FontWeight.w600,
                               ),
                             ],
@@ -164,9 +164,9 @@ class _FacultyWorkloadScreenState extends State<FacultyWorkloadScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      StatCardWidget(title: "TOTAL FACULTY", value: "1", color: Colors.blue),
-                      StatCardWidget(title: "OVERLOADED", value: "0", color: Colors.red),
-                      StatCardWidget(title: "WITHIN TARGET", value: "1", color: Colors.green),
+                      StatCardWidget(title: "TOTAL FACULTY", value: "1", color: AppColor.blue),
+                      StatCardWidget(title: "OVERLOADED", value: "0", color: AppColor.red),
+                      StatCardWidget(title: "WITHIN TARGET", value: "1", color: AppColor.green),
                     ],
                   ),
 

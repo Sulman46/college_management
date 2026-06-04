@@ -1,13 +1,32 @@
 
 import 'package:dartz/dartz.dart';
+import '../../models/program_model.dart';
+import '../../models/program_request_model.dart';
 import '../repository/repository.dart';
 
 class AdminProgramsUseCase{
   final AdminProgramsRepository repository;
   AdminProgramsUseCase({required this.repository});
 
-  Future<Either<String, bool>> function1()async {
-    return repository.function1();
+  
+  Future<Either<String,List<ProgramModel>>> getPrograms() async{
+    return repository.getPrograms();
+  }
+
+  
+  Future<Either<String,ProgramModel>> addProgram({required ProgramRequestModel programRequestModel}) async{
+    return repository.addProgram(programRequestModel: programRequestModel);
+  }
+
+
+
+  Future<Either<String,ProgramModel>> updateProgram({required ProgramRequestModel programRequestModel}) async{
+    return repository.updateProgram(programRequestModel: programRequestModel);
+  }
+
+
+  Future<Either<String,String>> deleteProgram({required String id}) async{
+    return repository.deleteProgram(id: id);
   }
 
 }

@@ -11,16 +11,18 @@ class StatCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: mdWidth(context) * .28,
-      padding: EdgeInsets.symmetric(vertical: 15),
+      padding: EdgeInsets.symmetric(vertical: 15,horizontal: 5),
       decoration: BoxDecoration(
         color: AppColor.white,
         borderRadius: BorderRadius.circular(15),
         border: Border.all(color: color, width: 2),
       ),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           AppText(
+            textAlign: TextAlign.center,
             text: title,
             fontSize: 10,
             color: AppColor.grey,

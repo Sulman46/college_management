@@ -1,5 +1,6 @@
 // ignore_for_file: must_be_immutable
 
+import 'package:college_management/core/helper/show_message.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/theme/AppColor.dart';
 import '../../../../widgets/app_text.dart';
@@ -47,7 +48,12 @@ class CustomPopMenuButton extends StatelessWidget {
                 value: index,child:AppText(text: "${menus[index]}",color:menus[index].toString().toLowerCase()=="delete"? AppColor.red:AppColor.black,fontWeight: FontWeight.w500,)),)
           ],
           onSelected:onSelected,
-          child:widget?? SizedBox(
+          child:menus.isEmpty? InkWell(
+            onTap: () {
+              showMessage("Data is not available");
+            },
+            child: widget,
+          ):widget?? SizedBox(
               width: 20,
               child: Icon(Icons.more_vert,size: 20,color: iconColor??AppColor.grey,)),
         ),

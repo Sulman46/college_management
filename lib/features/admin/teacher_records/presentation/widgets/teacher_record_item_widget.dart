@@ -3,17 +3,21 @@ import 'package:college_management/features/admin/teacher_records/presentation/p
 import 'package:college_management/widgets/active_inactive_status_widget.dart';
 import 'package:college_management/widgets/app_text.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../../core/app/di_container.dart';
 import '../../../../../widgets/more_vert_pop_menu_button.dart';
+import '../../models/teacher_model.dart';
+import '../controller/cubit.dart';
 
 class TeacherRecordItemWidget extends StatelessWidget {
-  const TeacherRecordItemWidget({super.key});
-
+   TeacherRecordItemWidget({super.key,required this.model});
+  TeacherModel model;
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => TeacherRecordDetailsScreen(),));
+        context.push('/Admin-teacher-record-details',extra: model);
       },
       child: Container(
         margin: EdgeInsets.only(bottom: 10),
@@ -25,23 +29,29 @@ class TeacherRecordItemWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AppText(text: "ALi Hassan",fontSize: 12,color: AppColor.black,fontWeight: FontWeight.w600,),
+            AppText(text:model.teacherName??"",fontSize: 12,color: AppColor.black,fontWeight: FontWeight.w600,),
             SizedBox(height: 3,),
             Row(
               children: [
-                Expanded(child: AppText(text: "Dept. Faculty of Computing",fontSize: 11,color: AppColor.grey,fontWeight: FontWeight.w500,)),
-                AppText(text: "(Professor)",fontSize: 11,color: AppColor.primary,fontWeight: FontWeight.w500,),
+                Expanded(child: AppText(text: "Dept. ${model.department!.join(", ")}",fontSize: 11,color: AppColor.grey,fontWeight: FontWeight.w500,)),
+                AppText(text: "(${model.qualification})",fontSize: 11,color: AppColor.primary,fontWeight: FontWeight.w500,),
               ],
             ),
             SizedBox(height: 5,),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                ActiveInactiveStatusWidget(isActive: true),
+                ActiveInactiveStatusWidget(isActive: model.status=="Active"),
                 CustomPopMenuButton(
                   menus: ["Edit","Delete"],
-                  onSelected: (value) {
+                  onSelected: (value) async {
+                    var teacherRecordCubit=DiContainer().sl<TeacherRecordsCubit>();
+                    if(value==0){
+                      context.push('/Admin-add-teacher-record',extra: model);
 
+                    }else{
+                   await  teacherRecordCubit.delete(model);
+                    }
                   },),
               ],
             )

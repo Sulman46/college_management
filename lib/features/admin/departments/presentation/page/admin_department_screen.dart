@@ -1,13 +1,18 @@
 import 'package:college_management/core/app/myapp.dart';
 import 'package:college_management/core/constants/media_query.dart';
+import 'package:college_management/widgets/confirmation_dialog.dart';
 import 'package:college_management/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../../core/app/di_container.dart';
 import '../../../../../core/theme/AppColor.dart';
 import '../../../../../widgets/app_text.dart';
 import '../../../../../widgets/custom_text_form.dart';
 import '../../../../../widgets/custom_top_bar.dart';
 import '../../data/model/department_model.dart';
+import '../controller/cubit.dart';
 import '../widgets/add_department_dialog.dart';
 import '../widgets/department_item_widget.dart';
 import '../widgets/department_summary_section.dart';
@@ -23,147 +28,176 @@ class _AdminDepartmentScreenState extends State<AdminDepartmentScreen> {
   TextEditingController searchController = TextEditingController();
   double       top=mdHeight(navigatorKey.currentContext!)*.9;
   double left=mdWidth(navigatorKey.currentContext!)*.65;
-  List<DepartmentModel> departmentList = [
-    DepartmentModel(
-        code: "CS101",
-        name: "Computer Science",
-        date: "12 Jan 2024",
-        status: "Operational"),
-    DepartmentModel(
-        code: "ENG201",
-        name: "English",
-        date: "05 Feb 2024",
-        status: "Suspended"),
-    DepartmentModel(
-        code: "MTH301",
-        name: "Mathematics",
-        date: "20 Mar 2024",
-        status: "Operational"),
-  ];
-
-  List<DepartmentModel> filteredList = [];
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+     await _departmentCubit.getDepartments();
     },);
-    filteredList = departmentList;
     super.initState();
   }
+  var _departmentCubit=DiContainer().sl<AdminDepartmentCubit>();
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: Stack(
-        children: [
-          /// 🔹 MAIN UI
-          Column(
+      body: BlocBuilder(
+        bloc: _departmentCubit,
+        builder: (context,statebsjhbj) {
+          return Stack(
             children: [
-              CustomTopBar(
-                text: "Departments",
+              /// 🔹 MAIN UI
+              Column(
+                children: [
+                  CustomTopBar(
+                    onTap: () {
+                      context.pop();
+                    },
+                    text: "Departments",
+                  ),
+
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: EdgeInsets.all(15),
+                        child: Column(
+                          children: [
+                            /// 🔹 SUMMARY
+                            Row(
+                              children: [
+                                DepartmentSummaryBox(
+                                  title: "Total",
+                                  count: _departmentCubit.departmentList.length,
+                                  color: AppColor.blue,
+                                ),
+                                DepartmentSummaryBox(
+                                  title: "Operational",
+                                  count: _departmentCubit.departmentList.where((element) => element.status==DepartmentStatus.Active,).toList().length,
+                                  color: AppColor.primary,
+                                ),
+                                DepartmentSummaryBox(
+                                  title: "Suspended",
+                                  count: _departmentCubit.departmentList.where((element) => element.status==DepartmentStatus.Inactive,).toList().length,
+                                  color: AppColor.red,
+                                ),
+                              ],
+                            ),
+
+                            SizedBox(height: 15),
+
+                            /// 🔹 SEARCH
+                            CustomTextFormField(
+                              controller: searchController,
+                              subTitle: "Search department...",
+                              isHintText: true,
+                              onChanged: (p0) {
+                                _departmentCubit.filterList(p0);
+                              },
+                              borderSize: 1,
+                              contentPadding:
+                              EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+                            ),
+
+                            SizedBox(height: 20),
+
+                            /// 🔹 LIST
+                            if (_departmentCubit.filterDepartmentList.isEmpty) Center(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  AppText(
+                                    text: "No department found",
+                                    color: AppColor.grey,
+                                  ),
+                                  SizedBox(height: 10,),
+                                  InkWell(
+                                      onTap: ()async {
+                                       await _departmentCubit.getDepartments();
+                                      },
+                                      child: Icon(Icons.refresh,size: 20,color: AppColor.primary,)),
+                                ],
+                              ),
+                            ) else Column(
+                            children: [...List.generate(
+                              _departmentCubit.filterDepartmentList.length,
+                               (index) {
+                                final item = _departmentCubit.filterDepartmentList[index];
+                                return DepartmentItemWidget(
+                                  model: item,
+                                  onEdit: () {
+                                    showDialog(context: context, builder: (context) => AddDepartmentDialog(editDepartmentModel: item,),);
+
+                                  },
+                                  onDelete: () async {
+                                    showDialog(context: context, builder: (context) => ConfirmationDialog(buttonWidget: Row(
+                                      children: [
+                                        Expanded(
+                                          child: CustomElevatedButton(
+                                            onPressed: () => Navigator.pop(context),
+                                            text: "Discard",
+                                            bgColor: AppColor.white,
+                                            textColor: AppColor.red,
+                                            borderColor: AppColor.red,
+                                          ),
+                                        ),
+                                        SizedBox(width: 20,),
+                                        Expanded(
+                                          child: CustomElevatedButton(onPressed: () async {
+                                           var val= await  _departmentCubit.deleteDepartment(item.id);
+                                           if(val){
+                                             Navigator.pop(context);
+                                           }
+
+                                          }, text: "Delete"),
+                                        ),
+                                      ],
+                                    ), title: "${item.name}", subText: "Are you sure you want to delete this item? This action cannot be undone."),);
+                                  },
+                                );
+                              },
+                            )
+                            ]
+                            ),
+                            SafeArea(
+                                top: false,
+                                child: SizedBox(height: 30,)),
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
+                ],
               ),
 
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.all(15),
-                  child: Column(
-                    children: [
-                      /// 🔹 SUMMARY
-                      Row(
-                        children: [
-                          DepartmentSummaryBox(
-                            title: "Total",
-                            count: 3,
-                            color: AppColor.blue,
-                          ),
-                          DepartmentSummaryBox(
-                            title: "Operational",
-                            count: 2,
-                            color: AppColor.primary,
-                          ),
-                          DepartmentSummaryBox(
-                            title: "Suspended",
-                            count: 1,
-                            color: AppColor.red,
-                          ),
-                        ],
-                      ),
 
-                      SizedBox(height: 15),
-
-                      /// 🔹 SEARCH
-                      CustomTextFormField(
-                        controller: searchController,
-                        subTitle: "Search department...",
-                        isHintText: true,
-                        onChanged: (p0) {},
-                        borderSize: 1,
-                        contentPadding:
-                        EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                      ),
-
-                      SizedBox(height: 20),
-
-                      /// 🔹 LIST
-                      filteredList.isEmpty
-                          ? Center(
-                        child: AppText(
-                          text: "No department found",
-                          color: AppColor.grey,
-                        ),
-                      )
-                          :
-                      Column(
-                      children: [...List.generate(
-                                            filteredList.length,
-                         (index) {
-                          final item = filteredList[index];
-                          return DepartmentItemWidget(
-                            model: item,
-                            onEdit: () {},
-                            onDelete: () {},
-                          );
-                        },
-                      )
-                      ]
-                      ),
-                      SafeArea(
-                          top: false,
-                          child: SizedBox(height: 30,)),
-                    ],
+              AnimatedPositioned(
+                duration: Duration(milliseconds: 100),
+                top: _departmentCubit.top,
+                right: _departmentCubit.right,
+                child: GestureDetector(
+                  onPanUpdate: (details) {
+                    _departmentCubit.getButtonPosition(topVal:details.delta.dy, rightVal: details.delta.dx);
+                      // top += details.delta.dy;
+                      // left += details.delta.dx;
+                  },
+                  child: CustomElevatedButton(
+                    onPressed: () {
+                      showDialog(context: context, builder: (context) => AddDepartmentDialog(),);
+                    },
+                    text: "Add New",
+                    fontSize: 15,
+                    width: 110,
+                    height: 50,
                   ),
                 ),
-              )
-            ],
-          ),
-
-
-          AnimatedPositioned(
-            duration: Duration(milliseconds: 100),
-            top: top,
-            left: left,
-            child: GestureDetector(
-              onPanUpdate: (details) {
-                setState(() {
-                  top += details.delta.dy;
-                  left += details.delta.dx;
-                });
-              },
-              child: CustomElevatedButton(
-                onPressed: () {
-                  showDialog(context: context, builder: (context) => AddDepartmentDialog(),);
-                },
-                text: "Add New",
-                fontSize: 15,
-                width: 110,
-                height: 50,
               ),
-            ),
-          ),
-        ],
+            ],
+          );
+        }
       ),
     );
   }

@@ -1,9 +1,15 @@
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:college_management/core/app/di_container.dart';
 import 'package:college_management/core/constants/app_widgets_size.dart';
 import 'package:college_management/core/constants/media_query.dart';
 import 'package:college_management/core/helper/image_picker_class.dart';
+import 'package:college_management/core/helper/show_message.dart';
+import 'package:college_management/features/admin/university_profile/models/university_model.dart';
+import 'package:college_management/features/admin/university_profile/models/university_profile_model.dart';
+import 'package:college_management/features/admin/university_profile/presentation/widgets/university_profile_image.dart';
 import 'package:college_management/widgets/custom_button.dart';
+import 'package:college_management/widgets/custom_image_cache.dart';
 import 'package:college_management/widgets/custom_top_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,6 +20,7 @@ import 'package:college_management/core/theme/AppColor.dart';
 import 'package:college_management/widgets/app_text.dart';
 
 import '../../../../../widgets/custom_text_form.dart';
+import '../../../../../widgets/data_not_found_widget.dart';
 import '../controller/cubit.dart';
 
 class UniversityProfileScreen extends StatefulWidget {
@@ -26,32 +33,41 @@ class UniversityProfileScreen extends StatefulWidget {
 
 class _UniversityProfileScreenState extends State<UniversityProfileScreen> {
 
+  var universityProfileCubit=DiContainer().sl<UniversityProfileCubit>();
 
+  // Controllers
+  TextEditingController nameController = TextEditingController();
+  TextEditingController campusIdController = TextEditingController();
+  TextEditingController contactController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
+  TextEditingController website = TextEditingController();
+  TextEditingController geoController = TextEditingController();
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       universityProfileCubit.updateEditUniversityProfile(false);
+      UniversityModel? response=  await universityProfileCubit.getUniversitySetup();
+      if(response!=null){
+        UniversityProfileModel model=response.universityProfileModel!;
+        nameController.text=model.name;
+        campusIdController.text=model.campusId;
+        contactController.text=model.phone;
+        emailController.text=model.email;
+        addressController.text=model.address;
+        website.text=model.website;
+        geoController.text=model.location;
+      }
     },);
     // TODO: implement initState
     super.initState();
   }
 
 
-  // Controllers
-  final nameController = TextEditingController(text: "ABC University");
-  final campusIdController = TextEditingController(text: "CAMP-123");
-  final contactController = TextEditingController(text: "03001234567");
-  final emailController = TextEditingController(text: "abc@uni.com");
-  final addressController = TextEditingController(text: "Karachi, Pakistan");
-  final geoController = TextEditingController(text: "https://maps.google.com");
 
-  Future pickImage() async {
-    final picked = await ImagePickerClass.pickImage();
-    if (picked != null) {
-      universityProfileCubit.pickUniversityImage(picked);
-    }
-  }
+
+
 
   Widget buildField(String label, TextEditingController controller) {
     return universityProfileCubit.editUniversityProfile
@@ -124,6 +140,11 @@ class _UniversityProfileScreenState extends State<UniversityProfileScreen> {
 
               ),),
               /// 🔹 IMAGE
+              if(universityProfileCubit.universityModel==null)
+              DataNotFoundWidget(onTap:  ()async {
+              await universityProfileCubit.getUniversitySetup();
+              })
+                else
              Expanded(
                child: SingleChildScrollView(
                  child: SafeArea(
@@ -132,27 +153,7 @@ class _UniversityProfileScreenState extends State<UniversityProfileScreen> {
                      padding:  EdgeInsets.symmetric(horizontal:screenPaddingHori,vertical: 10),
                      child: Column(
                        children: [
-                         GestureDetector(
-                           onTap: universityProfileCubit.editUniversityProfile ? pickImage : null,
-                           child: Container(
-                             height: 140,
-                             width: 140,
-                             decoration: BoxDecoration(
-                               shape: BoxShape.circle,
-                               color: AppColor.white,
-                               boxShadow: AppColor.blackShadow,
-                               image: universityProfileCubit.pickedUniversityImage != null
-                                   ? DecorationImage(
-                                 image: FileImage(universityProfileCubit.pickedUniversityImage!),
-                                 fit: BoxFit.cover,
-                               )
-                                   : null,
-                             ),
-                             child: universityProfileCubit.pickedUniversityImage == null
-                                 ? Icon(Icons.camera_alt, size: 40, color: AppColor.grey)
-                                 : null,
-                           ),
-                         ),
+                         UniversityProfileImage(),
 
                          SizedBox(height: 15),
 
@@ -167,18 +168,11 @@ class _UniversityProfileScreenState extends State<UniversityProfileScreen> {
                            ),
                            child: Column(
                              children: [
-                               // if(universityProfileCubit.editUniversityProfile)
-                                 buildField("University Name", nameController),
-                                 // Container(
-                                 //   margin: EdgeInsets.only(bottom: 20),
-                                 //   child: CustomTextFormField(
-                                 //     controller: nameController,
-                                 //     subTitle: "University Name",
-                                 //   ),
-                                 // ),
+                               buildField("University Name", nameController),
                                buildField("Campus ID", campusIdController),
                                buildField("Contact Number", contactController),
                                buildField("Email", emailController),
+                               buildField("Website", website),
                                buildField("Address", addressController),
                                buildField("Geo Location URL", geoController),
                              ],
@@ -189,7 +183,15 @@ class _UniversityProfileScreenState extends State<UniversityProfileScreen> {
 
                          /// 🔹 SAVE BUTTON
                          if (universityProfileCubit.editUniversityProfile)
-                           CustomElevatedButton(onPressed: (){}, text: "Save",width: mdWidth(context)*.5,),
+                           CustomElevatedButton(onPressed: () async {
+                             if(nameController.text.isEmpty || campusIdController.text.isEmpty || contactController.text.isEmpty|| emailController.text.isEmpty|| website.text.isEmpty|| addressController.text.isEmpty|| geoController.text.isEmpty){
+                               showMessage("Please fill empty fields");
+                               return;
+                             }
+                             UniversityProfileModel universityProfileModel=UniversityProfileModel(name: nameController.text, logo: universityProfileCubit.universityModel?.universityProfileModel?.logo??"", campusId: campusIdController.text, phone: contactController.text, email: emailController.text, website: website.text, address: addressController.text, location: geoController.text);
+                             await universityProfileCubit.addUniversitySetup(UniversityModel(universityProfileModel: universityProfileModel));
+                             
+                             }, text: "Save",width: mdWidth(context)*.5,),
                        ],
                      ),
                    ),
@@ -205,4 +207,3 @@ class _UniversityProfileScreenState extends State<UniversityProfileScreen> {
 }
 
 
-var universityProfileCubit=DiContainer().sl<UniversityProfileCubit>();
