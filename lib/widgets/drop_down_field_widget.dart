@@ -7,12 +7,14 @@ import '../core/constants/app_text_style.dart';
 import '../core/theme/AppColor.dart';
 
 class DropDownFieldWidget extends StatelessWidget {
-   DropDownFieldWidget({super.key,required this.text, this.canTap=true,this.title,this.maxLine,required this.isFilled});
+   DropDownFieldWidget({super.key,this.borderColor,this.padding,required this.text, this.canTap=true,this.title,this.maxLine,required this.isFilled});
 String text;
 bool isFilled;
    final String? title;
 int? maxLine;
 bool canTap;
+Color? borderColor;
+   EdgeInsetsGeometry? padding;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -29,11 +31,11 @@ bool canTap;
             ),
             SizedBox(height: 6),],
         Container(
-          padding: EdgeInsets.symmetric(vertical: 4,horizontal: 5),
+          padding:padding?? EdgeInsets.symmetric(vertical: 4,horizontal: 5),
           decoration: BoxDecoration(
-            color:canTap? AppColor.primary.withOpacity(.1):AppColor.grey.withOpacity(.1),
+            color:canTap?borderColor?.withOpacity(.1)?? AppColor.primary.withOpacity(.1):AppColor.primary.withOpacity(.01),
               borderRadius: BorderRadius.circular(8),
-              border:  Border.all(color:canTap?AppColor.primary.withOpacity(.5):AppColor.grey.withOpacity(.5),width: .5)
+              border:  Border.all(color:canTap?borderColor?.withOpacity(.5)?? AppColor.primary.withOpacity(.5):AppColor.primary.withOpacity(.3),width: .5)
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,

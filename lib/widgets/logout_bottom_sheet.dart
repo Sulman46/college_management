@@ -25,7 +25,7 @@ class LogoutAppSheet extends StatelessWidget {
             SizedBox(height: 30,),
             Image.asset(AppAssets.appLogo,width: 100,height: 100,),
             SizedBox(height: 30,),
-            AppText(text: "Logout",fontSize: 25,fontWeight: FontWeight.w600,color: AppColor.black,),
+            AppText(text: "Logout",fontSize: 25,fontWeight: FontWeight.w600,color: AppColor.white,),
             AppText(text: "Are you sure you want to log out?",fontSize: 22,textAlign: TextAlign.center,color: AppColor.grey,),
 
             SizedBox(height: 30,),

@@ -28,7 +28,7 @@ class FacultyDetailsScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: AppColor.white,
                         borderRadius: BorderRadius.circular(15),
-                        boxShadow: AppColor.blackShadow,
+                        boxShadow: AppColor.shadowBlack,
                       ),
                       child: Row(
                         children: [

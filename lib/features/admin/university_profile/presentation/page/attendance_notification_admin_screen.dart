@@ -1,76 +1,117 @@
+import 'package:college_management/core/app/di_container.dart';
 import 'package:college_management/core/constants/app_widgets_size.dart';
 import 'package:college_management/core/theme/AppColor.dart';
+import 'package:college_management/features/admin/university_profile/presentation/controller/cubit.dart';
+import 'package:college_management/features/admin/university_profile/presentation/widgets/attendance_widgets/add_attendance_alert_dialog.dart';
+import 'package:college_management/features/admin/university_profile/presentation/widgets/attendance_widgets/attendance_alert_card_widget.dart';
 import 'package:college_management/widgets/app_text.dart';
 import 'package:college_management/widgets/custom_button.dart';
 import 'package:college_management/widgets/custom_top_bar.dart';
+import 'package:college_management/widgets/data_not_found_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class AttendanceNotificationAdminScreen extends StatelessWidget {
+class AttendanceNotificationAdminScreen extends StatefulWidget {
   const AttendanceNotificationAdminScreen({super.key});
 
   @override
+  State<AttendanceNotificationAdminScreen> createState() =>
+      _AttendanceNotificationAdminScreenState();
+}
+
+class _AttendanceNotificationAdminScreenState
+    extends State<AttendanceNotificationAdminScreen> {
+  var _universitySetupCubit = DiContainer().sl<UniversityProfileCubit>();
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async{
+      await _universitySetupCubit.getUniversitySetup();
+    },);
+    // TODO: implement initState
+    super.initState();
+  }
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          CustomTopBar(text: "Attendance"),
-          Padding(padding: EdgeInsetsGeometry.symmetric(horizontal: screenPaddingHori),
-          child: Column(
+      body: BlocBuilder(
+        bloc: _universitySetupCubit,
+        builder: (context,staevua) {
+          return Stack(
             children: [
-              SizedBox(height: 20,),
-
-              Align(
-                  alignment: AlignmentGeometry.center,
-                  child: AppText(text: "Attendance Escalation",fontSize: 15,color: AppColor.primary,fontWeight: FontWeight.w600,)),
-
-              Align(
-                  alignment: AlignmentGeometry.centerLeft,
-                  child: AppText(text: "Manage Automated trigger for attendance warnings and terminations.",fontSize: 12,color: AppColor.grey)),
-              SizedBox(height: 19,),
-
-              Container(
-                padding: EdgeInsetsGeometry.symmetric(horizontal: 10,vertical: 10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: AppColor.white,
-                  boxShadow: AppColor.blackShadow
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: EdgeInsetsGeometry.symmetric(horizontal: 10,vertical: 4),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: AppColor.primary.withOpacity(.2),
-                        border: Border.all(width: 1,color: AppColor.primary),
-
-                      ),
-                      child: AppText(text: "Initials",fontSize: 11,color: AppColor.primary,),
+              Column(
+                children: [
+                  CustomTopBar(text: "Attendance Escalation"),
+                  Padding(
+                    padding: EdgeInsetsGeometry.symmetric(
+                      horizontal: screenPaddingHori,
                     ),
-                    SizedBox(height: 10,),
-                    AppText(text: "First Warning Notification",fontSize: 12,color: AppColor.black,fontWeight: FontWeight.w600,),
-                   SizedBox(height: 3,),
-                    Row(
+                    child: Column(
                       children: [
-                        AppText(text: "Action triggers when attendance false:  ",fontSize: 11,color: AppColor.grey,fontWeight: FontWeight.w600,),
-                        AppText(text: "75%",fontSize: 12,color: AppColor.red,fontWeight: FontWeight.w600,),
+                        SizedBox(height: 20),
+
+                        Align(
+                          alignment: AlignmentGeometry.centerLeft,
+                          child: AppText(
+                            text:
+                                "Manage Automated trigger for attendance warnings and terminations.",
+                            fontSize: 12,
+                            color: AppColor.grey,
+                          ),
+                        ),
+                        SizedBox(height: 15),
+
+                        if(_universitySetupCubit
+                            .universityModel!=null&& _universitySetupCubit
+                            .universityModel
+                            !.attendancePolicyModel!.isNotEmpty)
+                        ...List.generate(
+                          _universitySetupCubit
+                                  .universityModel
+                                  ?.attendancePolicyModel
+                                  ?.length ??
+                              0,
+                          (index) => AttendanceAlertCardWidget(
+                            model: _universitySetupCubit
+                                .universityModel!
+                                .attendancePolicyModel![index],
+                          ),
+                        )
+                        else
+                          ...[
+                            SizedBox(height: 10),
+                            AppText(
+                            text: "Data not found",
+                            color: AppColor.grey,
+                          )],
+                        SafeArea(top: false, child: SizedBox(height: 20)),
                       ],
                     ),
-                    SizedBox(height: 10,),
-                    Align(
-                        alignment: Alignment.centerRight,
-                        child: CustomElevatedButton(onPressed: (){}, text: "Send To Student",height: 30,width: 150,fontSize: 12,bgColor: AppColor.red.withOpacity(.6),showBorder: true,borderWidth: 1,borderColor: AppColor.red,))
-                  ],
+                  ),
+                ],
+              ),
+              AnimatedPositioned(
+                duration: Duration(milliseconds: 100),
+                top: _universitySetupCubit.top,
+                right: _universitySetupCubit.right,
+                child: GestureDetector(
+                  onPanUpdate: (details) {
+                    _universitySetupCubit.getButtonPosition(topVal: details.delta.dy, rightVal: details.delta.dx);
+
+                  },
+                  child: CustomElevatedButton(
+                    onPressed: () {
+                      showDialog(context: context, builder: (context) => AddAttendanceAlertDialog(),);
+                    },
+                    text: "Add New",
+                    fontSize: 15,
+                    width: 110,
+                    height: 50,
+                  ),
                 ),
               ),
-
-              SafeArea(
-                  top: false,
-                  child: SizedBox(height: 20,)),
             ],
-          ),),
-        ],
+          );
+        }
       ),
     );
   }

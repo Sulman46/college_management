@@ -1,11 +1,14 @@
+import 'package:college_management/features/admin/departments/data/model/department_model.dart';
+import 'package:college_management/features/admin/university_profile/models/affiliation_model.dart';
+
 class ProgramRequestModel {
 
   String? id;
   String name;
   String code;
 
-  String department;
-  String affiliationName;
+  DepartmentModel department;
+  AffiliationModel affiliation;
 
   String degree;
   String session;
@@ -28,7 +31,7 @@ class ProgramRequestModel {
     required this.name,
     required this.code,
     required this.department,
-    required this.affiliationName,
+    required this.affiliation,
     required this.degree,
     required this.session,
     required this.section,
@@ -49,8 +52,8 @@ class ProgramRequestModel {
       "name": name,
       "code": code,
 
-      "department": department,
-      "affiliationName": affiliationName,
+      "department": department.id,
+      "affiliation": affiliation.id,
 
       "degree": degree,
       "session": session,

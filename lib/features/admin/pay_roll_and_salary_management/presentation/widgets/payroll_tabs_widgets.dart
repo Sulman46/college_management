@@ -13,7 +13,7 @@ class PayrollTabsWidgets extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         color: AppColor.white.withOpacity(.9),
-        boxShadow: AppColor.blackShadow,
+        boxShadow: AppColor.shadowBlack,
       ),
       child: Row(
         children: [
@@ -30,6 +30,6 @@ Widget _tabButton({required String text,required bool isSelected,required VoidCa
     alignment: Alignment.center,
     padding: EdgeInsets.symmetric(horizontal:8,vertical: 8),
     decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color:isSelected? AppColor.primary:AppColor.transparent),
-    child: AppText(text: text,fontSize: 12,color: isSelected?AppColor.white:AppColor.black,),
+    child: AppText(text: text,fontSize: 12,color: isSelected?AppColor.white:AppColor.white,),
   );
 }

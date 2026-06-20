@@ -48,7 +48,7 @@ class _TeacherRecordsAdminScreenState extends State<TeacherRecordsAdminScreen> {
               Column(
                 children: [
                   /// 🔹 TOP BAR
-                  CustomTopBar(text: "Faculty Management"),
+                  CustomTopBar(text: "Teacher Record"),
 
                   Expanded(
                     child: SingleChildScrollView(
@@ -91,14 +91,11 @@ class _TeacherRecordsAdminScreenState extends State<TeacherRecordsAdminScreen> {
               ),
               AnimatedPositioned(
                 duration: Duration(milliseconds: 100),
-                top: top,
-                left: left,
+                top: _teacherRecordCubit.top,
+                right: _teacherRecordCubit.right,
                 child: GestureDetector(
                   onPanUpdate: (details) {
-                    setState(() {
-                      top += details.delta.dy;
-                      left += details.delta.dx;
-                    });
+                    _teacherRecordCubit.getButtonPosition(topVal: details.delta.dy, rightVal: details.delta.dx);
                   },
                   child: CustomElevatedButton(
                     onPressed: () {

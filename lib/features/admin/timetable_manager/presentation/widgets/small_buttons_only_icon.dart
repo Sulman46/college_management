@@ -3,14 +3,16 @@ import 'package:flutter/material.dart';
 import '../../../../../core/theme/AppColor.dart';
 
 class SmallButtonsOnlyIcon extends StatelessWidget {
-   SmallButtonsOnlyIcon({super.key,required this.icon,required this.onTap,required this.color});
+   SmallButtonsOnlyIcon({super.key,required this.icon,required this.onTap, this.onLongPress,required this.color});
 IconData icon;
 VoidCallback onTap;
+VoidCallback? onLongPress;
 Color color;
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
+      onLongPress: onLongPress,
       child: Container(
           padding: EdgeInsets.all(5),
           decoration: BoxDecoration(

@@ -31,9 +31,9 @@ ProgramModel? programModel;
 }
 
 class _CreateProgramScreenState extends State<CreateProgramScreen> {
-  var _departmentCubit = DiContainer().sl<AdminDepartmentCubit>();
-  var _programCubit = DiContainer().sl<AdminProgramsCubit>();
-  var _universityProfileCubit = DiContainer().sl<UniversityProfileCubit>();
+  final _departmentCubit = DiContainer().sl<AdminDepartmentCubit>();
+  final _programCubit = DiContainer().sl<AdminProgramsCubit>();
+  final _universityProfileCubit = DiContainer().sl<UniversityProfileCubit>();
 
   /// 🔹 Controllers
   final titleController = TextEditingController();
@@ -57,7 +57,7 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
       if(widget.programModel!=null){
         titleController.text=widget.programModel?.name??"";
         codeController.text=widget.programModel?.code??"";
-        levelController.text=widget.programModel?.department??"";
+        levelController.text=widget.programModel?.degree??"";
         sectionController.text=widget.programModel?.section??"";
         sessionController.text=widget.programModel?.session??"";
         midsController.text=widget.programModel?.mids.toString()??"";
@@ -67,9 +67,9 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
         theoryPassController.text=widget.programModel?.theoryPassPercentage.toString()??"";
         practicalMarksController.text=widget.programModel?.practicalMax.toString()??"";
         practicalPassController.text=widget.programModel?.practicalPassPercentage.toString()??"";
-        _programCubit.getDepartment(department: widget.programModel?.department??"", affiliation: widget.programModel?.affiliationName??"", status:widget.programModel!.department=="Active"? StatusEnum.Active:StatusEnum.Inactive);
+        // _programCubit.getDepartment(department: widget.programModel?.department??"", affiliation: widget.programModel?.affiliationName??"", status:widget.programModel!.status);
       }else{
-        _programCubit.getDepartment(department: "", affiliation: "", status: null);
+        _programCubit.getDepartment(department: null, affiliation: null, status: null);
 
       }
     },);
@@ -97,15 +97,7 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Center(
-                        child: AppText(
-                          text:widget.programModel!=null? "Fill in the details to update program.":"Fill in the details to create a new program.",
-                          fontSize: 12,
-                          color: AppColor.primary,
-                          fontWeight: FontWeight.w500,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
+
                       SizedBox(height: 10),
 
                       CustomTextFormField(
@@ -142,7 +134,7 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
                             bloc: _departmentCubit,
                             builder: (context, staesk) {
                               return Expanded(
-                                child: _departmentCubit.departmentList.isEmpty
+                                child: _departmentCubit.activeDepartmentList.isEmpty
                                     ? InkWell(
                                         onTap: () async {
                                           await _departmentCubit
@@ -152,43 +144,42 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
                                           text:
                                               _programCubit
                                                       .selectedDepartment ==
-                                                  ""
+                                                  null
                                               ? "Select Dept"
                                               : _programCubit
-                                                    .selectedDepartment,
+                                                    .selectedDepartment?.name??"",
                                           isFilled:
                                               _programCubit
                                                   .selectedDepartment !=
-                                              "",
+                                              null,
                                         ),
                                       )
                                     : CustomPopMenuButton(
                                         onSelected: (p0) {
                                           _programCubit.getDepartment(
                                             department: _departmentCubit
-                                                .departmentList
-                                                .map((e) => e.name)
+                                                .activeDepartmentList
                                                 .toList()[p0],
                                             affiliation: _programCubit
                                                 .selectedAffiliation,
                                             status: _programCubit.statusEnum,
                                           );
                                         },
-                                        menus: _departmentCubit.departmentList
-                                            .map((e) => e.name)
+                                        menus: _departmentCubit.activeDepartmentList
+                                            .map((e) => "${e.name} (${e.code})")
                                             .toList(),
                                         widget: DropDownFieldWidget(
                                           text:
                                               _programCubit
                                                       .selectedDepartment ==
-                                                  ""
+                                                  null
                                               ? "Select Dept"
                                               : _programCubit
-                                                    .selectedDepartment,
+                                                    .selectedDepartment?.name??"",
                                           isFilled:
                                               _programCubit
                                                   .selectedDepartment !=
-                                              "",
+                                              null,
                                         ),
                                       ),
                               );
@@ -204,8 +195,7 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
                                     _universityProfileCubit.universityModel ==
                                             null ||
                                         _universityProfileCubit
-                                            .universityModel!
-                                            .affiliationModel!
+                                            .activeAffiliationList
                                             .isEmpty
                                     ? InkWell(
                                         onTap: () async {
@@ -216,14 +206,14 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
                                           text:
                                               _programCubit
                                                       .selectedAffiliation ==
-                                                  ""
+                                                  null
                                               ? "Select Affiliation"
                                               : _programCubit
-                                                    .selectedAffiliation,
+                                                    .selectedAffiliation?.name??"",
                                           isFilled:
                                               _programCubit
                                                   .selectedAffiliation !=
-                                              "",
+                                              null,
                                         ),
                                       )
                                     : CustomPopMenuButton(
@@ -232,31 +222,28 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
                                             department: _programCubit
                                                 .selectedDepartment,
                                             affiliation: _universityProfileCubit
-                                                .universityModel!
-                                                .affiliationModel!
-                                                .map((e) => e.name)
+                                                .activeAffiliationList
                                                 .toList()[p0],
                                             status: _programCubit.statusEnum,
                                           );
-                                          // affiliation=_departmentCubit.departmentList.map((e) => e.name,).toList()[p0];
+                                          // affiliation=_departmentCubit.activeDepartmentList.map((e) => e.name,).toList()[p0];
                                         },
                                         menus: _universityProfileCubit
-                                            .universityModel!
-                                            .affiliationModel!
+                                            .activeAffiliationList
                                             .map((e) => e.name)
                                             .toList(),
                                         widget: DropDownFieldWidget(
                                           text:
                                               _programCubit
                                                       .selectedAffiliation ==
-                                                  ""
+                                                  null
                                               ? "Select Affiliation"
                                               : _programCubit
-                                                    .selectedAffiliation,
+                                                    .selectedAffiliation?.name??"",
                                           isFilled:
                                               _programCubit
                                                   .selectedAffiliation !=
-                                              "",
+                                              null,
                                         ),
                                       ),
                               );
@@ -318,17 +305,25 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
+                          Expanded(
+                            child: Divider(
+                              thickness: 1,
+                              color: AppColor.white,
+                              height: 1,
+                            ),
+                          ),
+                          SizedBox(width: 5),
                           AppText(
                             text: "Grading Framework",
                             fontWeight: FontWeight.w600,
-                            fontSize: 14,
-                            color: AppColor.primary.withOpacity(.8),
+                            fontSize: 12,
+                            color: AppColor.white,
                           ),
                           SizedBox(width: 5),
                           Expanded(
                             child: Divider(
                               thickness: 1,
-                              color: AppColor.primary.withOpacity(.8),
+                              color: AppColor.white,
                               height: 1,
                             ),
                           ),
@@ -339,8 +334,8 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
                       AppText(
                         text: "Theory",
                         fontWeight: FontWeight.w600,
-                        fontSize: 14,
-                        color: AppColor.grey.withOpacity(.8),
+                        fontSize: 12,
+                        color: AppColor.white.withOpacity(.8),
                       ),
                       SizedBox(height: 10),
 
@@ -416,8 +411,8 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
                       AppText(
                         text: "Practical",
                         fontWeight: FontWeight.w600,
-                        fontSize: 14,
-                        color: AppColor.grey.withOpacity(.8),
+                        fontSize: 12,
+                        color: AppColor.white.withOpacity(.8),
                       ),
 
                       SizedBox(height: 10),
@@ -458,8 +453,8 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
                             if (titleController.text.isEmpty ||
                                 levelController.text.isEmpty ||
                                 codeController.text.isEmpty ||
-                                _programCubit.selectedAffiliation == "" ||
-                                _programCubit.selectedDepartment == "" ||
+                                _programCubit.selectedAffiliation == null ||
+                                _programCubit.selectedDepartment == null ||
                                 _programCubit.statusEnum == null ||
                                 sessionController.text.isEmpty ||
                                 sectionController.text.isEmpty ||
@@ -469,7 +464,7 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
                                 theoryPassController.text.isEmpty ||
                                 practicalMarksController.text.isEmpty ||
                                 practicalPassController.text.isEmpty) {
-                              showMessage("Please fill all fields");
+                              showMessage("Please fill all fields",isError: true);
                               return;
                             }
 
@@ -480,12 +475,12 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
                               degree: levelController.text,
                               session: sessionController.text,
                               section: sectionController.text,
-                              department: _programCubit.selectedDepartment,
+                              department: _programCubit.selectedDepartment!,
                               mids: int.parse(midsController.text),
                               sessional: int.parse(sessionalController.text),
                               finalMarks: int.parse(finalController.text),
-                              affiliationName:
-                                  _programCubit.selectedAffiliation,
+                              affiliation:
+                                  _programCubit.selectedAffiliation!,
                               practicalMax: int.parse(
                                 practicalMarksController.text,
                               ),

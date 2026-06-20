@@ -7,7 +7,7 @@ class ThemeChange{
 
  static ThemeData darkTheme(){
     return ThemeData(
-      scaffoldBackgroundColor: AppColor.black,
+      scaffoldBackgroundColor: AppColor.white,
     );
   }
 

@@ -11,6 +11,7 @@ class LoginRequestModel {
     return {
       "username": username,
       "password": password,
+      "role":"Admin"
     };
   }
 }

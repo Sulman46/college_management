@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../core/app/di_container.dart';
 import '../../../../../core/constants/app_assets.dart';
 import '../../../../../core/theme/AppColor.dart';
 import '../../../../../widgets/active_inactive_status_widget.dart';
 import '../../../../../widgets/app_text.dart';
 import '../../../../../widgets/custom_image_cache.dart';
 import '../../../../../widgets/more_vert_pop_menu_button.dart';
+import '../../models/student_model.dart';
+import '../controller/cubit.dart';
+import '../page/add_new_student_screen.dart';
 
 class RegisteredStudentItem extends StatelessWidget {
-  const RegisteredStudentItem({super.key});
-
+   RegisteredStudentItem({super.key,required this.studentModel});
+  StudentModel studentModel;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -18,7 +22,7 @@ class RegisteredStudentItem extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColor.white,
         borderRadius: BorderRadius.circular(14),
-        boxShadow: AppColor.blackShadow,
+        boxShadow: AppColor.shadowBlack,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -28,7 +32,7 @@ class RegisteredStudentItem extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CustomImageCache(url: AppAssets.profileImage,width: 40,height: 40,radius: 10,),
+              CustomImageCache(url: studentModel.image??"",width: 40,height: 40,radius: 10,),
               SizedBox(width: 5,),
               Expanded(
                 child: Column(
@@ -37,7 +41,7 @@ class RegisteredStudentItem extends StatelessWidget {
 
                     /// TITLE + MENU
                     AppText(
-                      text: "Ali Hassan",
+                      text: studentModel.name??"",
                       fontWeight: FontWeight.w600,
                       fontSize: 14,
                     ),
@@ -46,7 +50,7 @@ class RegisteredStudentItem extends StatelessWidget {
 
                     /// SUBTITLE
                     AppText(
-                      text: "S/O Hassan",
+                      text: "${studentModel.gender=="male"?"S/O":"D/O"} ${studentModel.fatherName??""}",
                       fontSize: 11,
                       color: AppColor.grey,
                     ),
@@ -71,7 +75,7 @@ class RegisteredStudentItem extends StatelessWidget {
                   AppText(text: "Reg No.",fontSize: 11,color: AppColor.grey,),
                   SizedBox(width: 5,),
                   AppText(
-                    text: "364474",
+                    text: "${studentModel.srNo??""}",
                     fontWeight: FontWeight.w600,
                     fontSize: 13,
                   ),
@@ -90,7 +94,7 @@ class RegisteredStudentItem extends StatelessWidget {
                         color: AppColor.bgPrimary
                     ),
                     child: AppText(
-                      text: "BCTYI-21-21",
+                      text: "${studentModel.rollNo??""}",
                       fontSize: 11,
                       color: AppColor.primary,
                       fontWeight: FontWeight.w500,
@@ -113,14 +117,14 @@ class RegisteredStudentItem extends StatelessWidget {
               children: [
 
                 AppText(
-                  text: "BS. Cyber Security",
+                  text: studentModel.programName??"",
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
                 ),
 
                 SizedBox(height: 3),
                 AppText(
-                  text: "Dep. Faculty of Computing",
+                  text: "Dep. ${studentModel.department??""}",
                   fontSize: 11,
                   color: AppColor.grey,
                 ),
@@ -129,23 +133,23 @@ class RegisteredStudentItem extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     AppText(
-                      text: "Section: A",
+                      text: "Section: ${studentModel.section}",
                       fontWeight: FontWeight.w600,
                       fontSize: 12,
-                      color: AppColor.black.withOpacity(.7),
+                      color: AppColor.white.withOpacity(.7),
                     ),
                     AppText(
-                      text: "Batch: 2022-2026",
+                      text: "Batch: ${studentModel.session??""}",
                       fontWeight: FontWeight.w600,
                       fontSize: 12,
-                      color: AppColor.black.withOpacity(.7),
+                      color: AppColor.white.withOpacity(.7),
                     ),
 
                   ],
                 ),
                 SizedBox(height: 3),
                 AppText(
-                  text: "Bahauddin Zakariya University (BZU)",
+                  text: studentModel.affiliation??"",
                   fontSize: 11,
                   color: AppColor.grey,
                 ),
@@ -156,10 +160,19 @@ class RegisteredStudentItem extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              ActiveInactiveStatusWidget(isActive: true),
+              ActiveInactiveStatusWidget(isActive: studentModel.status=="Active"),
               CustomPopMenuButton(
                 menus: ["Edit", "Delete"],
-                onSelected: (val) {},
+                onSelected: (val) async {
+                  if(val==0){
+                    var studentRegisterCubit = DiContainer().sl<StudentRegistrationCubit>();
+                    studentRegisterCubit.getStudentUpdateModel(studentModel);
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => AddNewStudentScreen(),));
+                  }else if (val==1){
+                    var studentRegisterCubit = DiContainer().sl<StudentRegistrationCubit>();
+                    await studentRegisterCubit.delete(studentModel);
+                  }
+                },
               )
             ],
           ),

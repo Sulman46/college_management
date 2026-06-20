@@ -21,7 +21,7 @@ class HomeCardsWidget extends StatelessWidget {
       onTap:onTap ,
       child: Container(
         decoration: BoxDecoration(
-          boxShadow: AppColor.blackShadow,
+          boxShadow: AppColor.shadowBlack,
           borderRadius: BorderRadius.circular(20),
           color: AppColor.white,
         ),
@@ -62,7 +62,7 @@ class HomeCardsWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      AppText(text: title,fontSize: 13,color: AppColor.black.withOpacity(.5),),
+                      AppText(text: title,fontSize: 13,color: AppColor.white.withOpacity(.5),),
                       // AppText(text: subTitle,fontSize: 10,color: AppColor.greyLight,fontFamily: 'pm',maxLines: 1,overflow: TextOverflow.ellipsis,),
                     ],
                   ),

@@ -24,9 +24,9 @@ VoidCallback onTap;
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.close,color: AppColor.primary,size: 13,),
+            Icon(Icons.close,color: AppColor.white,size: 13,),
             SizedBox(width: 2,),
-            AppText(text: text,fontSize: 11,color: AppColor.primary.withOpacity(.7),),
+            AppText(text: text,fontSize: 11,color: AppColor.white.withOpacity(.7),),
           ],
         ),
       ),

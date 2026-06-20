@@ -67,7 +67,7 @@ class _AdminProgramScreenState
                               subTitle: "Search...",
                               isHintText: true,
                               onChanged: (p0) {
-                                _programsCubit.filterList(p0);
+                                _programsCubit.filterList(p0.toLowerCase());
                               },
                               borderSize: 1,
                               contentPadding: EdgeInsets.symmetric(horizontal: 5,vertical: 10),

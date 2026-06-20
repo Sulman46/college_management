@@ -15,11 +15,8 @@ class UniversityInfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(15),
-      decoration: BoxDecoration(
-        color: AppColor.white,
-        borderRadius: BorderRadius.circular(15),
-        // boxShadow: AppColor.blackShadow,
-      ),
+      decoration:AppColor.containerNeon,
+
       child: Row(
         children: [
           /// LOGO
@@ -34,7 +31,7 @@ class UniversityInfoCard extends StatelessWidget {
               child: AppText(
                 text: model.name[0],
                 fontWeight: FontWeight.bold,
-                color: AppColor.primary,
+                color: AppColor.white,
               ),
             ),
           ),
@@ -50,7 +47,7 @@ class UniversityInfoCard extends StatelessWidget {
                   text: model.name,
                   fontWeight: FontWeight.w600,
                   fontSize: 14,
-                  color: AppColor.primary,
+                  color: AppColor.white,
                 ),
                 SizedBox(height: 6),
                 Row(

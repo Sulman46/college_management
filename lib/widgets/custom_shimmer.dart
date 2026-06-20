@@ -17,7 +17,7 @@ double? borderRadius;
       borderRadius: BorderRadius.circular(borderRadius??20),
       child: Shimmer.fromColors(
         baseColor: AppColor.darkContainerShade.withOpacity(.5),
-        highlightColor: AppColor.black,
+        highlightColor: AppColor.white,
         child: Container(
           height:height?? 150,
           width:width?? mdWidth(context) * 1,

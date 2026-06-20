@@ -1,11 +1,14 @@
+import 'package:college_management/features/admin/departments/data/model/department_model.dart';
+import 'package:college_management/features/admin/university_profile/models/affiliation_model.dart';
+
 import '../../../../core/enums/status_enum.dart';
 
 class ProgramModel {
   String id;
   String name;
   String code;
-  String department;
-  String affiliationName;
+  DepartmentModel department;
+  AffiliationModel affiliation;
   String degree;
   String session;
   String section;
@@ -26,7 +29,7 @@ class ProgramModel {
     required this.name,
     required this.code,
     required this.department,
-    required this.affiliationName,
+    required this.affiliation,
     required this.degree,
     required this.session,
     required this.section,
@@ -46,9 +49,8 @@ class ProgramModel {
       id: map['_id'] ?? '',
       name: map['name'] ?? '',
       code: map['code'] ?? '',
-      department: map['department'] ?? '',
-      affiliationName:
-      map['affiliationName'] ?? '',
+      department: DepartmentModel.fromMap(map['department']??""),
+      affiliation:AffiliationModel.fromMap(map['affiliation']??""),
       degree: map['degree'] ?? '',
       session: map['session'] ?? '',
       section: map['section'] ?? '',
@@ -75,8 +77,8 @@ class ProgramModel {
       '_id': id,
       'name': name,
       'code': code,
-      'department': department,
-      'affiliationName': affiliationName,
+      'department': department.id,
+      'affiliation': affiliation.id,
       'degree': degree,
       'session': session,
       'section': section,
@@ -92,5 +94,47 @@ class ProgramModel {
       practicalPassPercentage,
     };
   }
+
+
+  ProgramModel copyWith({
+    String? id,
+    String? name,
+    String? code,
+    DepartmentModel? department,
+    AffiliationModel? affiliation,
+    String? degree,
+    String? session,
+    String? section,
+    StatusEnum? status,
+    int? mids,
+    int? sessional,
+    int? finalMarks,
+    int? totalTheory,
+    int? theoryPassPercentage,
+    int? practicalMax,
+    int? practicalPassPercentage,
+  }) {
+    return ProgramModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      code: code ?? this.code,
+      department: department ?? this.department,
+      affiliation: affiliation ?? this.affiliation,
+      degree: degree ?? this.degree,
+      session: session ?? this.session,
+      section: section ?? this.section,
+      status: status ?? this.status,
+      mids: mids ?? this.mids,
+      sessional: sessional ?? this.sessional,
+      finalMarks: finalMarks ?? this.finalMarks,
+      totalTheory: totalTheory ?? this.totalTheory,
+      theoryPassPercentage:
+      theoryPassPercentage ?? this.theoryPassPercentage,
+      practicalMax: practicalMax ?? this.practicalMax,
+      practicalPassPercentage:
+      practicalPassPercentage ?? this.practicalPassPercentage,
+    );
+  }
+
 }
 

@@ -40,9 +40,9 @@ class _LeaveItemState extends State<LeaveItem> {
             ],
           ),
           SizedBox(height: 5,),
-          AppText(text: "ALi Hassan",fontSize: 12,color: AppColor.black,fontWeight: FontWeight.w600,),
+          AppText(text: "ALi Hassan",fontSize: 12,color: AppColor.white,fontWeight: FontWeight.w600,),
           SizedBox(height: 3,),
-          AppText(text: "Dept. Computer Science",fontSize: 11,color: AppColor.black,fontWeight: FontWeight.w500,),
+          AppText(text: "Dept. Computer Science",fontSize: 11,color: AppColor.white,fontWeight: FontWeight.w500,),
           SizedBox(height: 3,),
           AppText(text: "📅 25 Jun 2026 - 26 Jun 2026",fontSize: 11,color: AppColor.grey,fontWeight: FontWeight.w500,),
           InkWell(

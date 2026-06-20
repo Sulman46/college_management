@@ -8,6 +8,7 @@ import 'package:college_management/core/helper/show_message.dart';
 import 'package:college_management/features/admin/university_profile/models/university_model.dart';
 import 'package:college_management/features/admin/university_profile/models/university_profile_model.dart';
 import 'package:college_management/features/admin/university_profile/presentation/widgets/university_profile_image.dart';
+import 'package:college_management/features/admin/university_profile/presentation/widgets/widgets/url_map.dart';
 import 'package:college_management/widgets/custom_button.dart';
 import 'package:college_management/widgets/custom_image_cache.dart';
 import 'package:college_management/widgets/custom_top_bar.dart';
@@ -94,11 +95,7 @@ class _UniversityProfileScreenState extends State<UniversityProfileScreen> {
           child: Container(
                 padding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
                 margin: EdgeInsets.only(bottom: 10),
-                decoration: BoxDecoration(
-          color: AppColor.white,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: AppColor.blackShadow,
-                ),
+                decoration:AppColor.containerDecoration,
                 child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -161,11 +158,7 @@ class _UniversityProfileScreenState extends State<UniversityProfileScreen> {
                          /// 🔹 CARD
                          Container(
                            padding: EdgeInsets.all(15),
-                           decoration: BoxDecoration(
-                             color: AppColor.white,
-                             borderRadius: BorderRadius.circular(15),
-                             boxShadow: AppColor.blackShadow,
-                           ),
+                           decoration: AppColor.containerNeon,
                            child: Column(
                              children: [
                                buildField("University Name", nameController),
@@ -175,6 +168,12 @@ class _UniversityProfileScreenState extends State<UniversityProfileScreen> {
                                buildField("Website", website),
                                buildField("Address", addressController),
                                buildField("Geo Location URL", geoController),
+                               if(!universityProfileCubit.editUniversityProfile)
+                               SizedBox(
+                                   height: 250,
+                                   width: mdWidth(context),
+                                   child: UrlMap(title: nameController.text,mapUrl: "https://www.google.com/maps/place/City+College+(Iqbal%2FUniversity+Campus)/@30.2293411,71.4796817,16z/data=!4m6!3m5!1s0x393b352581112dbb:0x4bb5d93c8ae5a0b8!8m2!3d30.2285181!4d71.4793487!16s%2Fg%2F11hnw7cgxk?entry=ttu&g_ep=EgoyMDI2MDYxMC4wIKXMDSoASAFQAw%3D%3D", )),
+
                              ],
                            ),
                          ),

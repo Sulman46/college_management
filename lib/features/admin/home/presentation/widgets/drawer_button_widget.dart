@@ -52,7 +52,7 @@ class _DrawerButtonWidgetState extends State<DrawerButtonWidget> {
         SizedBox(height:widget.title!=null? 3:0,),
         widget.title!=null? Container(
             margin: EdgeInsets.only(left: 5),
-            child: AppText(text: widget.title??"",fontSize: 12,color: AppColor.primary,)):SizedBox(),
+            child: AppText(text: widget.title??"",fontSize: 12,color: AppColor.secondaryColor.withOpacity(.8),)):SizedBox(),
         SizedBox(height: widget.title!=null? 3:0,),
         InkWell(
           splashColor: AppColor.transparent,
@@ -65,25 +65,22 @@ class _DrawerButtonWidgetState extends State<DrawerButtonWidget> {
           child: Container(
             alignment: Alignment.center,
             width: mdWidth(context),
+
             padding: const EdgeInsets.symmetric(vertical: 13,horizontal: 10),
             decoration: BoxDecoration(
-              color:_isTapped?AppColor.primary.withOpacity(.3):showSublist?  AppColor.white.withOpacity(.7):AppColor.bgPrimary,
-              // gradient:_isTapped?  LinearGradient(
-              //     begin: Alignment.bottomCenter,
-              //     end: Alignment.topCenter,
-              //     colors: [
-              //       AppColor.black.withOpacity(.5),
-              //   AppColor.primary.withOpacity(.3),
-              // ]):LinearGradient(colors: [AppColor.black,AppColor.black,]),
-              border:_isTapped? Border(bottom:BorderSide(width: 1,color: AppColor.primary.withOpacity(.4)),):Border()
+              color:_isTapped?null:AppColor.bgPrimary,
+                gradient: _isTapped
+                    ?
+                    AppColor.drawerGradient: null,
+              border:_isTapped? Border(left:BorderSide(width: 2,color: AppColor.primary),):Border()
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Icon(widget.model.icon,color: _isTapped||showSublist?AppColor.primary:AppColor.black,size: 15,),
+                Icon(widget.model.icon,color: _isTapped||showSublist?showSublist?AppColor.secondaryColor:AppColor.white:AppColor.white.withOpacity(.7),size: 15,),
                 SizedBox(width: 10,),
-                Expanded(child: AppText(text: "${widget.model.title}",fontSize: 12,color:showSublist||_isTapped?AppColor.primary:AppColor.black,)),
-                Icon(showSublist? Icons.keyboard_arrow_down:Icons.navigate_next_rounded,size: 20,color: showSublist||_isTapped?AppColor.primary:AppColor.black,),
+                Expanded(child: AppText(text: "${widget.model.title}",fontSize: 12,color:showSublist||_isTapped?showSublist?AppColor.secondaryColor:AppColor.white:AppColor.white.withOpacity(.7),)),
+                Icon(showSublist? Icons.keyboard_arrow_down:Icons.navigate_next_rounded,size: 20,color: showSublist||_isTapped?showSublist?AppColor.secondaryColor:AppColor.white:AppColor.white.withOpacity(.7),),
               ],
             ),
           ),

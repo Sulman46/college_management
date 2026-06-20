@@ -20,11 +20,7 @@ final CourseCatalogModel courseCatalogModel;
     return Container(
       margin: EdgeInsets.only(bottom: 15,left: 5,right: 5),
       padding: EdgeInsets.all(15),
-      decoration: BoxDecoration(
-        color: AppColor.white,
-        borderRadius: BorderRadius.circular(15),
-        boxShadow: AppColor.blackShadow,
-      ),
+      decoration:AppColor.containerNeon,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -33,27 +29,42 @@ final CourseCatalogModel courseCatalogModel;
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                decoration: BoxDecoration(
-                  color: AppColor.primary.withOpacity(.1),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: AppText(
-                  text:courseCatalogModel.courseCode??"Code not found",
-                  fontSize: 11,
-                  color: AppColor.primary,
-                ),
+              Row(
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(right: 5),
+                    height: 5,
+                    width: 5,
+                    decoration: BoxDecoration(shape: BoxShape.circle,color:courseCatalogModel.status=="Active"? AppColor.green:AppColor.red),
+                  ),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                      color: AppColor.primary.withOpacity(.1),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: AppText(
+                      text:courseCatalogModel.courseCode??"Code not found",
+                      fontSize: 11,
+                      color: AppColor.white,
+                    ),
+                  ),
+                ],
               ),
 
 
               CustomPopMenuButton(
-                menus: ["Edit","Delete", if(courseCatalogModel.status!=null) courseCatalogModel.status??""],
+                menus: ["Edit",courseCatalogModel.status=="Active"?"Inactive":"Active","Delete",],
                 onSelected: (value) async {
                   if(value==0){
                     showDialog(context: context, builder: (context) => AddNewCourseCatalogDialog(courseCatalogModel:courseCatalogModel,),);
                   }
                   else if(value==1){
+                    CourseCatalogModel model=courseCatalogModel;
+                    model= model.copyWith(status: model.status=="Active"? "Inactive":"Active");
+                    await  _courseCatalogCubit.updateCatalog(val: model);
+                    }
+                  else{
                     showDialog(context: context, builder: (context) => ConfirmationDialog(buttonWidget: Row(
                       children: [
                         Expanded(
@@ -77,11 +88,7 @@ final CourseCatalogModel courseCatalogModel;
                         ),
                       ],
                     ), title: "${courseCatalogModel.courseCode}", subText: "Are you sure you want to delete this item? This action cannot be undone."),);
-                  }
-                  else{
-                    CourseCatalogModel model=courseCatalogModel;
-                    model.copyWith(status: model.status=="Active"? "Inactive":"Active");
-                  await  _courseCatalogCubit.updateCatalog(val: model);
+
                   }
                 },),
             ],
@@ -109,11 +116,7 @@ final CourseCatalogModel courseCatalogModel;
           SizedBox(height: 12),
           /// 🔹 INFO BOX
           Container(
-            decoration: BoxDecoration(
-              color: AppColor.whiteLight,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: AppColor.greyLight1),
-            ),
+            decoration:AppColor.containerDecoration,
             child: Row(
               children: [
                 infoItem("Credit Hours", "${courseCatalogModel.creditHours}⏰"),

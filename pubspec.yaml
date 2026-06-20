@@ -52,6 +52,9 @@ dependencies:
   http: any
   cached_network_image: any
   google_fonts: ^8.0.2
+  google_maps_flutter: any
+  uuid: ^4.5.3
+  google_maps_flutter_web: any
 
   syncfusion_flutter_datepicker: any
   flutter_spinkit: ^5.2.2

@@ -12,6 +12,7 @@ import 'package:college_management/features/admin/university_profile/models/univ
 import 'package:college_management/widgets/loader_dialog.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../../../../core/app/di_container.dart';
 import '../../../../../core/constants/media_query.dart';
 import '../../../../../core/controllers/screen_resizing/screen_resize_cubit.dart';
@@ -26,20 +27,52 @@ class UniversityProfileCubit extends Cubit<UniversityProfileState> {
 
   bool editUniversityProfile=false;
 
-  File? pickedUniversityImage;
+  XFile? pickedUniversityImage;
 
   double top=mdHeight(navigatorKey.currentContext!)*.9;
   double right=30;
 
   StatusEnum? statusEnum;
+  String? sector;
 
-  void getStatusEnum(StatusEnum val){
+  String? severityValue;
+
+  AffiliationModel? updateModel;
+
+
+  UniversityModel? universityModel;
+
+  List<AffiliationModel> affiliationFilterList=[]
+  ;
+  List<AffiliationModel> activeAffiliationList=[];
+
+  void getSeverityValue(String? val){
+    emit(UniversityProfileLoading());
+    severityValue=val;
+    emit(UniversityProfileLoaded());
+
+  }
+  void getUpdateModel(AffiliationModel? model){
+    emit(UniversityProfileLoading());
+    updateModel=model;
+    emit(UniversityProfileLoaded());
+
+  }
+
+  void getStatusEnum(StatusEnum? val){
     emit(UniversityProfileLoading());
     statusEnum=val;
     emit(UniversityProfileLoaded());
   }
 
-  void pickUniversityImage(File? val)async{
+
+  void getSectorEnum(String? val){
+    emit(UniversityProfileLoading());
+    sector=val;
+    emit(UniversityProfileLoaded());
+  }
+
+  void pickUniversityImage(XFile? val)async{
     emit(UniversityProfileLoading());
     pickedUniversityImage=val;
 
@@ -53,9 +86,6 @@ class UniversityProfileCubit extends Cubit<UniversityProfileState> {
     emit(UniversityProfileLoaded());
   }
 
-  UniversityModel? universityModel;
-
-  List<AffiliationModel> affiliationFilterList=[];
 
   void filterData(String val){
     emit(UniversityProfileLoading());
@@ -71,7 +101,7 @@ class UniversityProfileCubit extends Cubit<UniversityProfileState> {
     emit(UniversityProfileLoaded());
   }
 
-  Future<bool> addUniversitySetup(UniversityModel model)async{
+  Future<bool> addUniversitySetup(UniversityModel model,{String? message})async{
     emit(UniversityProfileLoading());
     showLoadingDialog();
     var response=await _useCase.addUniversitySetup(universityModel: model);
@@ -80,7 +110,8 @@ class UniversityProfileCubit extends Cubit<UniversityProfileState> {
       universityModel=uniModel;
       editUniversityProfile=false;
       affiliationFilterList=uniModel.affiliationModel??[];
-      showMessage("Data Added Successfully");
+      activeAffiliationList=List.from(affiliationFilterList.where((element) => element.status=="Active",));
+      showMessage(message??"Data Added Successfully");
       closeLoadingDialog();
       emit(UniversityProfileLoaded());
       return true;
@@ -101,6 +132,7 @@ class UniversityProfileCubit extends Cubit<UniversityProfileState> {
       universityModel=uniModel;
       editUniversityProfile=false;
       affiliationFilterList=uniModel.affiliationModel??[];
+      activeAffiliationList=List.from(affiliationFilterList.where((element) => element.status=="Active",));
       closeLoadingDialog();
       emit(UniversityProfileLoaded());
       return uniModel;
@@ -123,7 +155,7 @@ class UniversityProfileCubit extends Cubit<UniversityProfileState> {
       navigatorKey.currentContext!.push("/login");
       return;
     }
-    ProfileImageUpdateModel model=ProfileImageUpdateModel(userId: user.id, image: pickedUniversityImage!);
+    ProfileImageUpdateModel model=ProfileImageUpdateModel(userId: user.id, image: File(pickedUniversityImage!.path));
     var response=await _useCase.uploadProfile(profileModel: model);
     if(response.isRight()){
       UniversityProfileModel  tempModel=universityModel!.universityProfileModel!;

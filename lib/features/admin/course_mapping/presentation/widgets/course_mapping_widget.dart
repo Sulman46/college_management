@@ -17,11 +17,7 @@ CourseMappingModel model;
     return Container(
       margin: EdgeInsets.only(bottom: 12, left: 5, right: 5),
       padding: EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColor.white,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: AppColor.blackShadow,
-      ),
+      decoration:AppColor.containerNeon,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -47,11 +43,16 @@ CourseMappingModel model;
                           ),
                         ),
                         CustomPopMenuButton(
-                          menus: ["Edit", "Delete"],
+                          menus: ["Edit",model.status=="Active"?"Inactive":"Active", "Delete"],
                           onSelected: (val) async {
                             if(val==0){
                               context.push('/Admin-add-course-mapping',extra: model);
-                            }else{
+                            }else if(val==1){
+                              var courseMapping=DiContainer().sl<CourseMappingCubit>();
+                              model=model.copyWith(status:model.status=="Active"?"Inactive":"Active" );
+                             await courseMapping.update(model);
+                            }
+                            else{
                               var courseMapping=DiContainer().sl<CourseMappingCubit>();
                               await courseMapping.delete(model);
                             }
@@ -94,11 +95,7 @@ CourseMappingModel model;
           SizedBox(height: 5),
           Container(
             padding: EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: AppColor.whiteLight,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: AppColor.greyLight1),
-            ),
+            decoration: AppColor.containerDecoration,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -116,7 +113,7 @@ CourseMappingModel model;
                 AppText(
                   text: model.courseCode??"",
                   fontSize: 11,
-                  color: AppColor.primary,
+                  color: AppColor.greyLight,
                   fontWeight: FontWeight.w500,
                 ),
 
@@ -146,23 +143,24 @@ CourseMappingModel model;
           SizedBox(height: 3),
 
           /// 🔹 UNIVERSITY
+          Container(
+            margin: EdgeInsets.only(top: 3,bottom: 3),
+            child: AppText(
+              text: model.affiliation??"",
+              fontSize: 11,
+              color: AppColor.grey,
+            ),
+          ),
+
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Expanded(
-                child: Container(
-                  margin: EdgeInsets.only(top: 3),
-                  child: AppText(
-                    text: model.affiliation??"",
-                    fontSize: 11,
-                    color: AppColor.grey,
-                  ),
-                ),
-              ),
-              SizedBox(width: 5),
-              smallTag(model.semesterName??""),
+              smallTag("S${model.semesterName??""}"),
+              ActiveInactiveStatusWidget(isActive: model.status=="Active"),
             ],
           ),
+
         ],
       ),
     );
@@ -179,7 +177,7 @@ Widget smallTag(String text) {
     child: AppText(
       text: text,
       fontSize: 10,
-      color: AppColor.primary,
+      color: AppColor.greyLight,
       fontWeight: FontWeight.w500,
     ),
   );

@@ -24,10 +24,11 @@ List<String> department=[];
   List<CourseCatalogModel> _courseCatalogList=[];
   List<CourseCatalogModel> get courseCatalogList=>_courseCatalogList;
 
+  List<CourseCatalogModel> get activeCourseCatalogList=>courseCatalogList.where((element) => element.status=="Active",).toList();
+
   List<CourseCatalogModel> filterCourseCatalogList=[];
 
   TextEditingController searchController=TextEditingController();
-
 
   double top=mdHeight(navigatorKey.currentContext!)*.9;
   double right=30;

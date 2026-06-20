@@ -1,3 +1,4 @@
+import 'package:college_management/core/helper/data_extractor.dart';
 import 'package:college_management/core/helper/date_to_string_helper.dart';
 import 'package:college_management/features/admin/semesters/models/semester_levels_model.dart';
 import 'package:college_management/widgets/active_inactive_status_widget.dart';
@@ -8,6 +9,8 @@ import 'package:intl/intl.dart';
 import '../../../../../core/app/di_container.dart';
 import '../../../../../core/theme/AppColor.dart';
 import '../../../../../widgets/app_text.dart';
+import '../../../../../widgets/confirmation_dialog.dart';
+import '../../../../../widgets/custom_animated_dialog.dart';
 import '../../../../../widgets/more_vert_pop_menu_button.dart';
 import '../controller/cubit.dart';
 
@@ -24,11 +27,7 @@ class ProgramTimelineCard extends StatelessWidget {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
       padding: EdgeInsets.all(15),
-      decoration: BoxDecoration(
-        color: AppColor.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: AppColor.blackShadow,
-      ),
+      decoration: AppColor.containerNeon,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -37,13 +36,26 @@ class ProgramTimelineCard extends StatelessWidget {
             children: [
               ActiveInactiveStatusWidget(isActive:semesterLevelsModel.status=="Active"),
               CustomPopMenuButton(
-                menus: ["Edit","Delete"],
+                menus: ["Edit",semesterLevelsModel.status=="Active"?"Inactive":"Active","Delete"],
                 onSelected: (value) async{
+                  var semesterCubit=DiContainer().sl<SemesterAdminCubit>();
                   if(value==0){
                     context.push("/Admin-add-semester-screen",extra: semesterLevelsModel);
+                  }else if(value==1){
+                    var model=semesterLevelsModel;
+                    model= model.copyWith(status: semesterLevelsModel.status=="Active"?"Inactive":"Active");
+                    bool  val= await  semesterCubit.editSemester(model);
                   }else{
-                    var _semesterCubit=DiContainer().sl<SemesterAdminCubit>();
-                  await  _semesterCubit.deleteSemester(semesterLevelsModel);
+                    showDialog(context: context, builder: (context) => CustomAnimatedDialog(
+                      child: ConfirmationDialog(
+                        subText: "This Semester will be deleted permanently.",
+                        onSubmit: () async {
+                      bool val  =  await  semesterCubit.deleteSemester(semesterLevelsModel);
+                          if(val){
+                            Navigator.pop(context);
+                          }
+                        },),
+                    ));
                   }
                 },),
             ],
@@ -72,14 +84,14 @@ class ProgramTimelineCard extends StatelessWidget {
                     AppText(
                       text: "${semesterLevelsModel.department??""} •  ${semesterLevelsModel.degree??""} • ${semesterLevelsModel.section??""} • ${semesterLevelsModel.session}",
                       fontSize: 11,
-                      color: AppColor.grey,
+                      color: AppColor.greyLight,
                     ),
 
                     SizedBox(height: 3),
                     AppText(
                       text: "${semesterLevelsModel.affiliation??""}",
                       fontSize: 11,
-                      color: AppColor.grey,
+                      color: AppColor.greyLight,
                     ),
 
                     SizedBox(height: 3),
@@ -95,14 +107,7 @@ class ProgramTimelineCard extends StatelessWidget {
 
           /// 🔹 TIMELINE STEPPER
           StepperTimeline(currentStep:
-          semesterLevelsModel.semesterName=="S1"?1:
-          semesterLevelsModel.semesterName=="S2"?2:
-          semesterLevelsModel.semesterName=="S3"?3:
-          semesterLevelsModel.semesterName=="S4"?4:
-          semesterLevelsModel.semesterName=="S5"?5:
-          semesterLevelsModel.semesterName=="S6"?6:
-          semesterLevelsModel.semesterName=="S7"?7:
-          semesterLevelsModel.semesterName=="S8"?8:0,
+          DataExtractor.extractInt(semesterLevelsModel.semesterName),
             totalSteps:8 ,),
           SizedBox(height: 5),
           Align(
@@ -110,7 +115,7 @@ class ProgramTimelineCard extends StatelessWidget {
             child: AppText(
               text: "${DateToStringHelper.dateMonthYearConvert(semesterLevelsModel.startDate??DateTime.now())} - ${DateToStringHelper.dateMonthYearConvert(semesterLevelsModel.endDate??DateTime.now())}",
               fontSize: 11,
-              color: AppColor.grey.withOpacity(.8),
+              color: AppColor.greyLight.withOpacity(.8),
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -149,7 +154,7 @@ class StepperTimeline extends StatelessWidget {
               AppText(
                 text: "S$stepIndex",
                 fontSize: 8,
-                color: AppColor.grey,
+                color: AppColor.white,
               ),
               Container(
                 width: isActive ? 14 : 10,

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import '../../../../../core/app/di_container.dart';
 import '../../../../../core/helper/image_picker_class.dart';
@@ -29,11 +31,12 @@ class _UniversityProfileImageState extends State<UniversityProfileImage> {
         width: 140,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
+          border: Border.all(width: 1,color: AppColor.primary),
           color: AppColor.white,
-          boxShadow: AppColor.blackShadow,
+          boxShadow: AppColor.shadowBlack,
           image: universityProfileCubit.pickedUniversityImage != null
               ? DecorationImage(
-            image: FileImage(universityProfileCubit.pickedUniversityImage!),
+            image: FileImage(File(universityProfileCubit.pickedUniversityImage!.path)),
             fit: BoxFit.cover,
           )
               : null,

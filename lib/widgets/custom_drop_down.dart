@@ -27,7 +27,7 @@ class CustomDropDown extends StatelessWidget {
 
       menuPadding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
       itemBuilder: (context) => [
-        ...List.generate(menus.length, (index) => PopupMenuItem(value: index,child:AppText(text: "${menus[index]}",color: AppColor.black,)),)
+        ...List.generate(menus.length, (index) => PopupMenuItem(value: index,child:AppText(text: "${menus[index]}",color: AppColor.white,)),)
       ],
       onSelected:onSelected,
       child: Container(

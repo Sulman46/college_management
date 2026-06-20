@@ -17,11 +17,7 @@ class TeacherAllocationItem extends StatelessWidget {
     return Container(
       margin: EdgeInsets.only(bottom: 12, left: 5, right: 5),
       padding: EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColor.white,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: AppColor.blackShadow,
-      ),
+      decoration: AppColor.containerNeon,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -60,14 +56,6 @@ class TeacherAllocationItem extends StatelessWidget {
                       ],
                     ),
 
-                    SizedBox(height: 3),
-
-                    /// SUBTITLE
-                    AppText(
-                      text: model.department??"",
-                      fontSize: 11,
-                      color: AppColor.grey,
-                    ),
 
                   ],
                 ),
@@ -77,9 +65,16 @@ class TeacherAllocationItem extends StatelessWidget {
 
           SizedBox(height: 5),
 
-          AppText(text: "Course Details: ",fontSize: 9,color: AppColor.grey.withOpacity(.6),),
+          AppText(text: "Course Details: ",fontSize: 9,color: AppColor.white.withOpacity(.6),),
           /// ✅ 🔥 NEW SECTION (COURSE DETAILS)
           SizedBox(height: 5),
+          AppText(
+            text: "Name: ${model.courseName}",
+            fontWeight: FontWeight.w600,
+            color: AppColor.greyLight,
+            fontSize: 11,
+          ),
+          SizedBox(height: 3),
           Wrap(
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
@@ -88,25 +83,25 @@ class TeacherAllocationItem extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 5,vertical: 5),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5),
-                    color: AppColor.bgPrimary
+                    color: AppColor.white.withOpacity(.1)
                 ),
                 child: AppText(
                   text: model.courseCode??"",
                   fontSize: 11,
-                  color: AppColor.primary,
+                  color: AppColor.greyLight,
                   fontWeight: FontWeight.w500,
                 ),
               ),
+
               SizedBox(width: 4),
               AppText(
-                text: "Type: ${model.allocationType}",
+                text: "Credit Hour: ${model.creditHours}",
                 fontWeight: FontWeight.w600,
                 color: AppColor.grey,
                 fontSize: 10,
               ),
-              SizedBox(width: 10),
               AppText(
-                text: "Credit Hour: ${model.creditHours}",
+                text: " | Type: ${model.allocationType}",
                 fontWeight: FontWeight.w600,
                 color: AppColor.grey,
                 fontSize: 10,
@@ -116,11 +111,7 @@ class TeacherAllocationItem extends StatelessWidget {
           SizedBox(height: 5),
           Container(
             padding: EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: AppColor.whiteLight,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: AppColor.greyLight1),
-            ),
+            decoration: AppColor.containerDecoration,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -140,6 +131,14 @@ class TeacherAllocationItem extends StatelessWidget {
       fontSize: 13,
     ),
 
+                SizedBox(height: 1),
+
+                /// SUBTITLE
+                AppText(
+                  text: model.department??"",
+                  fontSize: 11,
+                  color: AppColor.grey,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -147,15 +146,15 @@ class TeacherAllocationItem extends StatelessWidget {
                       text: "Section: ${model.section??""}",
                       fontWeight: FontWeight.w600,
                       fontSize: 12,
-                      color: AppColor.black.withOpacity(.7),
+                      color: AppColor.white.withOpacity(.7),
                     ),
                     AppText(
                       text: "Batch: ${model.batch}",
                       fontWeight: FontWeight.w600,
                       fontSize: 12,
-                      color: AppColor.black.withOpacity(.7),
+                      color: AppColor.white.withOpacity(.7),
                     ),
-                    smallTag(model.semester??""),
+                    smallTag("S${model.semester??""}"),
 
                   ],
                 ),
@@ -185,7 +184,7 @@ Widget smallTag(String text) {
     child: AppText(
       text: text,
       fontSize: 10,
-      color: AppColor.primary,
+      color: AppColor.whiteLight,
       fontWeight: FontWeight.w500,
     ),
   );

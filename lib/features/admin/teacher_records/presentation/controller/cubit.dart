@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../../core/app/myapp.dart';
+import '../../../../../core/constants/media_query.dart';
 import '../../../../../core/extensions/dart_extensions.dart';
 import '../../../../../core/helper/show_message.dart';
 import '../../../../../widgets/loader_dialog.dart';
@@ -15,13 +17,22 @@ class TeacherRecordsCubit extends Cubit<TeacherRecordsState> {
 
   List<TeacherModel> _teacherList=[];
   List<TeacherModel> get teacherList=>_teacherList;
+  List<TeacherModel> get activeTeacherList=>_teacherList.where((element) => element.status=="Active",).toList();
 
   List<TeacherModel> _filterTeacher=[];
   List<TeacherModel> get filterTeacher=>_filterTeacher;
 
 
   TeacherModel teacherModel=TeacherModel();
+  double top=mdHeight(navigatorKey.currentContext!)*.9;
+  double right=30;
 
+  void getButtonPosition({required double topVal,required double rightVal}){
+    emit(TeacherRecordsLoading());
+    top+=topVal;
+    right-=rightVal;
+    emit(TeacherRecordsLoaded());
+  }
 
   void getTeacherModel(TeacherModel model){
     emit(TeacherRecordsLoading());

@@ -1,14 +1,18 @@
+import 'package:college_management/features/admin/university_profile/presentation/page/affiliation/add_affiliation_screen.dart';
 import 'package:college_management/features/admin/university_profile/presentation/widgets/widgets/practical_info_card.dart';
 import 'package:college_management/features/admin/university_profile/presentation/widgets/widgets/university_info_card.dart';
-import 'package:college_management/features/admin/university_profile/presentation/widgets/widgets/url_map.dart';
+import 'package:college_management/widgets/confirmation_dialog.dart';
+import 'package:college_management/widgets/custom_drop_down.dart';
 import 'package:flutter/material.dart';
 import 'package:college_management/core/theme/AppColor.dart';
 import 'package:college_management/widgets/app_text.dart';
 import 'package:college_management/widgets/custom_top_bar.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../../models/affil/affiliated_details_model.dart';
-
+import '../../../../../../core/app/di_container.dart';
+import '../../../../../../widgets/more_vert_pop_menu_button.dart';
 import '../../../models/affiliation_model.dart';
+import '../../../models/university_model.dart';
+import '../../controller/cubit.dart';
 import '../../widgets/widgets/theory_framework_card.dart';
 
 class AffiliatedUniversityDetailsScreen extends StatelessWidget {
@@ -48,11 +52,8 @@ class AffiliatedUniversityDetailsScreen extends StatelessWidget {
                   /// 🔹 FOOTER CARD
                   Container(
                     padding: EdgeInsets.all(15),
-                    decoration: BoxDecoration(
-                      color: AppColor.white,
-                      borderRadius: BorderRadius.circular(15),
-                      // boxShadow: AppColor.blackShadow,
-                    ),
+                    decoration:AppColor.containerNeon,
+
                     child: Column(
                       children: [
                         Row(
@@ -69,7 +70,7 @@ class AffiliatedUniversityDetailsScreen extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            GestureDetector(
+                            InkWell(
                               onTap: () async{
                                   final Uri uri = Uri.parse(model.website);
                                   if (await canLaunchUrl(uri)) {
@@ -86,8 +87,6 @@ class AffiliatedUniversityDetailsScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                        SizedBox(height: 5,),
-                        UrlMap(mapUrl: "${model.location}", ),
                       ],
                     ),
                   ),

@@ -37,47 +37,56 @@ class _DrawarSubButtonWidgetState extends State<DrawarSubButtonWidget> {
   }
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        InkWell(
-          splashColor: AppColor.transparent,
-          focusColor: AppColor.transparent,
-          hoverColor: AppColor.transparent,
-          highlightColor: AppColor.transparent,
-          onTapDown: _handleTapDown,
-          onTapUp: _handleTapUp,
-          onTapCancel: _handleTapCancel,
-          child: Container(
-            alignment: Alignment.center,
-            width: mdWidth(context),
-            padding: const EdgeInsets.symmetric(vertical: 13,horizontal: 10),
-            decoration: BoxDecoration(
-                color:_isTapped?AppColor.primary.withOpacity(.3): AppColor.white.withOpacity(.7),
-                // gradient:_isTapped?  LinearGradient(
-                //     begin: Alignment.bottomCenter,
-                //     end: Alignment.topCenter,
-                //     colors: [
-                //       AppColor.black.withOpacity(.5),
-                //   AppColor.primary.withOpacity(.3),
-                // ]):LinearGradient(colors: [AppColor.black,AppColor.black,]),
-                border:_isTapped? Border(bottom:BorderSide(width: 1,color: AppColor.primary.withOpacity(.4)),):Border()
-            ),
-            child: Padding(
-              padding: const EdgeInsets.only(left:23),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Icon(widget.model.icon,color: _isTapped?AppColor.primary:AppColor.black,size: 15,),
-                  SizedBox(width: 10,),
-                  Expanded(child: AppText(text: "${widget.model.title}",fontSize: 12,color:_isTapped?AppColor.primary:AppColor.black,)),
-                  Icon(Icons.navigate_next_rounded,size: 20,color: _isTapped?AppColor.primary:AppColor.black,),
-                ],
+    return Container(
+      margin: EdgeInsets.only(left: 17),
+      decoration: BoxDecoration(
+        border: Border(left: BorderSide(width: 2,color:_isTapped?AppColor.primary: AppColor.secondaryColor)),
+        gradient: _isTapped
+            ? AppColor.drawerGradient
+            : null,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          InkWell(
+            splashColor: AppColor.transparent,
+            focusColor: AppColor.transparent,
+            hoverColor: AppColor.transparent,
+            highlightColor: AppColor.transparent,
+            onTapDown: _handleTapDown,
+            onTapUp: _handleTapUp,
+            onTapCancel: _handleTapCancel,
+            child: Container(
+              alignment: Alignment.center,
+              width: mdWidth(context),
+              padding: const EdgeInsets.symmetric(vertical: 13,horizontal: 10),
+              decoration: BoxDecoration(
+                  color:_isTapped?AppColor.primary.withOpacity(.3): AppColor.bgPrimary.withOpacity(.7),
+                  // gradient:_isTapped?  LinearGradient(
+                  //     begin: Alignment.bottomCenter,
+                  //     end: Alignment.topCenter,
+                  //     colors: [
+                  //       AppColor.white.withOpacity(.5),
+                  //   AppColor.primary.withOpacity(.3),
+                  // ]):LinearGradient(colors: [AppColor.white,AppColor.white,]),
+                  border:_isTapped? Border(bottom:BorderSide(width: 1,color: AppColor.primary.withOpacity(.4)),):Border()
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(left:3),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Icon(widget.model.icon,color: _isTapped?AppColor.white:AppColor.white.withOpacity(.7),size: 15,),
+                    SizedBox(width: 10,),
+                    Expanded(child: AppText(text: "${widget.model.title}",fontSize: 12,color:_isTapped?AppColor.white:AppColor.white.withOpacity(.7),)),
+                    Icon(Icons.navigate_next_rounded,size: 20,color: _isTapped?AppColor.white:AppColor.white.withOpacity(.7),),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

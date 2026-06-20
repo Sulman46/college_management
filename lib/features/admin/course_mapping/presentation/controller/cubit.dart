@@ -22,6 +22,7 @@ class CourseMappingCubit extends Cubit<CourseMappingState> {
 
   List<CourseMappingModel> _courseMappingList=[];
   List<CourseMappingModel>  get courseMappingList=>_courseMappingList;
+  List<CourseMappingModel>  get activeCourseMappingList=>_courseMappingList.where((element) => element.status=="Active",).toList();
 
   List<CourseMappingModel> _filterMapping=[];
   List<CourseMappingModel>  get filterMapping=>_filterMapping;

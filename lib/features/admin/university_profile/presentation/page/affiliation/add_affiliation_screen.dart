@@ -29,23 +29,43 @@ class AddAffiliationScreen extends StatefulWidget {
 
 class _AddAffiliationScreenState extends State<AddAffiliationScreen> {
   /// 🔹 Controllers
-  final nameController = TextEditingController();
-  final location = TextEditingController();
-  final sector = TextEditingController();
-  final website = TextEditingController();
-
-
-  final midsController = TextEditingController();
-  final sessional = TextEditingController();
-  final finalController = TextEditingController();
-  final totalTheory = TextEditingController();
-  final theoryPassController = TextEditingController();
-
-  final practicalMarksController = TextEditingController();
-  final practicalPassController = TextEditingController();
-
-
+  TextEditingController nameController = TextEditingController();
+  TextEditingController location = TextEditingController();
+  TextEditingController website = TextEditingController();
+  TextEditingController midsController = TextEditingController();
+  TextEditingController sessional = TextEditingController();
+  TextEditingController finalController = TextEditingController();
+  TextEditingController totalTheory = TextEditingController();
+  TextEditingController theoryPassController = TextEditingController();
+  TextEditingController practicalMarksController = TextEditingController();
+  TextEditingController practicalPassController = TextEditingController();
   var universityProfileCubit=DiContainer().sl<UniversityProfileCubit>();
+
+  @override
+  initState(){
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if(universityProfileCubit.updateModel!=null){
+        var model=universityProfileCubit.updateModel;
+        nameController.text=model?.name??"";
+        location.text=model?.location??"";
+        website.text=model?.website??"";
+        midsController.text="${model?.theory.mids??""}";
+        sessional.text="${model?.theory.sessional??""}";
+        finalController.text="${model?.theory.finalMarks??""}";
+        totalTheory.text="${model?.theory.totalTheory??""}";
+        theoryPassController.text="${model?.theory.passPercentage??""}";
+        practicalMarksController.text="${model?.practical.maxMarks??""}";
+        practicalPassController.text="${model?.practical.passPercentage??""}";
+        universityProfileCubit.getStatusEnum(universityProfileCubit.updateModel!.status=="Active"?StatusEnum.Active:StatusEnum.Inactive);
+        universityProfileCubit.getSectorEnum(universityProfileCubit.updateModel?.sector??"");
+      }else{
+        universityProfileCubit.getStatusEnum(null);
+        universityProfileCubit.getSectorEnum(null);
+
+      }
+    },);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,10 +110,15 @@ class _AddAffiliationScreenState extends State<AddAffiliationScreen> {
                       /// 🔹 LEVEL + AFFILIATION
                       Row(
                         children: [
+
                           Expanded(
-                            child: CustomTextFormField(
-                              controller: sector,
-                              subTitle: "Sector",
+                            child: CustomPopMenuButton(
+                              onSelected: (p0) {
+                                universityProfileCubit.getSectorEnum(["Public Section", "Private Sector","Semi-Government"][p0]);
+                              },
+                              menus: ["Public Section", "Private Sector","Semi-Government"],
+                              widget:
+                              DropDownFieldWidget(text: universityProfileCubit.sector??"Select Sector",isFilled: universityProfileCubit.sector!=null,),
 
                             ),
                           ),
@@ -254,7 +279,7 @@ class _AddAffiliationScreenState extends State<AddAffiliationScreen> {
                             if (
                             nameController.text.isEmpty ||
                                 location.text.isEmpty ||
-                                sector.text.isEmpty ||
+                                universityProfileCubit.sector==null||
                                 website.text.isEmpty ||
                                 midsController.text.isEmpty ||
                                 sessional.text.isEmpty ||
@@ -269,12 +294,22 @@ class _AddAffiliationScreenState extends State<AddAffiliationScreen> {
                               return;
                             }
 
+                            AffiliationModel affiliationModel;
+                            List<AffiliationModel> temp=[];
+                            if(universityProfileCubit.updateModel==null){
+                               affiliationModel=AffiliationModel(name: nameController.text, sector: universityProfileCubit.sector??"", location: location.text, website: website.text, status: universityProfileCubit.statusEnum!.name, theory: TheoryGradingCriteria(mids: int.parse(midsController.text), sessional: int.parse(sessional.text), finalMarks: int.parse(finalController.text), totalTheory: int.parse(totalTheory.text), passPercentage: int.parse(theoryPassController.text)), practical: PracticalGradingCriteria(maxMarks: int.parse(practicalMarksController.text), passPercentage: int.parse(practicalPassController.text)));
 
-                            AffiliationModel affiliationModel=AffiliationModel(name: nameController.text, sector: sector.text, location: location.text, website: website.text, status: universityProfileCubit.statusEnum!.name, theory: TheoryGradingCriteria(mids: int.parse(midsController.text), sessional: int.parse(sessional.text), finalMarks: int.parse(finalController.text), totalTheory: int.parse(totalTheory.text), passPercentage: int.parse(theoryPassController.text)), practical: PracticalGradingCriteria(maxMarks: int.parse(practicalMarksController.text), passPercentage: int.parse(practicalPassController.text)));
+                               temp=universityProfileCubit.universityModel!.affiliationModel??[];
+                               temp.add(affiliationModel);
+                            }else{
+                              affiliationModel=AffiliationModel(id: universityProfileCubit.updateModel?.id??"",name: nameController.text, sector: universityProfileCubit.sector??"", location: location.text, website: website.text, status: universityProfileCubit.statusEnum!.name, theory: TheoryGradingCriteria(mids: int.parse(midsController.text), sessional: int.parse(sessional.text), finalMarks: int.parse(finalController.text), totalTheory: int.parse(totalTheory.text), passPercentage: int.parse(theoryPassController.text)), practical: PracticalGradingCriteria(maxMarks: int.parse(practicalMarksController.text), passPercentage: int.parse(practicalPassController.text)));
+                              temp=universityProfileCubit.universityModel!.affiliationModel??[];
+                              int index=temp.indexWhere((element) => element.id==affiliationModel.id,);
+                              temp[index]=affiliationModel;
+                            }
 
-                            List<AffiliationModel> temp=universityProfileCubit.universityModel!.affiliationModel??[];
-                            temp.add(affiliationModel);
                             UniversityModel model=UniversityModel(affiliationModel: temp);
+
                             bool val= await universityProfileCubit.addUniversitySetup(model);
                             if(val){
                               context.pop();

@@ -40,7 +40,7 @@ class AppText extends StatelessWidget {
         fontWeight: fontWeight??FontWeight.w600,
         decorationColor:AppColor.primary,
           decoration: decoration,
-          color: color ?? AppColor.black,
+          color: color ?? AppColor.white,
           height:height ,
           fontSize: fontSize ?? 12,
           // fontWeight: fontWeight ?? FontWeight.w400,

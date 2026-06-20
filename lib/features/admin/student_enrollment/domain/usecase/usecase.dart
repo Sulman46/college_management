@@ -1,13 +1,28 @@
 
 import 'package:dartz/dartz.dart';
+import '../../data/models/student_enrollment_filter_model.dart';
+import '../../data/models/student_enrollment_model.dart';
 import '../repository/repository.dart';
 
 class StudentEnrollmentUseCase{
   final StudentEnrollmentRepository repository;
   StudentEnrollmentUseCase({required this.repository});
 
-  Future<Either<String, bool>> function1()async {
-    return repository.function1();
+  Future<Either<String,StudentEnrollmentModel>> post({required StudentEnrollmentModel value})async{
+    return repository.post(value: value);
   }
+
+  Future<Either<String,StudentEnrollmentModel>> update({required StudentEnrollmentModel value}){
+    return repository.update(value: value);
+  }
+
+  Future<Either<String,bool>> delete({required StudentEnrollmentModel value}){
+    return repository.delete(value: value);
+  }
+
+  Future<Either<String,List<StudentEnrollmentModel>>> get({required StudentEnrollmentFilterModel value}){
+    return repository.get(value: value);
+  }
+
 
 }

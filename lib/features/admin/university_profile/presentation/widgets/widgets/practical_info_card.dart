@@ -14,11 +14,8 @@ class PracticalInfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(15),
-      decoration: BoxDecoration(
-        color: AppColor.white,
-        borderRadius: BorderRadius.circular(15),
-        // boxShadow: AppColor.blackShadow,
-      ),
+      decoration:AppColor.containerNeon,
+
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

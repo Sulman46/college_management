@@ -19,19 +19,19 @@ Navigator.push(context, MaterialPageRoute(builder: (context) => FacultyDetailsSc
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           color: AppColor.white,
-          boxShadow: AppColor.blackShadow
+          boxShadow: AppColor.shadowBlack
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AppText(text: "ALi Hassan",fontSize: 12,color: AppColor.black,),
+            AppText(text: "ALi Hassan",fontSize: 12,color: AppColor.white,),
             SizedBox(height: 3,),
             AppText(text: "Dept. Faculty of English",fontSize: 12,color: AppColor.grey,),
             SizedBox(height: 3,),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                AppText(text: "Gross: 0 Rs",fontSize: 11,fontWeight: FontWeight.w500,color: AppColor.black,),
+                AppText(text: "Gross: 0 Rs",fontSize: 11,fontWeight: FontWeight.w500,color: AppColor.white,),
                 AppText(text: "Net: 0 Rs",fontSize: 11,fontWeight: FontWeight.w500,color: AppColor.primary,),
                 AppText(text: "Deduction: 0 Rs",fontSize: 11,fontWeight: FontWeight.w500,color: AppColor.red,),
               ],

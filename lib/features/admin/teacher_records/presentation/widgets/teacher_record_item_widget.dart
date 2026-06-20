@@ -16,25 +16,25 @@ class TeacherRecordItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      splashColor: Colors.transparent,
+      hoverColor: Colors.transparent,
+      highlightColor: Colors.transparent,
       onTap: () {
         context.push('/Admin-teacher-record-details',extra: model);
       },
       child: Container(
         margin: EdgeInsets.only(bottom: 10),
         padding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
-        decoration: BoxDecoration(
-          color: AppColor.white,
-          borderRadius: BorderRadius.circular(10)
-        ),
+        decoration:AppColor.containerNeon,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AppText(text:model.teacherName??"",fontSize: 12,color: AppColor.black,fontWeight: FontWeight.w600,),
+            AppText(text:model.teacherName??"",fontSize: 12,color: AppColor.white,fontWeight: FontWeight.w600,),
             SizedBox(height: 3,),
             Row(
               children: [
                 Expanded(child: AppText(text: "Dept. ${model.department!.join(", ")}",fontSize: 11,color: AppColor.grey,fontWeight: FontWeight.w500,)),
-                AppText(text: "(${model.qualification})",fontSize: 11,color: AppColor.primary,fontWeight: FontWeight.w500,),
+                AppText(text: "(${model.qualification})",fontSize: 11,color: AppColor.white,fontWeight: FontWeight.w500,),
               ],
             ),
             SizedBox(height: 5,),
@@ -43,13 +43,21 @@ class TeacherRecordItemWidget extends StatelessWidget {
               children: [
                 ActiveInactiveStatusWidget(isActive: model.status=="Active"),
                 CustomPopMenuButton(
-                  menus: ["Edit","Delete"],
+                  menus: ["Edit",model.status=="Active"?"Inactive":"Active","Delete"],
                   onSelected: (value) async {
                     var teacherRecordCubit=DiContainer().sl<TeacherRecordsCubit>();
                     if(value==0){
                       context.push('/Admin-add-teacher-record',extra: model);
+                    }else if(value==1){
+                      if(model.status=="Active"){
+                        await  teacherRecordCubit.update(model.copyWith(status: "Inactive"));
 
-                    }else{
+                      }else{
+                        await  teacherRecordCubit.update(model.copyWith(status: "Active"));
+
+                      }
+                    }
+                    else{
                    await  teacherRecordCubit.delete(model);
                     }
                   },),

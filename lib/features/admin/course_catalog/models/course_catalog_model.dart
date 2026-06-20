@@ -40,7 +40,6 @@ class CourseCatalogModel {
    status: map['status']??"",
    department: null
  );
- log("43232324: ${data.category} ${data.type} ${data.departments}${data.category},${data.id} ${data.courseCode} ${data.courseTitle} ${data.creditHours} ");
     return data;
   }
 

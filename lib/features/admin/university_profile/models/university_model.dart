@@ -36,7 +36,7 @@ class UniversityModel {
             AttendancePolicyModel.fromMap(e),
       )
           .toList()
-          : null,
+          : [],
 
       affiliationModel:
       map['affiliations'] != null

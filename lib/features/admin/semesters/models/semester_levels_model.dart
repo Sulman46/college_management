@@ -1,13 +1,10 @@
+import 'package:college_management/features/admin/programs/models/program_model.dart';
+
 class SemesterLevelsModel {
   final String? id;
   final String? semesterName;
   final String? programId;
-  final String? programName;
-  final String? department;
-  final String? degree;
-  final String? affiliation;
-  final String? section;
-  final String? session;
+  final ProgramModel? programModel;
   final DateTime? startDate;
   final DateTime? endDate;
   final String? status;
@@ -16,12 +13,7 @@ class SemesterLevelsModel {
     this.id,
     this.semesterName,
     this.programId,
-    this.programName,
-    this.department,
-    this.degree,
-    this.affiliation,
-    this.section,
-    this.session,
+    this.programModel,
     this.startDate,
     this.endDate,
     this.status,
@@ -36,13 +28,7 @@ class SemesterLevelsModel {
           ? map['programId']['_id']
           : map['programId'] ?? "",
 
-      programName: map['programName'] ?? "",
-      department: map['department'] ?? "",
-      degree: map['degree'] ?? "",
-      affiliation: map['affiliation'] ?? "",
-      section: map['section'] ?? "",
-      session: map['session'] ?? "",
-
+      programModel: ProgramModel.fromMap(map['program']??""),
       startDate: map['startDate'] != null
           ? DateTime.tryParse(map['startDate'])
           : null,
@@ -59,12 +45,6 @@ class SemesterLevelsModel {
     return {
       'semesterName': semesterName,
       'programId': programId,
-      'programName': programName,
-      'department': department,
-      'degree': degree,
-      'affiliation': affiliation,
-      'section': section,
-      'session': session,
       'startDate': startDate?.toIso8601String(),
       'endDate': endDate?.toIso8601String(),
       if (status != null) 'status': status,
@@ -75,12 +55,7 @@ class SemesterLevelsModel {
     String? id,
     String? semesterName,
     String? programId,
-    String? programName,
-    String? department,
-    String? degree,
-    String? affiliation,
-    String? section,
-    String? session,
+    ProgramModel? programModel,
     DateTime? startDate,
     DateTime? endDate,
     String? status,
@@ -88,13 +63,8 @@ class SemesterLevelsModel {
     return SemesterLevelsModel(
       id: id ?? this.id,
       semesterName: semesterName ?? this.semesterName,
+      programModel: programModel ?? this.programModel,
       programId: programId ?? this.programId,
-      programName: programName ?? this.programName,
-      department: department ?? this.department,
-      degree: degree ?? this.degree,
-      affiliation: affiliation ?? this.affiliation,
-      section: section ?? this.section,
-      session: session ?? this.session,
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
       status: status ?? this.status,

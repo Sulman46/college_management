@@ -1,8 +1,10 @@
 import 'package:college_management/core/enums/status_enum.dart';
 import 'package:college_management/core/extensions/dart_extensions.dart';
 import 'package:college_management/core/helper/show_message.dart';
+import 'package:college_management/features/admin/departments/data/model/department_model.dart';
 import 'package:college_management/features/admin/programs/models/program_model.dart';
 import 'package:college_management/features/admin/programs/models/program_request_model.dart';
+import 'package:college_management/features/admin/university_profile/models/affiliation_model.dart';
 import 'package:college_management/widgets/loader_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,15 +22,17 @@ class AdminProgramsCubit extends Cubit<AdminProgramsState> {
   List<ProgramModel> _programsList=[];
   List<ProgramModel> get programsList=>_programsList;
   List<ProgramModel> filterProgramsList=[];
+
+  List<ProgramModel> get activePrograms=>List.from(programsList.where((element) => element.status==StatusEnum.Active,));
   double top=mdHeight(navigatorKey.currentContext!)*.9;
   double right=30;
 
-  String selectedDepartment="";
-  String selectedAffiliation="";
+  DepartmentModel? selectedDepartment;
+  AffiliationModel? selectedAffiliation;
   StatusEnum? statusEnum;
   TextEditingController searchController=TextEditingController();
 
-  void getDepartment({required String department, required String affiliation,required StatusEnum? status}){
+  void getDepartment({ DepartmentModel? department,  AffiliationModel? affiliation,required StatusEnum? status}){
     emit(AdminProgramsLoading());
     selectedDepartment=department;
     selectedAffiliation=affiliation;
@@ -72,6 +76,7 @@ class AdminProgramsCubit extends Cubit<AdminProgramsState> {
   }
 
   Future<bool> updateProgram(ProgramRequestModel model)async{
+    emit(AdminProgramsLoading());
     showLoadingDialog();
    var response=await _useCase.updateProgram(programRequestModel: model);
    if(response.isRight()){
@@ -114,7 +119,7 @@ class AdminProgramsCubit extends Cubit<AdminProgramsState> {
     emit(AdminProgramsLoading());
     List<ProgramModel> newList=[];
     for(var i in programsList){
-      if(i.department.toString().toLowerCase().contains(val.toString().toLowerCase()) || i.code.toString().toLowerCase().contains(val.toString().toLowerCase())){
+      if(i.department.name.toString().toLowerCase().contains(val.toString().toLowerCase()) || i.code.toString().toLowerCase().contains(val.toString().toLowerCase()) || i.name.toString().toLowerCase().contains(val.toString().toLowerCase()) || i.affiliation.name.toString().toLowerCase().contains(val.toString().toLowerCase())){
         newList.add(i);
       }
     }

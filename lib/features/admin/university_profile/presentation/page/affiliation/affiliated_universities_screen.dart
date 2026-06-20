@@ -31,42 +31,8 @@ class _AffiliatedUniversitiesScreenState
 
   TextEditingController searchController = TextEditingController();
 
-  List<CollegeModel> filteredList = [];
-  List<CollegeModel> collegeList = [
-    CollegeModel(
-      name: "ABC College",
-      image: AppAssets.profileImage,
-      status: "Active",
-    ),
-    CollegeModel(
-      name: "ABC College",
-      image: AppAssets.profileImage,
-      status: "Active",
-    ),
-    CollegeModel(
-      name: "ABC College",
-      image: AppAssets.profileImage,
-      status: "Active",
-    ),
-    CollegeModel(
-      name: "ABC College",
-      image: AppAssets.profileImage,
-      status: "Active",
-    ),
-    CollegeModel(
-      name: "XYZ Institute",
-      image: AppAssets.profileImage,
-      status: "Inactive",
-    ),
-    CollegeModel(
-      name: "City College",
-      image: AppAssets.profileImage,
-      status: "Active",
-    ),
-  ];
   @override
   void initState() {
-    filteredList = collegeList;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
      await _universityCubit.getUniversitySetup();
     },);
@@ -142,10 +108,12 @@ class _AffiliatedUniversitiesScreenState
                 right: _universityCubit.right,
                 child: GestureDetector(
                   onPanUpdate: (details) {
+
                     _universityCubit.getButtonPosition(topVal:details.delta.dy, rightVal: details.delta.dx);
                   },
                   child: CustomElevatedButton(
                     onPressed: () {
+                      _universityCubit.getUpdateModel(null);
                       context.push("/Admin-affiliation-create");
                     },
                     text: "Add New",

@@ -150,7 +150,7 @@ class CustomTextFormFieldState extends State<CustomTextFormField> {
                           colorFilter: ColorFilter.mode(
                             _focusNode.hasFocus
                                 ? AppColor.primary
-                                :AppColor.black,
+                                :AppColor.white,
                             BlendMode.srcIn,
                           ),
                         ),

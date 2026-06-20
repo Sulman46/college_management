@@ -1,4 +1,3 @@
-import 'package:college_management/features/admin/teacher_attendance/presentation/widgets/add_teacher_attendance_dialog.dart';
 import 'package:college_management/features/admin/teacher_attendance/presentation/widgets/teacher_attendance_tab_button.dart';
 import 'package:flutter/material.dart';
 
@@ -7,6 +6,7 @@ import '../../../../../core/theme/AppColor.dart';
 import '../../../../../widgets/app_text.dart';
 import '../../../../../widgets/custom_animated_dialog.dart';
 import '../../../timetable_manager/presentation/widgets/add_sheet.dart';
+import '../page/add_teacher_attendance_screen.dart';
 
 class TeacherAttendanceAdminHeader extends StatelessWidget {
   const TeacherAttendanceAdminHeader({super.key});
@@ -30,7 +30,7 @@ class TeacherAttendanceAdminHeader extends StatelessWidget {
       actions: [
         InkWell(
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => AddTeacherAttendanceDialog(),));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => AddTeacherAttendanceScreen(),));
           },
           child: Container(
               padding: EdgeInsets.all(3),

@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../../core/app/di_container.dart';
 import '../../../../../core/theme/AppColor.dart';
 import '../../../../../widgets/app_text.dart';
+import '../../../../../widgets/custom_animated_dialog.dart';
 import '../../../../../widgets/custom_text_form.dart';
 import '../../../../../widgets/custom_top_bar.dart';
 import '../../data/model/department_model.dart';
@@ -73,12 +74,12 @@ class _AdminDepartmentScreenState extends State<AdminDepartmentScreen> {
                                   color: AppColor.blue,
                                 ),
                                 DepartmentSummaryBox(
-                                  title: "Operational",
+                                  title: "Active",
                                   count: _departmentCubit.departmentList.where((element) => element.status==DepartmentStatus.Active,).toList().length,
                                   color: AppColor.primary,
                                 ),
                                 DepartmentSummaryBox(
-                                  title: "Suspended",
+                                  title: "Inactive",
                                   count: _departmentCubit.departmentList.where((element) => element.status==DepartmentStatus.Inactive,).toList().length,
                                   color: AppColor.red,
                                 ),
@@ -128,35 +129,7 @@ class _AdminDepartmentScreenState extends State<AdminDepartmentScreen> {
                                 final item = _departmentCubit.filterDepartmentList[index];
                                 return DepartmentItemWidget(
                                   model: item,
-                                  onEdit: () {
-                                    showDialog(context: context, builder: (context) => AddDepartmentDialog(editDepartmentModel: item,),);
 
-                                  },
-                                  onDelete: () async {
-                                    showDialog(context: context, builder: (context) => ConfirmationDialog(buttonWidget: Row(
-                                      children: [
-                                        Expanded(
-                                          child: CustomElevatedButton(
-                                            onPressed: () => Navigator.pop(context),
-                                            text: "Discard",
-                                            bgColor: AppColor.white,
-                                            textColor: AppColor.red,
-                                            borderColor: AppColor.red,
-                                          ),
-                                        ),
-                                        SizedBox(width: 20,),
-                                        Expanded(
-                                          child: CustomElevatedButton(onPressed: () async {
-                                           var val= await  _departmentCubit.deleteDepartment(item.id);
-                                           if(val){
-                                             Navigator.pop(context);
-                                           }
-
-                                          }, text: "Delete"),
-                                        ),
-                                      ],
-                                    ), title: "${item.name}", subText: "Are you sure you want to delete this item? This action cannot be undone."),);
-                                  },
                                 );
                               },
                             )

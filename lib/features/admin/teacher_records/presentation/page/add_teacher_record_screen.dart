@@ -73,7 +73,7 @@ class _AddTeacherRecordScreenState extends State<AddTeacherRecordScreen> {
         builder: (context,stateskloa) {
           return Column(
             children: [
-              CustomTopBar(text: "Add Faculty"),
+              CustomTopBar(text: "Add Teacher"),
               Expanded(
                 child: SingleChildScrollView(
                   padding: EdgeInsets.symmetric(horizontal: screenPaddingHori),
@@ -82,19 +82,14 @@ class _AddTeacherRecordScreenState extends State<AddTeacherRecordScreen> {
                       SizedBox(height: 10,),
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: 10,vertical: 15),
-                        decoration: BoxDecoration(
-                          color: AppColor.white,
-                          border: Border.all(width: 1,color: AppColor.grey.withOpacity(.6)),
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: AppColor.blackShadow,
-                        ),
+                        decoration: AppColor.containerNeon,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             AppText(
                               text: "Personal Details",
                               fontSize: 12,
-                              color: AppColor.primary,
+                              color: AppColor.white,
                               fontWeight: FontWeight.w600,
                             ),
                             SizedBox(height: 5,),
@@ -120,12 +115,12 @@ class _AddTeacherRecordScreenState extends State<AddTeacherRecordScreen> {
 
                                 _teacherRecordCubit.getTeacherModel(_teacherRecordCubit.teacherModel.copyWith(gender:["Male", "Female", "Other"][p0] ));
                               },
-                              widget: DropDownFieldWidget(text:_teacherRecordCubit.teacherModel.gender?? "Gender..", isFilled: false),title: "Gender",),
+                              widget: DropDownFieldWidget(text:_teacherRecordCubit.teacherModel.gender?? "Gender..", isFilled: _teacherRecordCubit.teacherModel.gender!=null),title: "Gender",),
                             SizedBox(height: 10,),
                             AppText(
                               text: "Academic Background",
                               fontSize: 12,
-                              color: AppColor.primary,
+                              color: AppColor.white,
                               fontWeight: FontWeight.w600,
                             ),
                             SizedBox(height: 5,),
@@ -138,23 +133,23 @@ class _AddTeacherRecordScreenState extends State<AddTeacherRecordScreen> {
                                 _teacherRecordCubit.getTeacherModel(_teacherRecordCubit.teacherModel.copyWith(qualification:ConstantData.qualificationList[p0] ));
                               },
                               widget: DropDownFieldWidget(text:_teacherRecordCubit.teacherModel.qualification
-                                  ??"Select", isFilled: false),title: "Qualification",),
+                                  ??"Select", isFilled: _teacherRecordCubit.teacherModel.qualification!=null),title: "Qualification",),
                             SizedBox(height: 10,),
                             AppText(
                               text: "Job Assignment",
                               fontSize: 12,
-                              color: AppColor.primary,
+                              color: AppColor.white,
                               fontWeight: FontWeight.w600,
                             ),
                             SizedBox(height: 5,),
                             BlocBuilder(
                               bloc: _departmentCubit,
                               builder: (context,statesbkl) {
-                                return _departmentCubit.departmentList.isNotEmpty? CustomPopMenuButton(
-                                  menus: _departmentCubit.departmentList.map((e) => e.name,).toList(),
+                                return _departmentCubit.activeDepartmentList.isNotEmpty? CustomPopMenuButton(
+                                  menus: _departmentCubit.activeDepartmentList.map((e) => e.name,).toSet().toList(),
                                     title: "Department",
                                 onSelected: (p0) {
-                                  String val=_departmentCubit.departmentList.map((e) => e.name,).toList()[p0];
+                                  String val=_departmentCubit.activeDepartmentList.map((e) => e.name,).toSet().toList()[p0];
                                   List<String> departmentList=_teacherRecordCubit.teacherModel.department??[];
                                   departmentList.add(val);
                                   _teacherRecordCubit.getTeacherModel(_teacherRecordCubit.teacherModel.copyWith(department: departmentList));
@@ -180,17 +175,20 @@ class _AddTeacherRecordScreenState extends State<AddTeacherRecordScreen> {
                                 },),),
                               ),
                             SizedBox(height: 10,),
-                            CustomPopMenuButton(menus: ConstantData.designationList,
+                            CustomPopMenuButton(
+                              menus: ConstantData.designationList,
                               onSelected: (p0) {
                                 _teacherRecordCubit.getTeacherModel(_teacherRecordCubit.teacherModel.copyWith(designation: ConstantData.designationList[p0]));
-
                               },
-                              widget: DropDownFieldWidget(text:_teacherRecordCubit.teacherModel.designation?? "Select", isFilled: false),title: "Designation",),
+                              widget: DropDownFieldWidget(
+                                  text:_teacherRecordCubit.teacherModel.designation?? "Select",
+                                  isFilled: _teacherRecordCubit.teacherModel.designation!=null),
+                              title: "Designation",),
                             SizedBox(height: 10,),
                     AppText(
                       text: "Contract & Finance",
                       fontSize: 12,
-                      color: AppColor.primary,
+                      color: AppColor.white,
                       fontWeight: FontWeight.w600,
                     ),
                         SizedBox(height: 5,),
@@ -201,7 +199,7 @@ class _AddTeacherRecordScreenState extends State<AddTeacherRecordScreen> {
                                     _teacherRecordCubit.getTeacherModel(_teacherRecordCubit.teacherModel.copyWith(teacherType: ["Permanent", "Visiting"][p0]));
 
                                   },
-                                  widget: DropDownFieldWidget(text:_teacherRecordCubit.teacherModel.teacherType?? "Select", isFilled: false),title: "Job Type",)),
+                                  widget: DropDownFieldWidget(text:_teacherRecordCubit.teacherModel.teacherType?? "Select", isFilled: _teacherRecordCubit.teacherModel.teacherType!=null),title: "Job Type",)),
                                 SizedBox(width: 10,),
                                 Expanded(child: CustomTextFormField(
                                   isHintText: true,
@@ -239,7 +237,7 @@ class _AddTeacherRecordScreenState extends State<AddTeacherRecordScreen> {
                             AppText(
                               text: "Bank Details",
                               fontSize: 12,
-                              color: AppColor.primary,
+                              color: AppColor.white,
                               fontWeight: FontWeight.w600,
                             ),
                             SizedBox(height: 5,),
@@ -258,7 +256,7 @@ class _AddTeacherRecordScreenState extends State<AddTeacherRecordScreen> {
                                 || joiningDateController.text.isEmpty || rateLecture.text.isEmpty ||weeklyWorkLoad.text.isEmpty || bankNameController.text.isEmpty
                                 || accountNumberController.text.isEmpty || _teacherRecordCubit.teacherModel.teacherType==null || _teacherRecordCubit.teacherModel.designation==null
                                 || _teacherRecordCubit.teacherModel.department == null||_teacherRecordCubit.teacherModel.gender == null|| _teacherRecordCubit.teacherModel.qualification == null || _teacherRecordCubit.teacherModel.department!.isEmpty){
-                                  return showMessage("Please fill all fields");
+                                  return showMessage("Please fill all fields",isError: true);
                                 }
 
                                 var val=_teacherRecordCubit.teacherModel;

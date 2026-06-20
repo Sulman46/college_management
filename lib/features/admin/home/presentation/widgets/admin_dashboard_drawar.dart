@@ -2,6 +2,7 @@ import 'package:college_management/core/app/di_container.dart';
 import 'package:college_management/core/constants/app_assets.dart';
 import 'package:college_management/core/models/admin_drawer_button_model.dart';
 import 'package:college_management/features/Authentication/presentation/controller/cubit.dart';
+import 'package:college_management/features/admin/coordinator_management/presentation/page/coordinator_management_screen.dart';
 import 'package:college_management/features/admin/university_profile/presentation/page/affiliation/affiliated_universities_screen.dart';
 import 'package:college_management/features/admin/programs/presentation/page/admin_program_screen.dart';
 import 'package:college_management/features/admin/teacher_allocation/presentation/page/teacher_allocation_screen.dart';
@@ -66,63 +67,75 @@ class _AdminDashboardDrawarState extends State<AdminDashboardDrawar> {
       AdminDrawerButtonModel(title: "Programs", icon: Icons.class_,onTap: (){
         context.push("/Admin-program");
       }),
-      AdminDrawerButtonModel(title: "Course Catalog", icon: Icons.menu_book_sharp,onTap: (){
-        context.push("/Admin-Course-catalog");
-      }),
-      AdminDrawerButtonModel(title: "Course Mapping", icon: Icons.map,onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => CourseMappingScreen(),));
 
-      }),
       AdminDrawerButtonModel(title: "Semester", icon: Icons.school,onTap: (){
         Navigator.push(context, MaterialPageRoute(builder: (context) => SemesterAdminScreen(),));
 
       }),
-      AdminDrawerButtonModel(title: "Neural Generator", icon: Icons.flash_on_sharp,onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => NeuralGeneratorScreen(),));
+      AdminDrawerButtonModel(title: "Courses", icon: Icons.menu_book_sharp,onTap: (){},subList: [
+        SubDrawerButtonModel(title: "Course Catalog", icon: Icons.menu_book_sharp,onTap: (){
+          context.push("/Admin-Course-catalog");
+        }),
+        SubDrawerButtonModel(title: "Course Mapping", icon: Icons.map,onTap: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context) => CourseMappingScreen(),));
 
-      }),
-      AdminDrawerButtonModel(title: "Announcements", icon: Icons.announcement,onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => AnnouncementScreen(),));
+        }),
+      ]),
 
-      }),
       AdminDrawerButtonModel(title: "Timetable Manager", icon: Icons.calendar_month,onTap: (){
         Navigator.push(context, MaterialPageRoute(builder: (context) => TimetableManagerScreen(),));
 
       }),
-      AdminDrawerButtonModel(title: "Teachers Record", icon: Icons.list_alt_sharp,onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => TeacherRecordsAdminScreen(),));
-
-      }),
-      AdminDrawerButtonModel(title: "Teachers Allocation", icon: Icons.ballot,onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => TeacherAllocationScreen(),));
-
-      }),
-      AdminDrawerButtonModel(title: "Teachers Attendance", icon: Icons.edit_calendar,onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => TeacherAttendanceAdminScreen(),));
-
-      }),
+      AdminDrawerButtonModel(title: "Teachers", icon: Icons.list_alt_sharp,onTap: (){},subList: [
+        SubDrawerButtonModel(title: "Teachers Record", icon: Icons.list_alt_sharp,onTap: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => TeacherRecordsAdminScreen(),));
+          },),
+        SubDrawerButtonModel(title: "Teachers Allocation", icon: Icons.ballot,onTap: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => TeacherAllocationScreen(),));
+          },),
+        SubDrawerButtonModel(title: "Teachers Attendance", icon: Icons.edit_calendar,onTap: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => TeacherAttendanceAdminScreen(),));
+          },),
+      ]),
       AdminDrawerButtonModel(title: "HOD Assignment", icon: Icons.assignment_ind,onTap: (){
         Navigator.push(context, MaterialPageRoute(builder: (context) => HodAssignmentScreen(),));
+
+      }),
+      AdminDrawerButtonModel(title: "Coordinator Management", icon: Icons.manage_accounts_rounded,onTap: (){
+        Navigator.push(context, MaterialPageRoute(builder: (context) => CoordinatorManagementScreen(),));
 
       }),
       AdminDrawerButtonModel(title: "Faculty Workload", icon: Icons.work_history_outlined,onTap: (){
         Navigator.push(context, MaterialPageRoute(builder: (context) => FacultyWorkloadScreen(),));
 
       }),
+
+      AdminDrawerButtonModel(title: "Students", icon: Icons.boy,onTap: (){},
+          subList: [
+
+            SubDrawerButtonModel(title: "Register Students", icon: Icons.boy,onTap: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => RegisteredStudentListScreen(),));
+
+            }),
+            SubDrawerButtonModel(title: "Student Enrollment", icon: Icons.workspaces,onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => StudentEnrollmentScreen(),));
+            },),
+          ]),
+      AdminDrawerButtonModel(title: "Payroll & Salary Management", icon: Icons.payment,onTap: (){
+        Navigator.push(context, MaterialPageRoute(builder: (context) => PayrollAndSalaryManagementScreen(),));
+
+      }),
       AdminDrawerButtonModel(title: "Leave Request", icon: Icons.calendar_month,onTap: (){
         Navigator.push(context, MaterialPageRoute(builder: (context) => AdminLeaveRequestScreen(),));
 
       }),
-      AdminDrawerButtonModel(title: "Register Students", icon: Icons.boy,onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => RegisteredStudentListScreen(),));
+
+      AdminDrawerButtonModel(title: "Neural Generator", icon: Icons.flash_on_sharp,onTap: (){
+        Navigator.push(context, MaterialPageRoute(builder: (context) => NeuralGeneratorScreen(),));
 
       }),
-      AdminDrawerButtonModel(title: "Student Enrollment", icon: Icons.workspaces,onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => StudentEnrollmentScreen(),));
-
-      }),
-      AdminDrawerButtonModel(title: "Payroll & Salary Management", icon: Icons.payment,onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => PayrollAndSalaryManagementScreen(),));
+      AdminDrawerButtonModel(title: "Announcements", icon: Icons.announcement,onTap: (){
+        Navigator.push(context, MaterialPageRoute(builder: (context) => AnnouncementScreen(),));
 
       }),
       AdminDrawerButtonModel(title: "Logout", icon: Icons.logout,onTap: ()async{
@@ -140,7 +153,7 @@ class _AdminDashboardDrawarState extends State<AdminDashboardDrawar> {
         children: [
           Container(
             decoration: BoxDecoration(
-              color: AppColor.primary
+              color: AppColor.primaryDark
             ),
             child: Column(
               children: [
@@ -184,11 +197,11 @@ class _AdminDashboardDrawarState extends State<AdminDashboardDrawar> {
           Expanded(
             child: ScrollbarTheme(
               data: ScrollbarThemeData(
+                thickness: WidgetStatePropertyAll(3),
                 trackColor: WidgetStatePropertyAll(AppColor.primary.withOpacity(.3)),
                   trackBorderColor: WidgetStatePropertyAll(AppColor.primary.withOpacity(.4)),
                   thumbColor: WidgetStatePropertyAll(AppColor.primary)),
               child: Scrollbar(
-                scrollbarOrientation: ScrollbarOrientation.left,
                 controller: _scrollController,
                 thumbVisibility: true, // 🔥 always visible
                 trackVisibility: true, // optional (shows track)
@@ -205,7 +218,7 @@ class _AdminDashboardDrawarState extends State<AdminDashboardDrawar> {
                         children: List.generate(itemsList.length, (index) {
                           bool isLast = index == itemsList.length - 1;
                           return DrawerButtonWidget(
-                            title: index==0?"Main":index==18?"Misc":null,
+                            title: index==0?"Main":index==13?"Misc":null,
                             model: itemsList[index],
                           );
                         }),

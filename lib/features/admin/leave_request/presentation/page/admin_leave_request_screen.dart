@@ -86,7 +86,7 @@ class _AdminLeaveRequestScreenState extends State<AdminLeaveRequestScreen> {
                         padding: EdgeInsets.symmetric(horizontal: 5,vertical: 3),
                         decoration: BoxDecoration(
                           color: AppColor.white,
-                          boxShadow: AppColor.blackShadow,
+                          boxShadow: AppColor.shadowBlack,
                           borderRadius: BorderRadius.circular(50),
                           border: Border.all(width: 1,color: AppColor.primary)
                         ),
@@ -213,7 +213,7 @@ class _RecentHeaderDelegate extends SliverPersistentHeaderDelegate {
       child: AppText(
         text: "Recent Requests",
         fontSize: 12,
-        color: AppColor.black,
+        color: AppColor.white,
         fontWeight: FontWeight.w600,
       ),
     );

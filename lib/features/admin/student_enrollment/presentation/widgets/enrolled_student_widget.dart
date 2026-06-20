@@ -1,3 +1,4 @@
+import 'package:college_management/features/admin/student_enrollment/data/models/student_enrollment_model.dart';
 import 'package:college_management/widgets/active_inactive_status_widget.dart';
 import 'package:college_management/widgets/app_text.dart';
 import 'package:flutter/material.dart';
@@ -5,8 +6,8 @@ import 'package:flutter/material.dart';
 import '../../../../../core/theme/AppColor.dart';
 
 class EnrolledStudentWidget extends StatelessWidget {
-  const EnrolledStudentWidget({super.key});
-
+   EnrolledStudentWidget({super.key,required this.studentEnrollmentModel});
+  StudentEnrollmentModel studentEnrollmentModel;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -15,7 +16,7 @@ class EnrolledStudentWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColor.white,
         borderRadius: BorderRadius.circular(14),
-        boxShadow: AppColor.blackShadow,
+        boxShadow: AppColor.shadowBlack,
       ),
       child: IntrinsicHeight(
         child: Row(
@@ -24,11 +25,11 @@ class EnrolledStudentWidget extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  AppText(text: "Ali Hassan",fontSize: 12,color: AppColor.black,fontWeight: FontWeight.w600,),
+                  AppText(text: studentEnrollmentModel.name??"",fontSize: 12,color: AppColor.white,fontWeight: FontWeight.w600,),
                   SizedBox(height: 5,),
-                  AppText(text: "Reg-No: 3573543",fontSize: 11,color: AppColor.grey,fontWeight: FontWeight.w500,),
+                  AppText(text: "Reg-No: ${studentEnrollmentModel.srNo??""}",fontSize: 11,color: AppColor.grey,fontWeight: FontWeight.w500,),
                   SizedBox(height: 5,),
-                  AppText(text: "Roll-No: BCTYI-21-21",fontSize: 11,color: AppColor.grey,fontWeight: FontWeight.w500,),
+                  AppText(text: "Roll-No: ${studentEnrollmentModel.rollNo??""}",fontSize: 11,color: AppColor.grey,fontWeight: FontWeight.w500,),
 
                 ],
               ),

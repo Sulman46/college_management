@@ -15,6 +15,11 @@ import '../../features/Authentication/data/repository_impl/repository_impl.dart'
 import '../../features/Authentication/domain/repository/repository.dart';
 import '../../features/Authentication/domain/usecase/usecase.dart';
 import '../../features/Authentication/presentation/controller/cubit.dart';
+import '../../features/admin/announcements/data/datasource/datasource.dart';
+import '../../features/admin/announcements/data/repository_impl/repository_impl.dart';
+import '../../features/admin/announcements/domain/repository/repository.dart';
+import '../../features/admin/announcements/domain/usecase/usecase.dart';
+import '../../features/admin/announcements/presentation/controller/cubit.dart';
 import '../../features/admin/course_catalog/data/repository_impl/repository_impl.dart';
 import '../../features/admin/course_catalog/domain/repository/repository.dart';
 import '../../features/admin/course_catalog/domain/usecase/usecase.dart';
@@ -27,6 +32,16 @@ import '../../features/admin/departments/data/datasource/datasource.dart';
 import '../../features/admin/departments/data/repository_impl/repository_impl.dart';
 import '../../features/admin/departments/domain/repository/repository.dart';
 import '../../features/admin/departments/domain/usecase/usecase.dart';
+import '../../features/admin/hod_assignment/data/datasource/datasource.dart';
+import '../../features/admin/hod_assignment/data/repository_impl/repository_impl.dart';
+import '../../features/admin/hod_assignment/domain/repository/repository.dart';
+import '../../features/admin/hod_assignment/domain/usecase/usecase.dart';
+import '../../features/admin/hod_assignment/presentation/controller/cubit.dart';
+import '../../features/admin/neural_generator/data/datasource/datasource.dart';
+import '../../features/admin/neural_generator/data/repository_impl/repository_impl.dart';
+import '../../features/admin/neural_generator/domain/repository/repository.dart';
+import '../../features/admin/neural_generator/domain/usecase/usecase.dart';
+import '../../features/admin/neural_generator/presentation/controller/cubit.dart';
 import '../../features/admin/programs/data/datasource/datasource.dart';
 import '../../features/admin/programs/data/repository_impl/repository_impl.dart';
 import '../../features/admin/programs/domain/repository/repository.dart';
@@ -37,16 +52,36 @@ import '../../features/admin/semesters/data/repository_impl/repository_impl.dart
 import '../../features/admin/semesters/domain/repository/repository.dart';
 import '../../features/admin/semesters/domain/usecase/usecase.dart';
 import '../../features/admin/semesters/presentation/controller/cubit.dart';
+import '../../features/admin/student_enrollment/data/datasource/datasource.dart';
+import '../../features/admin/student_enrollment/data/repository_impl/repository_impl.dart';
+import '../../features/admin/student_enrollment/domain/repository/repository.dart';
+import '../../features/admin/student_enrollment/domain/usecase/usecase.dart';
+import '../../features/admin/student_enrollment/presentation/controller/cubit.dart';
+import '../../features/admin/student_registrations/data/datasource/datasource.dart';
+import '../../features/admin/student_registrations/data/repository_impl/repository_impl.dart';
+import '../../features/admin/student_registrations/domain/repository/repository.dart';
+import '../../features/admin/student_registrations/domain/usecase/usecase.dart';
+import '../../features/admin/student_registrations/presentation/controller/cubit.dart';
 import '../../features/admin/teacher_allocation/data/datasource/datasource.dart';
 import '../../features/admin/teacher_allocation/data/repository_impl/repository_impl.dart';
 import '../../features/admin/teacher_allocation/domain/repository/repository.dart';
 import '../../features/admin/teacher_allocation/domain/usecase/usecase.dart';
 import '../../features/admin/teacher_allocation/presentation/controller/cubit.dart';
+import '../../features/admin/teacher_attendance/data/datasource/datasource.dart';
+import '../../features/admin/teacher_attendance/data/repository_impl/repository_impl.dart';
+import '../../features/admin/teacher_attendance/domain/repository/repository.dart';
+import '../../features/admin/teacher_attendance/domain/usecase/usecase.dart';
+import '../../features/admin/teacher_attendance/presentation/controller/cubit.dart';
 import '../../features/admin/teacher_records/data/datasource/datasource.dart';
 import '../../features/admin/teacher_records/data/repository_impl/repository_impl.dart';
 import '../../features/admin/teacher_records/domain/repository/repository.dart';
 import '../../features/admin/teacher_records/domain/usecase/usecase.dart';
 import '../../features/admin/teacher_records/presentation/controller/cubit.dart';
+import '../../features/admin/timetable_manager/data/datasource/datasource.dart';
+import '../../features/admin/timetable_manager/data/repository_impl/repository_impl.dart';
+import '../../features/admin/timetable_manager/domain/repository/repository.dart';
+import '../../features/admin/timetable_manager/domain/usecase/usecase.dart';
+import '../../features/admin/timetable_manager/presentation/controller/cubit.dart';
 import '../../features/admin/university_profile/data/datasource/datasource.dart';
 import '../../features/admin/university_profile/data/repository_impl/repository_impl.dart';
 import '../../features/admin/university_profile/domain/repository/repository.dart';
@@ -128,6 +163,44 @@ class DiContainer{
     sl.registerLazySingleton<TeacherAllocationRepository>(() => TeacherAllocationRepositoryImpl(dataSource: sl()),);
     sl.registerLazySingleton(() => TeacherAllocationUseCase(repository: sl()),);
 
+    // admin announcement
+    sl.registerLazySingleton<AnnouncementsDataSource>(() => FunctionClassAnnouncements(),);
+    sl.registerLazySingleton<AnnouncementsRepository>(() => AnnouncementsRepositoryImpl(dataSource: sl()),);
+    sl.registerLazySingleton(() => AnnouncementsUseCase(repository: sl()),);
+
+    // hod assignment
+    sl.registerLazySingleton<HODAssignmentDataSource>(() => FunctionClassHODAssignment(),);
+    sl.registerLazySingleton<HODAssignmentRepository>(() => HODAssignmentRepositoryImpl(dataSource: sl()),);
+    sl.registerLazySingleton(() => HODAssignmentUseCase(repository: sl()),);
+
+    // Timetable Manager
+    sl.registerLazySingleton<TimetableManagerDataSource>(() => FunctionClassTimetableManager(),);
+    sl.registerLazySingleton<TimetableManagerRepository>(() => TimetableManagerRepositoryImpl(dataSource: sl()),);
+    sl.registerLazySingleton(() => TimetableManagerUseCase(repository: sl()),);
+
+
+    // access generate
+    sl.registerLazySingleton<NeuralGeneratorDataSource>(() => FunctionClassNeuralGenerator(),);
+    sl.registerLazySingleton<NeuralGeneratorRepository>(() => NeuralGeneratorRepositoryImpl(dataSource: sl()),);
+    sl.registerLazySingleton(() => NeuralGeneratorUseCase(repository: sl()),);
+
+
+    // Timetable Manager
+    sl.registerLazySingleton<TeacherAttendanceDataSource>(() => FunctionClassTeacherAttendance(),);
+    sl.registerLazySingleton<TeacherAttendanceRepository>(() => TeacherAttendanceRepositoryImpl(dataSource: sl()),);
+    sl.registerLazySingleton(() => TeacherAttendanceUseCase(repository: sl()),);
+
+
+    // student registration
+    sl.registerLazySingleton<StudentRegistrationDataSource>(() => FunctionClassStudentRegistration(),);
+    sl.registerLazySingleton<StudentRegistrationRepository>(() => StudentRegistrationRepositoryImpl(dataSource: sl()),);
+    sl.registerLazySingleton(() => StudentRegistrationUseCase(repository: sl()),);
+
+    // Student Enrollment
+    sl.registerLazySingleton<StudentEnrollmentDataSource>(() => FunctionClassStudentEnrollment(),);
+    sl.registerLazySingleton<StudentEnrollmentRepository>(() => StudentEnrollmentRepositoryImpl(dataSource: sl()),);
+    sl.registerLazySingleton(() => StudentEnrollmentUseCase(repository: sl()),);
+
 
     ConnectivityController().init();
     await sl.allReady();
@@ -144,6 +217,13 @@ class DiContainer{
     sl.registerLazySingleton(() => CourseMappingCubit(sl()),);
     sl.registerLazySingleton(() => TeacherRecordsCubit(sl()),);
     sl.registerLazySingleton(() => TeacherAllocationCubit(sl()),);
+    sl.registerLazySingleton(() => AnnouncementsCubit(sl()),);
+    sl.registerLazySingleton(() => HODAssignmentCubit(sl()),);
+    sl.registerLazySingleton(() => TimetableManagerCubit(sl()),);
+    sl.registerLazySingleton(() => NeuralGeneratorCubit(sl()),);
+    sl.registerLazySingleton(() => TeacherAttendanceCubit(sl()),);
+    sl.registerLazySingleton(() => StudentRegistrationCubit(sl()),);
+    sl.registerLazySingleton(() => StudentEnrollmentCubit(sl()),);
 
     sl.registerLazySingleton(() => ScreenResizeCubit(),);
   }

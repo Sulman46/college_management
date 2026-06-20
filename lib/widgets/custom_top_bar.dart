@@ -18,7 +18,12 @@ Widget? suffix;
     return Container(
       padding: EdgeInsets.symmetric(horizontal: screenPaddingHori,),
       decoration: BoxDecoration(
-          color: AppColor.primary,
+          border: Border.all(
+            color: AppColor.primary.withOpacity(.8),
+            width: .5,
+          ),
+          color: AppColor.primary.withOpacity(.8),
+          gradient: AppColor.topBarGradient,
           borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10),bottomRight: Radius.circular(10))
       ),
       child: Column(
@@ -29,6 +34,9 @@ Widget? suffix;
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               prefix??  InkWell(
+                splashColor: Colors.transparent,
+                  hoverColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
                   onTap:onTap?? () {
                     Navigator.pop(context);
                   },

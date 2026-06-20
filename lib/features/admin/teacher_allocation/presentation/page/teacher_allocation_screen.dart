@@ -32,9 +32,6 @@ var _allocationCubit=DiContainer().sl<TeacherAllocationCubit>();
     super.initState();
   }
 
-
-  double top=mdHeight(navigatorKey.currentContext!)*.9;
-  double left=mdWidth(navigatorKey.currentContext!)*.65;
   @override
   Widget build(BuildContext context) {
     return Scaffold(

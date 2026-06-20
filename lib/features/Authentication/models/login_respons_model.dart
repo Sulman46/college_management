@@ -1,3 +1,4 @@
+import 'package:college_management/core/helper/show_message.dart';
 import 'package:college_management/features/Authentication/models/user_model.dart';
 
 class LoginResponseModel {
@@ -11,6 +12,7 @@ class LoginResponseModel {
 
   factory LoginResponseModel.fromJson(
       Map<String, dynamic> json) {
+
     return LoginResponseModel(
 
       token: json['token'] ?? '',

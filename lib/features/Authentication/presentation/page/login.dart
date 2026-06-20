@@ -58,7 +58,7 @@ List<String> roleList=['Admin', 'Student', 'Teacher'];
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: AppColor.white,
-                        boxShadow: AppColor.blackShadow,
+                        boxShadow: AppColor.shadowBlack,
                       ),
                       child: ClipRRect(
                           borderRadius: BorderRadiusGeometry.circular(500),
@@ -67,7 +67,7 @@ List<String> roleList=['Admin', 'Student', 'Teacher'];
                   ),
                   SizedBox(height: 10,),
 
-                  Center(child: AppText(text: "Welcome Back!",fontSize: 14,color: AppColor.black,)),
+                  Center(child: AppText(text: "Welcome Back!",fontSize: 14,color: AppColor.white,)),
                   SizedBox(height: 2,),
                   Center(child: AppText(text: "Login to your Portal",fontSize: 12,color: AppColor.greyLight,)),
 
@@ -77,10 +77,7 @@ List<String> roleList=['Admin', 'Student', 'Teacher'];
                   Container(
                     margin: EdgeInsets.symmetric(horizontal:screenSizeCubit.isLargeScreen? 150:20),
                     padding: EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: AppColor.white,
-                    ),
+                    decoration:AppColor.containerNeon,
 
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

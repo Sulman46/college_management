@@ -7,7 +7,10 @@ import 'package:go_router/go_router.dart';
 import '../../../../../core/app/di_container.dart';
 import '../../../../../core/theme/AppColor.dart';
 import '../../../../../widgets/app_text.dart';
+import '../../../../../widgets/confirmation_dialog.dart';
+import '../../../../../widgets/custom_animated_dialog.dart';
 import '../../../../../widgets/more_vert_pop_menu_button.dart';
+import '../../models/program_request_model.dart';
 import '../controller/cubit.dart';
 
 class AdminProgramWidget extends StatelessWidget {
@@ -18,11 +21,7 @@ ProgramModel model;
     return Container(
       margin: EdgeInsets.only(bottom: 15,left: 5,right: 5),
       padding: EdgeInsets.all(15),
-      decoration: BoxDecoration(
-        color: AppColor.white,
-        borderRadius: BorderRadius.circular(15),
-        boxShadow: AppColor.blackShadow,
-      ),
+      decoration: AppColor.containerNeon,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -40,18 +39,51 @@ ProgramModel model;
                 child: AppText(
                   text: model.code,
                   fontSize: 11,
-                  color: AppColor.primary,
+                  color: AppColor.greyLight,
                 ),
               ),
 
 
               CustomPopMenuButton(
-                menus: ["Edit","Delete"],
-                onSelected: (value) {
-                  if(["Edit","Delete"][value]=="Edit"){
+                menus: ["Edit",model.status==StatusEnum.Active?"Inactive":"Active","Delete"],
+                onSelected: (value) async {
+                  if(["Edit",model.status==StatusEnum.Active?"Inactive":"Active","Delete"][value]=="Edit"){
                     context.push("/Admin-program-create",extra: model);
-                  }else{
-                    _programsCubit.deletePrograms(model);
+                  }else if(value==1){
+
+                    ProgramRequestModel
+                    programRequestModel = ProgramRequestModel(
+                      name: model.name,
+                      code: model.code,
+                      degree: model.degree,
+                      session: model.session,
+                      section: model.section,
+                      department: model.department,
+                      mids: model.mids,
+                      sessional: model.sessional,
+                      finalMarks: model.finalMarks,
+                      affiliation:
+                      model.affiliation,
+                      practicalMax: model.practicalMax,
+                      practicalPassPercentage: model.practicalPassPercentage,
+                      theoryPassPercentage: model.theoryPassPercentage,
+                      totalTheory: model.totalTheory,
+                      status:model.status==StatusEnum.Active?"Inactive":"Active",
+                      id: model.id,
+                    );
+                    await _programsCubit.updateProgram(programRequestModel);
+                  } else{
+                    showDialog(context: context, builder: (context) => CustomAnimatedDialog(
+                      child: ConfirmationDialog(
+                        subText: "This Program will be deleted permanently.",
+                        onSubmit: () async {
+                        var val=await  _programsCubit.deletePrograms(model);
+
+                          if(val){
+                            Navigator.pop(context);
+                          }
+                        },),
+                    ));
                   }
                 },),
             ],
@@ -79,11 +111,7 @@ ProgramModel model;
 
           /// 🔹 INFO BOX
           Container(
-            decoration: BoxDecoration(
-              color: AppColor.whiteLight,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: AppColor.greyLight1),
-            ),
+            decoration: AppColor.containerDecoration,
             child: Row(
               children: [
                 infoItem("SECTION", model.section),
@@ -104,12 +132,12 @@ ProgramModel model;
               AppText(
                 text: "Theory: ${model.mids}(Mid)+${model.sessional}(Sessional)+${model.finalMarks}(Final)=${model.totalTheory}",
                 fontSize: 10,
-                color: AppColor.grey,
+                color: AppColor.greyLight,
               ),
               AppText(
                 text: "Pass: ${model.theoryPassPercentage}%",
                 fontSize: 11,
-                color: AppColor.primary,
+                color: AppColor.greyLight,
               ),
             ],
           ),
@@ -122,12 +150,12 @@ ProgramModel model;
               AppText(
                 text: "Practical: ${model.practicalMax} Marks",
                 fontSize: 10,
-                color: AppColor.grey,
+                color: AppColor.greyLight,
               ),
               AppText(
                 text: "Pass: ${model.practicalPassPercentage}%",
                 fontSize: 11,
-                color: AppColor.primary,
+                color: AppColor.greyLight,
               ),
             ],
           ),
@@ -149,7 +177,7 @@ ProgramModel model;
                     SizedBox(width: 6),
                     Expanded(
                       child: AppText(
-                        text: model.affiliationName,
+                        text: model.affiliation.name,
                         fontSize: 11,
                         color: AppColor.grey,
                       ),

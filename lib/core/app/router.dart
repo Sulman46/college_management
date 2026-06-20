@@ -1,4 +1,5 @@
 import 'package:college_management/features/Authentication/presentation/page/login.dart';
+import 'package:college_management/features/admin/announcements/models/announcement_model.dart';
 import 'package:college_management/features/admin/home/presentation/page/admin_home_screen.dart';
 import 'package:college_management/features/admin/programs/models/program_model.dart';
 import 'package:college_management/features/admin/teacher_allocation/models/teacher_allocation_model.dart';
@@ -6,6 +7,7 @@ import 'package:college_management/features/admin/teacher_records/models/teacher
 import 'package:college_management/features/splash/presentation/page/splash_screen.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/admin/announcements/presentation/page/add_announcement_screen.dart';
 import '../../features/admin/course_catalog/presentation/page/course_catalog_admin_screen.dart';
 import '../../features/admin/course_mapping/model/course_mapping_model.dart';
 import '../../features/admin/course_mapping/presentation/page/add_new_course_mapping_screen.dart';
@@ -103,6 +105,17 @@ GoRouter goRouter = GoRouter(
             ? null
             : state.extra as TeacherAllocationModel;
       return  NewAllocationScreen(allocationModel: model,);
+      },
+    ),
+
+
+    GoRoute(
+      path: '/Admin-add-announcement',
+      builder: (context, state) {
+        AnnouncementModel? model = state.extra == null
+            ? null
+            : state.extra as AnnouncementModel;
+      return  AddAnnouncementScreen(announcementModel: model,);
       },
     ),
 

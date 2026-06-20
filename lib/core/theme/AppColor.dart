@@ -7,9 +7,10 @@ class AppColor{
   AppColor._();
 
   // static  Color primary = HexColor("#972cb7");
-  static  Color primary = HexColor("#db2e23");
-  static  Color secondaryColor = HexColor("#2f1e73");
-  static Color bgPrimary=whiteLight;
+  static  Color primary = HexColor("#6d28d9");
+  static  Color primaryDark = HexColor("#4C1D95");
+  static  Color secondaryColor =Colors.red;
+  static Color bgPrimary=HexColor("#221246");
   static const Color black = Color(0xFF000000);
   static const Color white = Colors.white;
   static const Color transparent = Colors.transparent;
@@ -19,6 +20,7 @@ class AppColor{
   static  Color greyLight = HexColor('#AEB0B3');
   static  Color greyLight1 = HexColor('#cccccc');
   static const Color red = Color(0xFFD63434);
+  static const Color blueLight = Color(0xFF22d3ee);
   static Color whiteLight=HexColor("#F7F2EE");
   static Color fieldYellowBorder=Color(0xffebe3d8);
   static  Color blue = Color(0xFF007aff);
@@ -34,15 +36,80 @@ class AppColor{
    Color(0xffa4cffe),
  ]);
 
- static List<BoxShadow> blackShadow=[
-   BoxShadow(color: AppColor.greyLight,blurRadius: 1,spreadRadius: .1,),
- ];
+ static LinearGradient drawerGradient= LinearGradient(
+   begin: Alignment.centerLeft,
+   end: Alignment.centerRight,
+   colors: [
+     AppColor.white.withOpacity(0.05),
+     AppColor.primary.withOpacity(0.25),
+     AppColor.primary.withOpacity(0.05),
+   ],
+ );
+
+ static LinearGradient topBarGradient= LinearGradient(
+   begin: Alignment.topCenter,
+   end: Alignment.bottomCenter,
+   colors: [
+     AppColor.white.withOpacity(0.05),
+     AppColor.primary.withOpacity(0.25),
+     AppColor.primary.withOpacity(0.05),
+   ],
+ );
+
+  static List<BoxShadow> shadowBlack = [
+
+    // middle glow
+    BoxShadow(
+      color: AppColor.bgPrimary.withOpacity(0.18),
+      blurRadius: 7,
+      spreadRadius: .6,
+    ),
+    // strong core glow
+    BoxShadow(
+      color: AppColor.bgPrimary.withOpacity(0.3),
+      blurRadius: 5,
+      spreadRadius: 0.4,
+    ),
+    // white highlight (neon shine effect)
+    BoxShadow(
+      color: Colors.white.withOpacity(0.1),
+      blurRadius: 3,
+      spreadRadius: .1,
+    ),
+  ];
+
+
 
 
   static Decoration decorationDialog=BoxDecoration(
-      color: AppColor.white.withOpacity(.6),
-      borderRadius: BorderRadius.circular(15),
+    color: bgPrimary.withOpacity(.8), // glass tint
+    borderRadius: BorderRadius.circular(15),
+    border: Border.all(
+      color: primary.withOpacity(.5),
+      width: .5,
+    ),
+    boxShadow: shadowBlack,
       // border: Border.all(width: 1,color: AppColor.primary.withOpacity(.5))
+  );
+
+  static Decoration containerNeon=BoxDecoration(
+    color: bgPrimary.withOpacity(.8), // glass tint
+    borderRadius: BorderRadius.circular(15),
+    border: Border.all(
+      color: primary.withOpacity(.5),
+      width: .5,
+    ),
+    boxShadow: shadowBlack,
+  );
+
+  static Decoration containerDecoration=BoxDecoration(
+    color: bgPrimary.withOpacity(.5), // glass tint
+    borderRadius: BorderRadius.circular(15),
+    border: Border.all(
+      color: primary.withOpacity(.5),
+      width: .5,
+    ),
+    boxShadow: shadowBlack,
   );
 
 

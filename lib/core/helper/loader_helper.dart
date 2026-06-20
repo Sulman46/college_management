@@ -14,7 +14,7 @@ static  showLoadingDialog() {
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaY: 4,sigmaX: 4),
           child: Dialog(
-            backgroundColor: AppColor.black.withOpacity(.1),
+            backgroundColor: AppColor.white.withOpacity(.1),
             insetPadding: EdgeInsets.zero,
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,

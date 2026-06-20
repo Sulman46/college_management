@@ -32,7 +32,7 @@ class FunctionClassAuthentication extends AuthenticationDataSource {
 
       // SUCCESS
       if (response.statusCode! >= 200 &&
-          response.statusCode! <= 201) {
+          response.statusCode! <= 300) {
 
         final model =
         LoginResponseModel.fromJson(data);

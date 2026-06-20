@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/app/myapp.dart';
 import '../../../../../core/constants/media_query.dart';
 import '../../domain/usecase/usecase.dart';
+import '../../models/add_semester_model.dart';
 import 'state.dart';
 
 class SemesterAdminCubit extends Cubit<SemesterAdminState> {
@@ -16,11 +17,12 @@ class SemesterAdminCubit extends Cubit<SemesterAdminState> {
   List<SemesterLevelsModel> filterSemesterList=[];
   List<SemesterLevelsModel> _semesterList=[];
   List<SemesterLevelsModel> get semesterList=>_semesterList;
+  List<SemesterLevelsModel> get activeSemesterList=>List.from(semesterList.where((element) => element.status=="Active",));
 
   TextEditingController searchController = TextEditingController();
 
-  SemesterLevelsModel _pickSemesterLevel=SemesterLevelsModel();
-  SemesterLevelsModel get pickSemesterLevel=>_pickSemesterLevel;
+  AddSemesterModel _pickSemesterLevel=AddSemesterModel();
+  AddSemesterModel get pickSemesterLevel=>_pickSemesterLevel;
   double top=mdHeight(navigatorKey.currentContext!)*.9;
   double right=30;
 
@@ -30,7 +32,7 @@ class SemesterAdminCubit extends Cubit<SemesterAdminState> {
     right-=rightVal;
     emit(SemesterAdminLoaded());
   }
-  void getSemesterLevel(SemesterLevelsModel value){
+  void getSemesterLevel(AddSemesterModel value){
     emit(SemesterAdminLoading());
     _pickSemesterLevel=value;
     emit(SemesterAdminLoaded());
@@ -115,7 +117,7 @@ class SemesterAdminCubit extends Cubit<SemesterAdminState> {
     emit(SemesterAdminLoading());
     List<SemesterLevelsModel> temp=[];
       for(var i in semesterList){
-        if(i.programName!.toLowerCase().toString().contains(val)|| i.department!.toLowerCase().toString().contains(val)|| i.degree!.toLowerCase().toString().contains(val)|| i.affiliation!.toLowerCase().toString().contains(val)|| i.status!.toLowerCase().toString().contains(val)){
+        if(i.programModel!.name.toLowerCase().toString().contains(val)|| i.programModel!.department.name.toLowerCase().toString().contains(val)|| i.programModel!.degree.toLowerCase().toString().contains(val)|| i.programModel!.affiliation.name.toLowerCase().toString().contains(val)|| i.status!.toLowerCase().toString().contains(val)){
           temp.add(i);
         }
       }

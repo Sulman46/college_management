@@ -35,14 +35,14 @@ class NewAllocationScreen extends StatefulWidget {
 }
 
 class _NewAllocationScreenState extends State<NewAllocationScreen> {
-  var _affiliationCubit=DiContainer().sl<UniversityProfileCubit>();
-  var _teacherAllocationCubit=DiContainer().sl<TeacherAllocationCubit>();
-  var _teacherRecordCubit=DiContainer().sl<TeacherRecordsCubit>();
-  var _departmentCubit=DiContainer().sl<AdminDepartmentCubit>();
-  var _programCubit=DiContainer().sl<AdminProgramsCubit>();
-  var _semesterCubit=DiContainer().sl<SemesterAdminCubit>();
-  var _courseMappingCubit=DiContainer().sl<CourseMappingCubit>();
-
+  // final _affiliationCubit=DiContainer().sl<UniversityProfileCubit>();
+  // final _semesterCubit=DiContainer().sl<AdminProgramsCubit>();
+  
+  final _semesterCubit=DiContainer().sl<SemesterAdminCubit>();
+  final _courseMappingCubit=DiContainer().sl<CourseMappingCubit>();
+  final _teacherAllocationCubit=DiContainer().sl<TeacherAllocationCubit>();
+  final _teacherRecordCubit=DiContainer().sl<TeacherRecordsCubit>();
+  
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -102,32 +102,32 @@ class _NewAllocationScreenState extends State<NewAllocationScreen> {
 
                       /// 🔹 Affiliation
                       BlocBuilder(
-                          bloc: _affiliationCubit,
+                          bloc: _semesterCubit,
                           builder: (context,statesbk) {
                             return _buildField(
                               title: "Affiliation",
                               child: SizedBox(
                                 width: mdWidth(context),
-                                child:_affiliationCubit.affiliationFilterList.isNotEmpty? CustomPopMenuButton(
-                                  menus:_affiliationCubit.affiliationFilterList.map((e) => e.name,).toList(),
+                                child:_semesterCubit.activeSemesterList.isNotEmpty? CustomPopMenuButton(
+                                  menus:_semesterCubit.activeSemesterList.map((e) => e.affiliation??"",).toSet().toList(),
                                  onSelected: (p0) {
-                                   String affiliation=_affiliationCubit.affiliationFilterList.map((e) => e.name,).toList()[p0];
+                                   String affiliation=_semesterCubit.activeSemesterList.map((e) => e.affiliation??"",).toSet().toList()[p0];
                                    _teacherAllocationCubit.getTeacherAllocationModel(TeacherAllocationModel(affiliation: affiliation));
                                  },
                                   offset: Offset(0, 30),
                                   widget: DropDownFieldWidget(
                                     text:_teacherAllocationCubit.teacherAllocationModel.affiliation?? 'Select..',
                                     maxLine: 1,
-                                    isFilled: false,
+                                    isFilled: _teacherAllocationCubit.teacherAllocationModel.affiliation!=null,
                                   ),
                                 ):InkWell(
                                   onTap: () async{
-                                    await _affiliationCubit.getUniversitySetup();
+                                    await _semesterCubit.getSemesterList();
                                   },
                                   child: DropDownFieldWidget(
                                     text: _teacherAllocationCubit.teacherAllocationModel.affiliation??'Select..',
                                     maxLine: 1,
-                                    isFilled: false,
+                                    isFilled: _teacherAllocationCubit.teacherAllocationModel.affiliation!=null,
                                   ),
                                 ),
                               ),
@@ -139,34 +139,34 @@ class _NewAllocationScreenState extends State<NewAllocationScreen> {
 
                       /// 🔹 DEPARTMENT
                       BlocBuilder(
-                        bloc: _programCubit,
+                        bloc: _semesterCubit,
                         builder: (context,statesbk) {
                           return _buildField(
                             title: "Department",
                             child: SizedBox(
                               width: mdWidth(context),
-                              child:_programCubit.programsList.isNotEmpty && _teacherAllocationCubit.teacherAllocationModel.affiliation!=null ? CustomPopMenuButton(
-                                menus:_programCubit.programsList.where((element) => element.affiliationName==_teacherAllocationCubit.teacherAllocationModel.affiliation,).map((e) => e.department,).toList(),
+                              child:_semesterCubit.activeSemesterList.isNotEmpty && _teacherAllocationCubit.teacherAllocationModel.affiliation!=null ? CustomPopMenuButton(
+                                menus:_semesterCubit.activeSemesterList.where((element) => element.affiliation==_teacherAllocationCubit.teacherAllocationModel.affiliation,).map((e) => e.department??"",).toSet().toList(),
                                 offset: Offset(0, 30),
                                 onSelected: (p0) {
-                                  String department=_programCubit.programsList.where((element) => element.affiliationName==_teacherAllocationCubit.teacherAllocationModel.affiliation,).map((e) => e.department,).toList()[p0];
+                                  String department=_semesterCubit.activeSemesterList.where((element) => element.affiliation==_teacherAllocationCubit.teacherAllocationModel.affiliation,).map((e) => e.department??"",).toSet().toList()[p0];
                                   _teacherAllocationCubit.getTeacherAllocationModel(TeacherAllocationModel(affiliation: _teacherAllocationCubit.teacherAllocationModel.affiliation,department: department));
                                 },
                                 widget: DropDownFieldWidget(
                                   canTap: _teacherAllocationCubit.teacherAllocationModel.affiliation!=null,
                                   text: _teacherAllocationCubit.teacherAllocationModel.department??'Select..',
                                   maxLine: 1,
-                                  isFilled: false,
+                                  isFilled: _teacherAllocationCubit.teacherAllocationModel.department!=null,
                                 ),
                               ):InkWell(
                                 onTap: () async{
-                                  await _programCubit.getPrograms();
+                                   await _semesterCubit.getSemesterList();
                                 },
                                 child: DropDownFieldWidget(
                                   canTap: _teacherAllocationCubit.teacherAllocationModel.affiliation!=null,
                                   text:_teacherAllocationCubit.teacherAllocationModel.department?? 'Select..',
                                   maxLine: 1,
-                                  isFilled: false,
+                                  isFilled: _teacherAllocationCubit.teacherAllocationModel.department!=null,
                                 ),
                               ),
                             ),
@@ -180,18 +180,19 @@ class _NewAllocationScreenState extends State<NewAllocationScreen> {
                       _buildField(
                         title: "Program",
                         child:  BlocBuilder(
-                            bloc: _programCubit,
+                            bloc: _semesterCubit,
                             builder: (context,statesbk) {
                             return SizedBox(
                               width: mdWidth(context),
                               child:_teacherAllocationCubit.teacherAllocationModel.department!=null?
                               CustomPopMenuButton(
-                                menus:_programCubit.programsList.where((element) => element.affiliationName==_teacherAllocationCubit.teacherAllocationModel.affiliation && element.department==_teacherAllocationCubit.teacherAllocationModel.department,).map((e) => e.name,).toList(),
+                                menus:_semesterCubit.activeSemesterList.where((element) => element.affiliation==_teacherAllocationCubit.teacherAllocationModel.affiliation && element.department==_teacherAllocationCubit.teacherAllocationModel.department,).map((e) => e.programName??"",).toSet().toList(),
                                 offset: Offset(0, 30),
                                 onSelected: (p0) {
-                                  String program=_programCubit.programsList.where((element) => element.affiliationName==_teacherAllocationCubit.teacherAllocationModel.affiliation && element.department==_teacherAllocationCubit.teacherAllocationModel.department,).map((e) => e.name,).toList()[p0];
+                                  String program=_semesterCubit.activeSemesterList.where((element) => element.affiliation==_teacherAllocationCubit.teacherAllocationModel.affiliation && element.department==_teacherAllocationCubit.teacherAllocationModel.department,).map((e) => e.programName??"",).toSet().toList()[p0];
                                   List<String> list=_teacherAllocationCubit.teacherAllocationModel.combinedPrograms??[];
                                   list.add(program);
+                                  list=list.toSet().toList();
                                   _teacherAllocationCubit.getTeacherAllocationModel(TeacherAllocationModel(affiliation: _teacherAllocationCubit.teacherAllocationModel.affiliation,department: _teacherAllocationCubit.teacherAllocationModel.department,combinedPrograms:list));
                                 },
                                 widget: DropDownFieldWidget(
@@ -203,7 +204,7 @@ class _NewAllocationScreenState extends State<NewAllocationScreen> {
                               ):InkWell(
                                 onTap: ()async {
                                   if(_teacherAllocationCubit.teacherAllocationModel.department!=null){
-                                    await _programCubit.getPrograms();
+                                     await _semesterCubit.getSemesterList();
                                   }
                                 },
                                 child: DropDownFieldWidget(
@@ -236,15 +237,15 @@ class _NewAllocationScreenState extends State<NewAllocationScreen> {
                       _buildField(
                         title: "Batch/Session",
                         child:  BlocBuilder(
-                            bloc: _programCubit,
+                            bloc: _semesterCubit,
                             builder: (context,statesbk) {
                               return SizedBox(
                                 width: mdWidth(context),
                                 child:_teacherAllocationCubit.teacherAllocationModel.combinedPrograms!=null && _teacherAllocationCubit.teacherAllocationModel.combinedPrograms!.isNotEmpty?
                                CustomPopMenuButton(
-                                menus: _programCubit.programsList.where((element) => element.affiliationName==_teacherAllocationCubit.teacherAllocationModel.affiliation && element.department==_teacherAllocationCubit.teacherAllocationModel.department && _teacherAllocationCubit.teacherAllocationModel.combinedPrograms!.contains(element.name) ).map((e) => e.session,).toList(),
+                                menus: _semesterCubit.activeSemesterList.where((element) => element.affiliation==_teacherAllocationCubit.teacherAllocationModel.affiliation && element.department==_teacherAllocationCubit.teacherAllocationModel.department && _teacherAllocationCubit.teacherAllocationModel.combinedPrograms!.contains(element.programName??"") ).map((e) => e.session??"",).toSet().toList(),
                                 onSelected:  (p0) {
-                                  String session=_programCubit.programsList.where((element) => element.affiliationName==_teacherAllocationCubit.teacherAllocationModel.affiliation && element.department==_teacherAllocationCubit.teacherAllocationModel.department && _teacherAllocationCubit.teacherAllocationModel.combinedPrograms!.contains(element.name) ).map((e) => e.session,).toList()[p0];
+                                  String session=_semesterCubit.activeSemesterList.where((element) => element.affiliation==_teacherAllocationCubit.teacherAllocationModel.affiliation && element.department==_teacherAllocationCubit.teacherAllocationModel.department && _teacherAllocationCubit.teacherAllocationModel.combinedPrograms!.contains(element.programName??"") ).map((e) => e.session??"",).toSet().toList()[p0];
                                   _teacherAllocationCubit.getTeacherAllocationModel(TeacherAllocationModel(affiliation: _teacherAllocationCubit.teacherAllocationModel.affiliation,department: _teacherAllocationCubit.teacherAllocationModel.department,combinedPrograms:_teacherAllocationCubit.teacherAllocationModel.combinedPrograms,batch: session ));
                                 },
                                  offset: Offset(0, 30),
@@ -252,19 +253,19 @@ class _NewAllocationScreenState extends State<NewAllocationScreen> {
                                   canTap: _teacherAllocationCubit.teacherAllocationModel.combinedPrograms!=null && _teacherAllocationCubit.teacherAllocationModel.combinedPrograms!.isNotEmpty,
                                   text:_teacherAllocationCubit.teacherAllocationModel.batch?? "Select..",
                                   maxLine: 1,
-                                  isFilled: false,
+                                  isFilled: _teacherAllocationCubit.teacherAllocationModel.batch!=null,
                                 ),
                               ):InkWell(
                                   onTap: () async{
                                     if(_teacherAllocationCubit.teacherAllocationModel.combinedPrograms!=null && _teacherAllocationCubit.teacherAllocationModel.combinedPrograms!.isNotEmpty){
-                                      await _programCubit.getPrograms();
+                                       await _semesterCubit.getSemesterList();
                                     }
                                   },
                                 child: DropDownFieldWidget(
                                     canTap: _teacherAllocationCubit.teacherAllocationModel.combinedPrograms!=null && _teacherAllocationCubit.teacherAllocationModel.combinedPrograms!.isNotEmpty,
                                     text:_teacherAllocationCubit.teacherAllocationModel.batch?? "Select..",
                                     maxLine: 1,
-                                    isFilled: false,
+                                    isFilled: _teacherAllocationCubit.teacherAllocationModel.batch!=null,
                                   ),
                               ),
                             );
@@ -276,14 +277,14 @@ class _NewAllocationScreenState extends State<NewAllocationScreen> {
                       _buildField(
                         title: "Degree",
                         child:  BlocBuilder(
-                            bloc: _programCubit,
+                            bloc: _semesterCubit,
                             builder: (context,statesbk) {
                               return SizedBox(
                                 width: mdWidth(context),
                                 child: _teacherAllocationCubit.teacherAllocationModel.batch!=null? CustomPopMenuButton(
-                                  menus: _programCubit.programsList.where((element) => element.affiliationName==_teacherAllocationCubit.teacherAllocationModel.affiliation && element.department==_teacherAllocationCubit.teacherAllocationModel.department && _teacherAllocationCubit.teacherAllocationModel.combinedPrograms!.contains(element.name) && element.session== _teacherAllocationCubit.teacherAllocationModel.batch).map((e) => e.degree,).toSet().toList(),
+                                  menus: _semesterCubit.activeSemesterList.where((element) => element.affiliation==_teacherAllocationCubit.teacherAllocationModel.affiliation && element.department==_teacherAllocationCubit.teacherAllocationModel.department && _teacherAllocationCubit.teacherAllocationModel.combinedPrograms!.contains(element.programName) && element.session== _teacherAllocationCubit.teacherAllocationModel.batch).map((e) => e.degree??"",).toSet().toList(),
                                   onSelected:  (p0) {
-                                    String degree=_programCubit.programsList.where((element) => element.affiliationName==_teacherAllocationCubit.teacherAllocationModel.affiliation && element.department==_teacherAllocationCubit.teacherAllocationModel.department && _teacherAllocationCubit.teacherAllocationModel.combinedPrograms!.contains(element.name) && element.session== _teacherAllocationCubit.teacherAllocationModel.batch).map((e) => e.degree,).toSet().toList()[p0];
+                                    String degree=_semesterCubit.activeSemesterList.where((element) => element.affiliation==_teacherAllocationCubit.teacherAllocationModel.affiliation && element.department==_teacherAllocationCubit.teacherAllocationModel.department && _teacherAllocationCubit.teacherAllocationModel.combinedPrograms!.contains(element.programName) && element.session== _teacherAllocationCubit.teacherAllocationModel.batch).map((e) => e.degree??"",).toSet().toList()[p0];
                                     var model=_teacherAllocationCubit.teacherAllocationModel;
                                     _teacherAllocationCubit.getTeacherAllocationModel(TeacherAllocationModel(affiliation: model.affiliation,department: model.department,programName:model.programName,combinedPrograms: model.combinedPrograms,batch: model.batch ,degree: degree,));
                                   },
@@ -292,19 +293,19 @@ class _NewAllocationScreenState extends State<NewAllocationScreen> {
                                     canTap: _teacherAllocationCubit.teacherAllocationModel.batch!=null,
                                     text:_teacherAllocationCubit.teacherAllocationModel.degree?? "Select..",
                                     maxLine: 1,
-                                    isFilled: false,
+                                    isFilled: _teacherAllocationCubit.teacherAllocationModel.degree!=null,
                                   ),
                                 ): InkWell(
                                   onTap: () async{
                                     if(_teacherAllocationCubit.teacherAllocationModel.batch!=null){
-                                      await _programCubit.getPrograms();
+                                       await _semesterCubit.getSemesterList();
                                     }
                                   },
                                   child: DropDownFieldWidget(
                                     canTap: _teacherAllocationCubit.teacherAllocationModel.batch!=null,
                                     text:_teacherAllocationCubit.teacherAllocationModel.degree?? "Select..",
                                     maxLine: 1,
-                                    isFilled: false,
+                                    isFilled: _teacherAllocationCubit.teacherAllocationModel.degree!=null,
                                   ),
                                 ),
                               );
@@ -322,14 +323,14 @@ class _NewAllocationScreenState extends State<NewAllocationScreen> {
                             child: _buildField(
                               title: "Section",
                               child:  BlocBuilder(
-                                  bloc: _programCubit,
+                                  bloc: _semesterCubit,
                                   builder: (context,statesbk) {
                                   return SizedBox(
                                     width: mdWidth(context),
                                     child: _teacherAllocationCubit.teacherAllocationModel.degree!=null? CustomPopMenuButton(
-                                      menus: _programCubit.programsList.where((element) => element.affiliationName==_teacherAllocationCubit.teacherAllocationModel.affiliation && element.department==_teacherAllocationCubit.teacherAllocationModel.department && _teacherAllocationCubit.teacherAllocationModel.combinedPrograms!.contains(element.name) && element.session== _teacherAllocationCubit.teacherAllocationModel.batch && element.degree == _teacherAllocationCubit.teacherAllocationModel.degree).map((e) => e.section,).toSet().toList(),
+                                      menus: _semesterCubit.activeSemesterList.where((element) => element.affiliation==_teacherAllocationCubit.teacherAllocationModel.affiliation && element.department==_teacherAllocationCubit.teacherAllocationModel.department && _teacherAllocationCubit.teacherAllocationModel.combinedPrograms!.contains(element.programName) && element.session== _teacherAllocationCubit.teacherAllocationModel.batch && element.degree == _teacherAllocationCubit.teacherAllocationModel.degree).map((e) => e.section??"",).toSet().toList(),
                                       onSelected:  (p0) {
-                                        String section=_programCubit.programsList.where((element) => element.affiliationName==_teacherAllocationCubit.teacherAllocationModel.affiliation && element.department==_teacherAllocationCubit.teacherAllocationModel.department && _teacherAllocationCubit.teacherAllocationModel.combinedPrograms!.contains(element.name) && element.session== _teacherAllocationCubit.teacherAllocationModel.batch && element.degree == _teacherAllocationCubit.teacherAllocationModel.degree).map((e) => e.section,).toSet().toList()[p0];
+                                        String section=_semesterCubit.activeSemesterList.where((element) => element.affiliation==_teacherAllocationCubit.teacherAllocationModel.affiliation && element.department==_teacherAllocationCubit.teacherAllocationModel.department && _teacherAllocationCubit.teacherAllocationModel.combinedPrograms!.contains(element.programName) && element.session== _teacherAllocationCubit.teacherAllocationModel.batch && element.degree == _teacherAllocationCubit.teacherAllocationModel.degree).map((e) => e.section??"",).toSet().toList()[p0];
                                         var model=_teacherAllocationCubit.teacherAllocationModel;
                                         _teacherAllocationCubit.getTeacherAllocationModel(TeacherAllocationModel(affiliation: model.affiliation,department: model.department,programName:model.programName,combinedPrograms: model.combinedPrograms,batch: model.batch ,degree: model.degree,section: section));
                                       },
@@ -338,19 +339,19 @@ class _NewAllocationScreenState extends State<NewAllocationScreen> {
                                         canTap: _teacherAllocationCubit.teacherAllocationModel.degree!=null,
                                         text:_teacherAllocationCubit.teacherAllocationModel.section?? "Select..",
                                         maxLine: 1,
-                                        isFilled: false,
+                                        isFilled: _teacherAllocationCubit.teacherAllocationModel.section!=null,
                                       ),
                                     ):InkWell(
                                       onTap: () async{
                                         if(_teacherAllocationCubit.teacherAllocationModel.degree!=null){
-                                          await _programCubit.getPrograms();
+                                           await _semesterCubit.getSemesterList();
                                         }
                                       },
                                       child: DropDownFieldWidget(
                                         canTap: _teacherAllocationCubit.teacherAllocationModel.degree!=null,
                                         text:_teacherAllocationCubit.teacherAllocationModel.section?? "Select..",
                                         maxLine: 1,
-                                        isFilled: false,
+                                        isFilled: _teacherAllocationCubit.teacherAllocationModel.section!=null,
                                       ),
                                     ),
                                   );
@@ -376,14 +377,13 @@ class _NewAllocationScreenState extends State<NewAllocationScreen> {
                                         String semesterName= _semesterCubit.semesterList.where((element) => element.affiliation==_teacherAllocationCubit.teacherAllocationModel.affiliation && element.department==_teacherAllocationCubit.teacherAllocationModel.department && _teacherAllocationCubit.teacherAllocationModel.combinedPrograms!.contains(element.programName) && element.session== _teacherAllocationCubit.teacherAllocationModel.batch && element.degree == _teacherAllocationCubit.teacherAllocationModel.degree && element.section==_teacherAllocationCubit.teacherAllocationModel.section).map((e) => e.semesterName??"",).toSet().toList()[p0];
                                         var model=_teacherAllocationCubit.teacherAllocationModel;
                                         _teacherAllocationCubit.getTeacherAllocationModel(TeacherAllocationModel(affiliation: model.affiliation,department: model.department,programName:model.programName,combinedPrograms: model.combinedPrograms,batch: model.batch ,degree: model.degree,section: model.section,semester: semesterName));
-
                                       },
                                       offset: Offset(0, 30),
                                       widget: DropDownFieldWidget(
                                         canTap: _teacherAllocationCubit.teacherAllocationModel.section!=null,
                                         text: _teacherAllocationCubit.teacherAllocationModel.semester??"Select..",
                                         maxLine: 1,
-                                        isFilled: false,
+                                        isFilled: _teacherAllocationCubit.teacherAllocationModel.semester!=null,
                                       ),
                                     ):InkWell(
                                       onTap: () async{
@@ -395,7 +395,7 @@ class _NewAllocationScreenState extends State<NewAllocationScreen> {
                                         canTap: _teacherAllocationCubit.teacherAllocationModel.section!=null,
                                         text: _teacherAllocationCubit.teacherAllocationModel.semester??"Select..",
                                         maxLine: 1,
-                                        isFilled: false,
+                                        isFilled: _teacherAllocationCubit.teacherAllocationModel.semester!=null,
                                       ),
                                     ),
                                   );
@@ -417,7 +417,7 @@ class _NewAllocationScreenState extends State<NewAllocationScreen> {
                             List<String> menuList=[];
                             if(_teacherAllocationCubit.teacherAllocationModel.semester!=null){
 
-                              filteredList = _courseMappingCubit.courseMappingList.where(
+                              filteredList = _courseMappingCubit.activeCourseMappingList.where(
                                     (element) =>
                                 element.affiliation ==
                                     _teacherAllocationCubit.teacherAllocationModel.affiliation &&
@@ -437,7 +437,7 @@ class _NewAllocationScreenState extends State<NewAllocationScreen> {
 
                               menuList = filteredList
                                   .map(
-                                    (e) => "${e.courseTitle} , ${e.courseCode}, ${e.creditHours}",
+                                    (e) => "${e.courseTitle} , ${e.courseCode},Credit hour: ${e.creditHours}",
                               )
                                   .toSet()
                                   .toList(); 
@@ -445,14 +445,14 @@ class _NewAllocationScreenState extends State<NewAllocationScreen> {
 
                             return SizedBox(
                               width: mdWidth(context),
-                              child:_courseMappingCubit.courseMappingList.isNotEmpty && _teacherAllocationCubit.teacherAllocationModel.semester!=null? CustomPopMenuButton(
+                              child:_courseMappingCubit.activeCourseMappingList.isNotEmpty && _teacherAllocationCubit.teacherAllocationModel.semester!=null? CustomPopMenuButton(
                                 menus: menuList,
                                 onSelected: (p0) {
                                   String selectedText = menuList[p0];
 
                                   final selectedModel = filteredList.firstWhere(
                                         (e) =>
-                                    "${e.courseTitle} , ${e.courseCode}, ${e.creditHours}" ==
+                                    "${e.courseTitle} , ${e.courseCode},Credit hour: ${e.creditHours}" ==
                                         selectedText,
                                   );
 
@@ -467,7 +467,7 @@ class _NewAllocationScreenState extends State<NewAllocationScreen> {
                                   text: _teacherAllocationCubit.teacherAllocationModel.courseName!=null?
                                      "${_teacherAllocationCubit.teacherAllocationModel.courseName}, ${_teacherAllocationCubit.teacherAllocationModel.courseCode}, ${_teacherAllocationCubit.teacherAllocationModel.creditHours}": "Select..",
                                   maxLine: 1,
-                                  isFilled: false,
+                                  isFilled: _teacherAllocationCubit.teacherAllocationModel.courseName!=null,
                                 ),
                               ): InkWell(
                                 onTap: () async{
@@ -480,7 +480,7 @@ class _NewAllocationScreenState extends State<NewAllocationScreen> {
                                                             text: _teacherAllocationCubit.teacherAllocationModel.courseName!=null?
                                                             "${_teacherAllocationCubit.teacherAllocationModel.courseName}, ${_teacherAllocationCubit.teacherAllocationModel.courseCode}, ${_teacherAllocationCubit.teacherAllocationModel.creditHours}": "Select..",
                                 maxLine: 1,
-                                isFilled: false,
+                                isFilled: _teacherAllocationCubit.teacherAllocationModel.courseName!=null,
                                                             ),
                               ),
                             );
@@ -497,11 +497,11 @@ class _NewAllocationScreenState extends State<NewAllocationScreen> {
                           builder: (context,statebkkl) {
                             return SizedBox(
                               width: mdWidth(context),
-                              child: _teacherRecordCubit.teacherList.isNotEmpty && _teacherAllocationCubit.teacherAllocationModel.courseName!=null? CustomPopMenuButton(
+                              child: _teacherRecordCubit.activeTeacherList.isNotEmpty && _teacherAllocationCubit.teacherAllocationModel.courseName!=null? CustomPopMenuButton(
                                 menus:
-                                _teacherRecordCubit.teacherList.where((element) => element.department!.contains(_teacherAllocationCubit.teacherAllocationModel.department),).map((e) => "${e.teacherName??""} (${e.specialization??""})",).toList(),
+                                _teacherRecordCubit.activeTeacherList.where((element) => element.department!.contains(_teacherAllocationCubit.teacherAllocationModel.department),).map((e) => "${e.teacherName??""}",).toList(),
                                 onSelected: (p0) {
-                                  String teacherName=_teacherRecordCubit.teacherList.where((element) => element.department!.contains(_teacherAllocationCubit.teacherAllocationModel.department),).map((e) => "${e.teacherName??""} (${e.specialization??""})",).toList()[p0];
+                                  String teacherName=_teacherRecordCubit.activeTeacherList.where((element) => element.department!.contains(_teacherAllocationCubit.teacherAllocationModel.department),).map((e) => "${e.teacherName??""}",).toList()[p0];
                                   var model = _teacherAllocationCubit.teacherAllocationModel;
                                   _teacherAllocationCubit.getTeacherAllocationModel(TeacherAllocationModel(affiliation: model.affiliation,department: model.department,programName:model.programName,combinedPrograms: model.combinedPrograms,batch: model.batch ,degree: model.degree,section: model.section,semester: model.semester,courseCode: model.courseCode,courseName: model.courseName,creditHours: model.creditHours,teacherName: teacherName, ));
 
@@ -512,7 +512,7 @@ class _NewAllocationScreenState extends State<NewAllocationScreen> {
                                   canTap: _teacherAllocationCubit.teacherAllocationModel.courseName!=null,
                                   text: _teacherAllocationCubit.teacherAllocationModel.teacherName??"Select",
                                   maxLine: 1,
-                                  isFilled: false,
+                                  isFilled: _teacherAllocationCubit.teacherAllocationModel.teacherName!=null,
                                 ),
                               ):InkWell(
                                 onTap: () async{
@@ -524,7 +524,7 @@ class _NewAllocationScreenState extends State<NewAllocationScreen> {
                                   canTap: _teacherAllocationCubit.teacherAllocationModel.courseName!=null,
                                   text:_teacherAllocationCubit.teacherAllocationModel.teacherName?? "Select",
                                   maxLine: 1,
-                                  isFilled: false,
+                                  isFilled: _teacherAllocationCubit.teacherAllocationModel.teacherName!=null,
                                 ),
                               ),
                             );
@@ -550,7 +550,7 @@ class _NewAllocationScreenState extends State<NewAllocationScreen> {
                             widget: DropDownFieldWidget(
                               text:_teacherAllocationCubit.teacherAllocationModel.allocationType?? "Select",
                               maxLine: 1,
-                              isFilled: false,
+                              isFilled: _teacherAllocationCubit.teacherAllocationModel.allocationType!=null,
                             ),
                           )
                         ),
@@ -574,7 +574,7 @@ class _NewAllocationScreenState extends State<NewAllocationScreen> {
                             widget: DropDownFieldWidget(
                               text:_teacherAllocationCubit.status,
                               maxLine: 1,
-                              isFilled: false,
+                              isFilled: _teacherAllocationCubit.teacherAllocationModel.status!=null,
                             ),
                           )
                         ),
@@ -589,7 +589,7 @@ class _NewAllocationScreenState extends State<NewAllocationScreen> {
                           onPressed: () async {
                             var model=_teacherAllocationCubit.teacherAllocationModel;
                             if(model.affiliation==null || model.department==null ||model.combinedPrograms==null || model.combinedPrograms!.isEmpty ||model.batch==null ||  model.degree==null|| model.section==null|| model.semester==null || model.courseName==null || model.courseName==null || model.creditHours==null || model.teacherName==null || model.status==null ){
-                              showMessage("Please fill all fields");
+                              showMessage("Please fill all fields",isError: true);
                               return ;
                             }
                             var response=

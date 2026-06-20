@@ -1,17 +1,20 @@
 import 'package:college_management/core/constants/app_widgets_size.dart';
 import 'package:college_management/features/admin/faculty_workload/presentation/widgets/stat_card_widget.dart';
 import 'package:flutter/material.dart';
+import '../../../../../core/app/di_container.dart';
 import '../../../../../core/app/myapp.dart';
 import '../../../../../core/constants/media_query.dart';
 import '../../../../../core/theme/AppColor.dart';
 import '../../../../../widgets/app_text.dart';
+import '../../../course_catalog/presentation/controller/cubit.dart';
+import '../../../teacher_allocation/presentation/controller/cubit.dart';
+import '../../../teacher_records/presentation/controller/cubit.dart';
 import '../widgets/animated_teacher_card_widget.dart';
 import '../widgets/faculty_header_delegate.dart';
 
 
 class FacultyWorkloadScreen extends StatefulWidget {
   const FacultyWorkloadScreen({super.key});
-
   @override
   State<FacultyWorkloadScreen> createState() =>
       _FacultyWorkloadScreenState();
@@ -21,9 +24,18 @@ class _FacultyWorkloadScreenState extends State<FacultyWorkloadScreen> {
 
   TextEditingController searchController = TextEditingController();
 
+  final _courseCatalogCubit = DiContainer().sl<CourseCatalogAdminCubit>();
+  final _allocationCubit=DiContainer().sl<TeacherAllocationCubit>();
+  final _teacherRecordCubit=DiContainer().sl<TeacherRecordsCubit>();
+
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      await  _courseCatalogCubit.getCourseCatalogList();
+      await _allocationCubit.get();
+      await _teacherRecordCubit.getTeachers();
+    },);
   }
 
 

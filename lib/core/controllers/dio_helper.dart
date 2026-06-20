@@ -67,14 +67,35 @@ class DioHelper {
   Future<Response> postWithFile(String endpoint, {FormData? data}) async {
     try {
       // Make POST request
-      Response response = await _dio.post(endpoint, data: data);
+      Response response = await _dio.post(endpoint, data: data,options: Options(
+        contentType: 'multipart/form-data',
+      ),);
 
       // Check if response status is not 2xx (client or server error)
       if (response.statusCode! < 200 || response.statusCode! >= 300) {
         log("345678989 error: ${response.statusCode} ${response.statusMessage}");
         return _handleApiError(response);
       }
+      return response; // Return response if status is in 2xx range
+    } on DioError catch (e) {
+      // Handle DioError exceptions like timeouts, network issues, etc.
+      return _handleError(e);
+    }
+  }
 
+
+  Future<Response> putWithFile(String endpoint, {FormData? data}) async {
+    try {
+      // Make POST request
+      Response response = await _dio.put(endpoint, data: data,options: Options(
+        contentType: 'multipart/form-data',
+      ),);
+
+      // Check if response status is not 2xx (client or server error)
+      if (response.statusCode! < 200 || response.statusCode! >= 300) {
+        log("345678989 error: ${response.statusCode} ${response.statusMessage}");
+        return _handleApiError(response);
+      }
       return response; // Return response if status is in 2xx range
     } on DioError catch (e) {
       // Handle DioError exceptions like timeouts, network issues, etc.
@@ -102,10 +123,10 @@ class DioHelper {
   }
 
   // Get method with improved error handling
-  Future<Response> get(String endpoint, {Map<String, dynamic>? data}) async {
+  Future<Response> get(String endpoint, {Map<String, dynamic>? data,Map<String, dynamic>? queryParameters}) async {
     try {
       // Make POST request
-      Response response = await _dio.get(endpoint, data: data);
+      Response response = await _dio.get(endpoint, data: data,queryParameters: queryParameters);
 
       // Check if response status is not 2xx (client or server error)
       if (response.statusCode! < 200 || response.statusCode! >= 300) {
@@ -178,7 +199,7 @@ class DioHelper {
     // Extract specific error messages from the response body (for validation errors, etc.)
     if (response.data != null && response.data is Map) {
       var data = response.data;
-      errorMessage = data['message'] ?? 'An error occurred';
+      errorMessage = data['message'] ?? data['error']?? 'An error occurred';
     }
 
     // Log the API error for debugging

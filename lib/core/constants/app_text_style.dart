@@ -14,6 +14,6 @@ class AppTextStyle{
 
 
   static TextStyle fieldTextStyle(){
-    return  GoogleFonts.inter(fontWeight: FontWeight.w500,color:AppColor.primary.withOpacity(.7),fontSize: 13);
+    return  GoogleFonts.inter(fontWeight: FontWeight.w500,color:AppColor.white.withOpacity(.7),fontSize: 13);
   }
 }

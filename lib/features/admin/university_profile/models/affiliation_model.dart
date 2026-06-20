@@ -54,6 +54,29 @@ class AffiliationModel {
       },
     };
   }
+
+
+  AffiliationModel copyWith({
+    String? name,
+    String? sector,
+    String? location,
+    String? website,
+    String? status,
+    String? id,
+    TheoryGradingCriteria? theory,
+    PracticalGradingCriteria? practical,
+  }) {
+    return AffiliationModel(
+      name: name ?? this.name,
+      sector: sector ?? this.sector,
+      location: location ?? this.location,
+      website: website ?? this.website,
+      status: status ?? this.status,
+      id: id ?? this.id,
+      theory: theory ?? this.theory,
+      practical: practical ?? this.practical,
+    );
+  }
 }
 
 class TheoryGradingCriteria {

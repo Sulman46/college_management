@@ -23,7 +23,7 @@ class BackButtonWidget extends StatelessWidget {
         padding: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: AppColor.black,
+          color: AppColor.white,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(width: .5,color: AppColor.grey)
         ),

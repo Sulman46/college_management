@@ -5,7 +5,6 @@ import 'package:college_management/core/helper/date_to_string_helper.dart';
 import 'package:college_management/core/helper/show_message.dart';
 import 'package:college_management/features/admin/semesters/models/semester_levels_model.dart';
 import 'package:college_management/features/admin/semesters/presentation/controller/cubit.dart';
-import 'package:college_management/features/admin/university_profile/presentation/controller/cubit.dart';
 import 'package:college_management/widgets/drop_down_field_widget.dart';
 import 'package:college_management/widgets/more_vert_pop_menu_button.dart';
 import 'package:flutter/material.dart';
@@ -18,8 +17,8 @@ import '../../../../../core/theme/AppColor.dart';
 import '../../../../../widgets/app_text.dart';
 import '../../../../../widgets/custom_button.dart';
 import '../../../../../widgets/custom_top_bar.dart';
-import '../../../departments/presentation/controller/cubit.dart';
 import '../../../programs/presentation/controller/cubit.dart';
+import '../../models/add_semester_model.dart';
 
 class AddSemesterScreen extends StatefulWidget {
    AddSemesterScreen({super.key,this.semesterLevelsModel});
@@ -30,15 +29,14 @@ SemesterLevelsModel? semesterLevelsModel;
 
 class _AddSemesterScreenState extends State<AddSemesterScreen> {
 
-  var _departmentCubit = DiContainer().sl<AdminDepartmentCubit>();
-  var _profileCubit = DiContainer().sl<UniversityProfileCubit>();
-  var _programCubit = DiContainer().sl<AdminProgramsCubit>();
-  var _semesterCubit = DiContainer().sl<SemesterAdminCubit>();
+  final _programCubit = DiContainer().sl<AdminProgramsCubit>();
+  final _semesterCubit = DiContainer().sl<SemesterAdminCubit>();
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       _semesterCubit.getSemesterLevel(widget.semesterLevelsModel??SemesterLevelsModel());
+      await _programCubit.getPrograms();
     },);
     // TODO: implement initState
     super.initState();
@@ -85,20 +83,20 @@ class _AddSemesterScreenState extends State<AddSemesterScreen> {
 
                       /// 🔹 DEPARTMENT
                       BlocBuilder(
-                        bloc: _departmentCubit,
+                        bloc: _programCubit,
                         builder: (context,statesbknk) {
                           return _buildField(
                             title: "Department",
                             child: SizedBox(
                               width: mdWidth(context),
                               child:
-                              _departmentCubit.departmentList.isNotEmpty?
+                              _programCubit.activePrograms.isNotEmpty?
                               CustomPopMenuButton(
-                                menus:_departmentCubit.departmentList.map((e) => e.name,).toList(),
+                                menus:_programCubit.activePrograms.map((e) => "${e.department.name} (${e.department.code})",).toSet().toList(),
                                 onSelected: (p0) {
-                                  String val=_departmentCubit.departmentList.map((e) => e.name,).toList()[p0];
-                                  SemesterLevelsModel model=_semesterCubit.pickSemesterLevel;
-                                  model=model.copyWith(department: val);
+                                  String val=_programCubit.activePrograms.map((e) => "${e.department.name} (${e.department.code})",).toSet().toList()[p0];
+                                  AddSemesterModel pickedModel=_semesterCubit.pickSemesterLevel;
+                                  AddSemesterModel model=AddSemesterModel(department: val,status: pickedModel.status,semesterName: pickedModel.semesterName,endDate: pickedModel.endDate,startDate: pickedModel.startDate);
                                   _semesterCubit.getSemesterLevel(model);
 
                                 },
@@ -106,16 +104,16 @@ class _AddSemesterScreenState extends State<AddSemesterScreen> {
                                 widget: DropDownFieldWidget(
                                   text:_semesterCubit.pickSemesterLevel.department!=null? _semesterCubit.pickSemesterLevel.department??"": 'Select Department',
                                   maxLine: 1,
-                                  isFilled: false,
+                                  isFilled: _semesterCubit.pickSemesterLevel.department!=null,
                                 ),
                               ):InkWell(
                                 onTap:  () async{
-                                  await _departmentCubit.getDepartments();
+                                  await _programCubit.getPrograms();
                                 },
                                 child: DropDownFieldWidget(
                                   text: _semesterCubit.pickSemesterLevel.department!=null? _semesterCubit.pickSemesterLevel.department??"": 'Select Department',
                                   maxLine: 1,
-                                  isFilled: false,
+                                  isFilled: _semesterCubit.pickSemesterLevel.department!=null,
                                 ),
                               ),
                             ),
@@ -134,29 +132,34 @@ class _AddSemesterScreenState extends State<AddSemesterScreen> {
                             child:  SizedBox(
                               width: mdWidth(context),
                               child:
-                              _programCubit.programsList.isNotEmpty?
+                              _programCubit.activePrograms.isNotEmpty && _semesterCubit.pickSemesterLevel.department!=null?
                               CustomPopMenuButton(
-                                menus: _programCubit.programsList.map((e) => e.name,).toList(),
+                                menus: _programCubit.activePrograms.where((element) => element.department==_semesterCubit.pickSemesterLevel.department,).map((e) => e.name,).toSet().toList(),
                                 onSelected: (p0) {
-                                  String val=_programCubit.programsList.map((e) => e.name,).toList()[p0];
-                                  SemesterLevelsModel model=_semesterCubit.pickSemesterLevel;
-                                  model=model.copyWith(programName: val,programId: _programCubit.programsList.map((e) => e.id,).toList()[p0]);
+                                  String val=_programCubit.activePrograms.where((element) => element.department==_semesterCubit.pickSemesterLevel.department,).map((e) => e.name,).toSet().toList()[p0];
+                                  String programId=_programCubit.activePrograms.where((element) => element.department==_semesterCubit.pickSemesterLevel.department,).map((e) => e.id,).toSet().toList()[p0];
+                                  AddSemesterModel pickedModel=_semesterCubit.pickSemesterLevel;
+                                  AddSemesterModel model=AddSemesterModel(programName: val,programId: programId,department: pickedModel.department,status: pickedModel.status,semesterName: pickedModel.semesterName,endDate: pickedModel.endDate,startDate: pickedModel.startDate);
                                   _semesterCubit.getSemesterLevel(model);
                                 },
                                 offset: Offset(0, 30),
                                 widget: DropDownFieldWidget(
                                   text:_semesterCubit.pickSemesterLevel.programName!=null? _semesterCubit.pickSemesterLevel.programName??"": "Select Program",
                                   maxLine: 1,
-                                  isFilled: false,
+                                  isFilled: _semesterCubit.pickSemesterLevel.programName!=null,
                                 ),
                               ):InkWell(
                                 onTap: () async{
-                                  await _programCubit.getPrograms();
+                                  if(_semesterCubit.pickSemesterLevel.department!=null && _programCubit.activePrograms.isEmpty){
+                                    await _programCubit.getPrograms();
+                                  }else{
+                                    showMessage("Select Department");
+                                  }
                                 },
                                 child: DropDownFieldWidget(
                                   text:_semesterCubit.pickSemesterLevel.programName!=null? _semesterCubit.pickSemesterLevel.programName??"": "Select Program",
                                   maxLine: 1,
-                                  isFilled: false,
+                                  isFilled: _semesterCubit.pickSemesterLevel.programName!=null,
                                 ),
                               ),
                             ),
@@ -168,36 +171,40 @@ class _AddSemesterScreenState extends State<AddSemesterScreen> {
 
                       /// 🔹 AFFILIATION
                       BlocBuilder(
-                        bloc: _profileCubit,
+                        bloc: _programCubit,
                         builder: (context,statesbkios) {
                           return _buildField(
                             title: "Affiliation",
                             child:  SizedBox(
                               width: mdWidth(context),
                               child:
-                              _profileCubit.affiliationFilterList.isNotEmpty?
+                              _programCubit.activePrograms.isNotEmpty && _semesterCubit.pickSemesterLevel.department!=null?
                               CustomPopMenuButton(
-                                menus: _profileCubit.affiliationFilterList.map((e) => e.name,).toList(),
+                                menus: _programCubit.activePrograms.where((element) => element.department==_semesterCubit.pickSemesterLevel.department && element.id==_semesterCubit.pickSemesterLevel.programId,).map((e) => e.affiliation.name,).toSet().toList(),
                                 onSelected: (p0) {
-                                  String val=_profileCubit.affiliationFilterList.map((e) => e.name,).toList()[p0];
-                                  SemesterLevelsModel model=_semesterCubit.pickSemesterLevel;
-                                  model=model.copyWith(affiliation: val);
+                                  String val=_programCubit.activePrograms.where((element) => element.department==_semesterCubit.pickSemesterLevel.department && element.id==_semesterCubit.pickSemesterLevel.programId,).map((e) => e.affiliation.name,).toSet().toList()[p0];
+                                  AddSemesterModel pickedModel=_semesterCubit.pickSemesterLevel;
+                                  AddSemesterModel model=AddSemesterModel(affiliation: val,programName: pickedModel.programName,programId: pickedModel.programId,department: pickedModel.department,status: pickedModel.status,semesterName: pickedModel.semesterName,endDate: pickedModel.endDate,startDate: pickedModel.startDate);
                                   _semesterCubit.getSemesterLevel(model);
                                 },
                                 offset: Offset(0, 30),
                                 widget: DropDownFieldWidget(
                                   text:_semesterCubit.pickSemesterLevel.affiliation!=null? _semesterCubit.pickSemesterLevel.affiliation??"": "Select Affiliation",
                                   maxLine: 1,
-                                  isFilled: false,
+                                  isFilled: _semesterCubit.pickSemesterLevel.affiliation!=null,
                                 ),
                               ):InkWell(
                                 onTap: ()async {
-                                 await _profileCubit.getUniversitySetup();
+                                  if(_semesterCubit.pickSemesterLevel.department!=null && _programCubit.activePrograms.isEmpty){
+                                    await _programCubit.getPrograms();
+                                  }else{
+                                    showMessage("Select Program");
+                                  }
                                 },
                                 child: DropDownFieldWidget(
                                   text:_semesterCubit.pickSemesterLevel.affiliation!=null? _semesterCubit.pickSemesterLevel.affiliation??"": "Select Affiliation",
                                   maxLine: 1,
-                                  isFilled: false,
+                                  isFilled: _semesterCubit.pickSemesterLevel.affiliation!=null,
                                 ),
                               ),
                             ),
@@ -215,28 +222,34 @@ class _AddSemesterScreenState extends State<AddSemesterScreen> {
                             title: "Degree",
                             child:  SizedBox(
                               width: mdWidth(context),
-                              child:_programCubit.programsList.isNotEmpty? CustomPopMenuButton(
-                                menus: _programCubit.programsList.map((e) => e.degree,).toList(),
+                              child:_programCubit.activePrograms.isNotEmpty &&  _semesterCubit.pickSemesterLevel.affiliation!=null?
+                              CustomPopMenuButton(
+                                menus: _programCubit.activePrograms.where((element) => element.department==_semesterCubit.pickSemesterLevel.department && element.id==_semesterCubit.pickSemesterLevel.programId && element.affiliation.name==_semesterCubit.pickSemesterLevel.affiliation).map((e) => e.degree,).toSet().toList(),
                                 onSelected: (p0) {
-                                  String val=_programCubit.programsList.map((e) => e.degree,).toList()[p0];
-                                  SemesterLevelsModel model=_semesterCubit.pickSemesterLevel;
-                                  model=model.copyWith(degree: val);
+                                  String val=_programCubit.activePrograms.where((element) => element.department==_semesterCubit.pickSemesterLevel.department && element.id==_semesterCubit.pickSemesterLevel.programId && element.affiliation.name==_semesterCubit.pickSemesterLevel.affiliation).map((e) => e.degree,).toSet().toList()[p0];
+                                  AddSemesterModel pickedModel=_semesterCubit.pickSemesterLevel;
+                                  AddSemesterModel model=AddSemesterModel(degree: val,affiliation: pickedModel.affiliation,programName: pickedModel.programName,programId: pickedModel.programId,department: pickedModel.department,status: pickedModel.status,semesterName: pickedModel.semesterName,endDate: pickedModel.endDate,startDate: pickedModel.startDate);
+
                                   _semesterCubit.getSemesterLevel(model);
                                 },
                                 offset: Offset(0, 30),
                                 widget: DropDownFieldWidget(
                                   text:_semesterCubit.pickSemesterLevel.degree!=null? _semesterCubit.pickSemesterLevel.degree??"": "Select Degree",
                                   maxLine: 1,
-                                  isFilled: false,
+                                  isFilled: _semesterCubit.pickSemesterLevel.degree!=null,
                                 ),
                               ):InkWell(
                                 onTap: () async{
-                                await  _programCubit.getPrograms();
+                                  if( _semesterCubit.pickSemesterLevel.affiliation!=null &&_programCubit.activePrograms.isEmpty){
+                                    await  _programCubit.getPrograms();
+                                  }else{
+                                    showMessage("Select Affiliation");
+                                  }
                                 },
                                 child: DropDownFieldWidget(
                                   text:_semesterCubit.pickSemesterLevel.degree!=null? _semesterCubit.pickSemesterLevel.degree??"": "Select Degree",
                                   maxLine: 1,
-                                  isFilled: false,
+                                  isFilled: _semesterCubit.pickSemesterLevel.degree!=null,
                                 ),
                               ),
                             ),
@@ -254,28 +267,33 @@ class _AddSemesterScreenState extends State<AddSemesterScreen> {
                             title: "Session",
                             child:  SizedBox(
                               width: mdWidth(context),
-                              child:_programCubit.programsList.isNotEmpty? CustomPopMenuButton(
-                                menus: _programCubit.programsList.map((e) => e.session,).toList(),
+                              child:_programCubit.activePrograms.isNotEmpty &&_semesterCubit.pickSemesterLevel.degree!=null? CustomPopMenuButton(
+                                menus: _programCubit.activePrograms.where((element) => element.department==_semesterCubit.pickSemesterLevel.department && element.id==_semesterCubit.pickSemesterLevel.programId && element.affiliation.name==_semesterCubit.pickSemesterLevel.affiliation && element.degree==_semesterCubit.pickSemesterLevel.degree).map((e) => e.session,).toSet().toList(),
                                 onSelected: (p0) {
-                                  String val=_programCubit.programsList.map((e) => e.session,).toList()[p0];
-                                  SemesterLevelsModel model=_semesterCubit.pickSemesterLevel;
-                                  model=model.copyWith(session: val);
+                                  String val=_programCubit.activePrograms.where((element) => element.department==_semesterCubit.pickSemesterLevel.department && element.id==_semesterCubit.pickSemesterLevel.programId && element.affiliation.name==_semesterCubit.pickSemesterLevel.affiliation && element.degree==_semesterCubit.pickSemesterLevel.degree).map((e) => e.session,).toSet().toList()[p0];
+                                  AddSemesterModel pickedModel=_semesterCubit.pickSemesterLevel;
+                                  AddSemesterModel model=AddSemesterModel(session: val,degree: pickedModel.degree,affiliation: pickedModel.affiliation,programName: pickedModel.programName,programId: pickedModel.programId,department: pickedModel.department,status: pickedModel.status,semesterName: pickedModel.semesterName,endDate: pickedModel.endDate,startDate: pickedModel.startDate);
                                   _semesterCubit.getSemesterLevel(model);
                                 },
                                 offset: Offset(0, 30),
                                 widget: DropDownFieldWidget(
                                   text:_semesterCubit.pickSemesterLevel.session!=null? _semesterCubit.pickSemesterLevel.session??"": "Select Session",
                                   maxLine: 1,
-                                  isFilled: false,
+                                  isFilled: _semesterCubit.pickSemesterLevel.session!=null,
                                 ),
                               ):InkWell(
                                 onTap: () async{
-                                 await _programCubit.getPrograms();
+                                  if(_semesterCubit.pickSemesterLevel.degree!=null && _programCubit.activePrograms.isEmpty){
+                                    await _programCubit.getPrograms();
+
+                                  }else{
+                                    showMessage("Select Degree");
+                                  }
                                 },
                                 child: DropDownFieldWidget(
                                   text:_semesterCubit.pickSemesterLevel.session!=null? _semesterCubit.pickSemesterLevel.session??"": "Select Session",
                                   maxLine: 1,
-                                  isFilled: false,
+                                  isFilled: _semesterCubit.pickSemesterLevel.session!=null,
                                 ),
                               ),
                             ),
@@ -295,29 +313,33 @@ class _AddSemesterScreenState extends State<AddSemesterScreen> {
                             child:  SizedBox(
                               width: mdWidth(context),
                               child:
-                              _programCubit.programsList.isNotEmpty?
+                              _programCubit.activePrograms.isNotEmpty && _semesterCubit.pickSemesterLevel.session!=null?
                               CustomPopMenuButton(
-                                menus: _programCubit.programsList.map((e) => e.section,).toList(),
+                                menus: _programCubit.activePrograms.where((element) => element.department.id==_semesterCubit.pickSemesterLevel.department && element.id==_semesterCubit.pickSemesterLevel.programId && element.affiliation.name==_semesterCubit.pickSemesterLevel.affiliation && element.degree==_semesterCubit.pickSemesterLevel.degree&& element.session==_semesterCubit.pickSemesterLevel.session).map((e) => e.section,).toSet().toList(),
                                 onSelected: (p0) {
-                                  String val=_programCubit.programsList.map((e) => e.section,).toList()[p0];
-                                  SemesterLevelsModel model=_semesterCubit.pickSemesterLevel;
-                                  model=model.copyWith(section: val);
+                                  String val=_programCubit.activePrograms.where((element) => element.department==_semesterCubit.pickSemesterLevel.department && element.id==_semesterCubit.pickSemesterLevel.programId && element.affiliation.name==_semesterCubit.pickSemesterLevel.affiliation && element.degree==_semesterCubit.pickSemesterLevel.degree&& element.session==_semesterCubit.pickSemesterLevel.session).map((e) => e.section,).toSet().toList()[p0];
+                                  AddSemesterModel pickedModel=_semesterCubit.pickSemesterLevel;
+                                  AddSemesterModel model=AddSemesterModel(section: val,session: pickedModel.session,degree: pickedModel.degree,affiliation: pickedModel.affiliation,programName: pickedModel.programName,programId: pickedModel.programId,department: pickedModel.department,status: pickedModel.status,semesterName: pickedModel.semesterName,endDate: pickedModel.endDate,startDate: pickedModel.startDate);
                                   _semesterCubit.getSemesterLevel(model);
                                 },
                                 offset: Offset(0, 30),
                                 widget: DropDownFieldWidget(
                                   text:_semesterCubit.pickSemesterLevel.section!=null? _semesterCubit.pickSemesterLevel.section??"": "Select Section",
                                   maxLine: 1,
-                                  isFilled: false,
+                                  isFilled: _semesterCubit.pickSemesterLevel.section!=null,
                                 ),
                               ):InkWell(
                                 onTap: () async {
-                                  await _programCubit.getPrograms();
+                                   if(_semesterCubit.pickSemesterLevel.session!=null && _programCubit.activePrograms.isEmpty){
+                                    await _programCubit.getPrograms();
+                                  }else{
+                                     showMessage("Select Session");
+                                   }
                                 },
                                 child: DropDownFieldWidget(
                                   text:_semesterCubit.pickSemesterLevel.section!=null? _semesterCubit.pickSemesterLevel.section??"": "Select Section",
                                   maxLine: 1,
-                                  isFilled: false,
+                                  isFilled: _semesterCubit.pickSemesterLevel.section!=null,
                                 ),
                               ),
                             ),
@@ -336,7 +358,7 @@ class _AddSemesterScreenState extends State<AddSemesterScreen> {
                             menus: ConstantData.semesterList,
                             onSelected: (p0) {
                               String val=ConstantData.semesterList[p0];
-                              SemesterLevelsModel model=_semesterCubit.pickSemesterLevel;
+                              AddSemesterModel model=_semesterCubit.pickSemesterLevel;
                               model=model.copyWith(semesterName: val);
                               _semesterCubit.getSemesterLevel(model);
                             },
@@ -344,7 +366,7 @@ class _AddSemesterScreenState extends State<AddSemesterScreen> {
                             widget: DropDownFieldWidget(
                               text:_semesterCubit.pickSemesterLevel.semesterName!=null? _semesterCubit.pickSemesterLevel.semesterName??"": "Select Level",
                               maxLine: 1,
-                              isFilled: false,
+                              isFilled: _semesterCubit.pickSemesterLevel.semesterName!=null,
                             ),
                           ),
                         ),
@@ -367,7 +389,7 @@ class _AddSemesterScreenState extends State<AddSemesterScreen> {
                                   );
                                   return;
                                 }
-                                SemesterLevelsModel model=_semesterCubit.pickSemesterLevel;
+                                AddSemesterModel model=_semesterCubit.pickSemesterLevel;
                                 model=model.copyWith(startDate: pickedDate);
                                 _semesterCubit.getSemesterLevel(model);
                               }
@@ -376,7 +398,7 @@ class _AddSemesterScreenState extends State<AddSemesterScreen> {
                               title: "Start Date",
                               text:_semesterCubit.pickSemesterLevel.startDate!=null?DateToStringHelper.dateMonthYearConvert(_semesterCubit.pickSemesterLevel.startDate!): "Start Date",
                               maxLine: 1,
-                              isFilled: false,
+                              isFilled: _semesterCubit.pickSemesterLevel.startDate!=null,
                             ),
                           )),
                           SizedBox(width: 10,),
@@ -396,7 +418,7 @@ class _AddSemesterScreenState extends State<AddSemesterScreen> {
                                   );
                                   return;
                                 }
-                                SemesterLevelsModel model=_semesterCubit.pickSemesterLevel;
+                                AddSemesterModel model=_semesterCubit.pickSemesterLevel;
                                 model=model.copyWith(endDate: pickedDate);
                                 _semesterCubit.getSemesterLevel(model);
                               }
@@ -405,7 +427,7 @@ class _AddSemesterScreenState extends State<AddSemesterScreen> {
                               title: "End Date",
                               text:_semesterCubit.pickSemesterLevel.endDate!=null? DateToStringHelper.dateMonthYearConvert(_semesterCubit.pickSemesterLevel.endDate!): "End Date",
                               maxLine: 1,
-                              isFilled: false,
+                              isFilled: _semesterCubit.pickSemesterLevel.endDate!=null,
                             ),
                           ))
                         ],
@@ -421,7 +443,7 @@ class _AddSemesterScreenState extends State<AddSemesterScreen> {
                             menus: ['Active', 'Inactive'],
                             onSelected: (p0) {
                               String val=['Active', 'Inactive'][p0];
-                              SemesterLevelsModel model=_semesterCubit.pickSemesterLevel;
+                              AddSemesterModel model=_semesterCubit.pickSemesterLevel;
                               model=model.copyWith(status: val);
                               _semesterCubit.getSemesterLevel(model);
                             },
@@ -429,7 +451,7 @@ class _AddSemesterScreenState extends State<AddSemesterScreen> {
                             widget: DropDownFieldWidget(
                               text:_semesterCubit.pickSemesterLevel.status!=null? _semesterCubit.pickSemesterLevel.status??"":"Select Status",
                               maxLine: 1,
-                              isFilled: false,
+                              isFilled: _semesterCubit.pickSemesterLevel.status!=null,
                             ),
                           ),
                         ),
@@ -443,12 +465,16 @@ class _AddSemesterScreenState extends State<AddSemesterScreen> {
                           width: mdWidth(context) * .7,
                           onPressed: () async{
                             if(_semesterCubit.pickSemesterLevel.department==null || _semesterCubit.pickSemesterLevel.affiliation==null||_semesterCubit.pickSemesterLevel.programName==null||_semesterCubit.pickSemesterLevel.degree==null||_semesterCubit.pickSemesterLevel.session==null||_semesterCubit.pickSemesterLevel.section==null||_semesterCubit.pickSemesterLevel.semesterName==null||_semesterCubit.pickSemesterLevel.status==null){
-                              showMessage("Please fill all fields");
+                              showMessage("Please fill all fields",isError: true);
                               return;
                             }
+                            var model=_semesterCubit.pickSemesterLevel;
+                            if(widget.semesterLevelsModel!=null){
+                              model=model.copyWith(id: widget.semesterLevelsModel?.id??"");
+                            }
                          bool val=widget.semesterLevelsModel!=null?
-                              await _semesterCubit.editSemester(_semesterCubit.pickSemesterLevel)
-                             : await _semesterCubit.addSemester(_semesterCubit.pickSemesterLevel);
+                              await _semesterCubit.editSemester(model)
+                             : await _semesterCubit.addSemester(model);
                             if(val){
                               context.pop();
                             }
