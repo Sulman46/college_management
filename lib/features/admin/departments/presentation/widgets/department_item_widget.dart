@@ -79,8 +79,10 @@ class DepartmentItemWidget extends StatelessWidget {
                         var val= await  _departmentCubit.deleteDepartment(model.id);
                         if(val){
                           Navigator.pop(context);
+                          await _departmentCubit.getDepartments();
                         }
-                      },),
+                      },
+                    ),
                   ));
 
                 }

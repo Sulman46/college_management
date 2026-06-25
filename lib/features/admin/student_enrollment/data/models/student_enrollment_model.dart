@@ -7,6 +7,10 @@ class StudentEnrollmentModel {
   final String? rollNo;
   final String? name;
   final String? semester;
+  final String? semesterId;
+  final String? targetSemesterId;
+  final String? sourceSemesterId;
+  final String? enrollmentIdToDelete;
   final String? section;
   final String? session;
   final String? department;
@@ -23,6 +27,10 @@ class StudentEnrollmentModel {
     this.rollNo,
     this.name,
     this.semester,
+    this.semesterId,
+    this.targetSemesterId,
+    this.sourceSemesterId,
+    this.enrollmentIdToDelete,
     this.section,
     this.session,
     this.department,
@@ -34,14 +42,15 @@ class StudentEnrollmentModel {
   });
 
   factory StudentEnrollmentModel.fromMap(Map<String, dynamic> map) {
-    log("3242324: ${map}");
+
     return StudentEnrollmentModel(
       id: map['_id']?.toString(),
       studentId: map['studentId']?.toString(),
-      srNo: map['srNo']?.toString(),
+      srNo: map['registrationNumber']?.toString(),
       rollNo: map['rollNo']?.toString(),
       name: map['name']?.toString(),
       semester: map['semester']?.toString(),
+      semesterId: map['semesterId']?.toString(),
       section: map['section']?.toString(),
       session: map['session']?.toString(),
       department: map['department']?.toString(),
@@ -57,18 +66,25 @@ class StudentEnrollmentModel {
     return {
       if (id != null && id!.isNotEmpty) '_id': id,
       'studentId': studentId,
-      'srNo': srNo,
-      'rollNo': rollNo,
-      'name': name,
-      'semester': semester,
-      'section': section,
-      'session': session,
-      'department': department,
-      'programName': programName,
-      'degree': degree,
-      'affiliation': affiliation,
-      'status': status,
-      'rollNumberSlip': rollNumberSlip,
+      'semesterId': semesterId,
+      if(targetSemesterId!=null)
+      'targetSemesterId': targetSemesterId,
+      if(sourceSemesterId!=null)
+        "sourceSemesterId":sourceSemesterId,
+      if(enrollmentIdToDelete!=null)
+        "enrollmentIdToDelete":enrollmentIdToDelete,
+      // 'srNo': srNo,
+      // 'rollNo': rollNo,
+      // 'name': name,
+      // 'semester': semester,
+      // 'section': section,
+      // 'session': session,
+      // 'department': department,
+      // 'programName': programName,
+      // 'degree': degree,
+      // 'affiliation': affiliation,
+      // 'status': status,
+      // 'rollNumberSlip': rollNumberSlip,
     };
   }
 
@@ -79,6 +95,10 @@ class StudentEnrollmentModel {
     String? rollNo,
     String? name,
     String? semester,
+    String? semesterId,
+    String? targetSemesterId,
+    String? sourceSemesterId,
+    String? enrollmentIdToDelete,
     String? section,
     String? session,
     String? department,
@@ -95,6 +115,10 @@ class StudentEnrollmentModel {
       rollNo: rollNo ?? this.rollNo,
       name: name ?? this.name,
       semester: semester ?? this.semester,
+      semesterId: semesterId ?? this.semesterId,
+      targetSemesterId: targetSemesterId ?? this.targetSemesterId,
+      sourceSemesterId: sourceSemesterId ?? this.sourceSemesterId,
+      enrollmentIdToDelete: enrollmentIdToDelete ?? this.enrollmentIdToDelete,
       section: section ?? this.section,
       session: session ?? this.session,
       department: department ?? this.department,

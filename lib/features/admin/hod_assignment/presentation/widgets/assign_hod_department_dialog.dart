@@ -1,26 +1,23 @@
 import 'package:college_management/core/app/di_container.dart';
 import 'package:college_management/core/constants/app_widgets_size.dart';
 import 'package:college_management/core/constants/constant_data.dart';
-import 'package:college_management/core/constants/media_query.dart';
 import 'package:college_management/core/helper/app_date_picker.dart';
 import 'package:college_management/core/helper/date_to_string_helper.dart';
 import 'package:college_management/core/helper/show_message.dart';
 import 'package:college_management/features/admin/departments/presentation/controller/cubit.dart';
 import 'package:college_management/features/admin/hod_assignment/models/hod_assign_model.dart';
 import 'package:college_management/features/admin/hod_assignment/presentation/controller/cubit.dart';
+import 'package:college_management/features/admin/teacher_records/models/teacher_model.dart';
 import 'package:college_management/features/admin/teacher_records/presentation/controller/cubit.dart';
 import 'package:college_management/widgets/drop_down_field_widget.dart';
 import 'package:college_management/widgets/more_vert_pop_menu_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart' as intl;
-
 import '../../../../../core/theme/AppColor.dart';
 import '../../../../../widgets/app_text.dart';
 import '../../../../../widgets/custom_button.dart';
-import '../../../../../widgets/custom_text_form.dart';
+
 
 class AssignHodDepartmentDialog extends StatefulWidget {
   const AssignHodDepartmentDialog({super.key, this.hodAssignModel});
@@ -86,12 +83,12 @@ class _AssignHodDepartmentDialogState extends State<AssignHodDepartmentDialog> {
                       menus: _teacherCubit.teacherList.map((e) => e.teacherName??"",).toList(),
                       offset: Offset(0, 30),
                       onSelected: (p0) {
-                        _hodAssignCubit.getHodAssignModel(_hodAssignCubit.addHodAssignModel.copyWith(teacherName:  _teacherCubit.teacherList.map((e) => e.teacherName??"",).toList()[p0],teacherId: _teacherCubit.teacherList.map((e) => e.id??"",).toList()[p0] ));
+                        _hodAssignCubit.getHodAssignModel(_hodAssignCubit.addHodAssignModel.copyWith(teacher:  HodTeacherModel(teacherName: _teacherCubit.teacherList.map((e) => e.teacherName??"",).toList()[p0],id: _teacherCubit.teacherList.map((e) => e.id??"",).toList()[p0])));
                       },
                       widget: DropDownFieldWidget(
-                        text: _hodAssignCubit.addHodAssignModel.teacherName??"Select..",
+                        text: _hodAssignCubit.addHodAssignModel.teacher?.teacherName??"Select..",
                         maxLine: 1,
-                        isFilled: false,
+                        isFilled: _hodAssignCubit.addHodAssignModel.teacher?.teacherName!=null,
                       ),
                       title: "Faculty Teacher",
                     ):InkWell(
@@ -100,9 +97,9 @@ class _AssignHodDepartmentDialogState extends State<AssignHodDepartmentDialog> {
                       },
                       child: DropDownFieldWidget(
                         title: "Faculty Teacher",
-                        text: _hodAssignCubit.addHodAssignModel.teacherName?? "Select..",
+                        text: _hodAssignCubit.addHodAssignModel.teacher?.teacherName?? "Select..",
                         maxLine: 1,
-                        isFilled: false,
+                        isFilled: _hodAssignCubit.addHodAssignModel.teacher?.teacherName!=null,
                       ),
                     );
                   }
@@ -115,13 +112,13 @@ class _AssignHodDepartmentDialogState extends State<AssignHodDepartmentDialog> {
                     return _departmentCubit.departmentList.isNotEmpty? CustomPopMenuButton(
                       menus: _departmentCubit.departmentList.map((e) => e.name,).toList(),
                       onSelected: (p0) {
-                        _hodAssignCubit.getHodAssignModel(_hodAssignCubit.addHodAssignModel.copyWith(departmentName:  _departmentCubit.departmentList.map((e) => e.name,).toList()[p0],departmentId: _departmentCubit.departmentList.map((e) => e.id,).toList()[p0]));
+                        _hodAssignCubit.getHodAssignModel(_hodAssignCubit.addHodAssignModel.copyWith(department: HodDepartmentModel(name: _departmentCubit.departmentList.map((e) => e.name,).toList()[p0],id: _departmentCubit.departmentList.map((e) => e.id,).toList()[p0])));
                       },
                       offset: Offset(0, 30),
                       widget: DropDownFieldWidget(
-                        text:_hodAssignCubit.addHodAssignModel.departmentName?? "Select..",
+                        text:_hodAssignCubit.addHodAssignModel.department?.name?? "Select..",
                         maxLine: 1,
-                        isFilled: false,
+                        isFilled: _hodAssignCubit.addHodAssignModel.department?.name!=null,
                       ),
                       title: "Assign to Department",
                     ):InkWell(
@@ -130,9 +127,9 @@ class _AssignHodDepartmentDialogState extends State<AssignHodDepartmentDialog> {
                       },
                       child: DropDownFieldWidget(
                         title: "Assign to Department",
-                        text:_hodAssignCubit.addHodAssignModel.departmentName?? "Select..",
+                        text:_hodAssignCubit.addHodAssignModel.department?.name?? "Select..",
                         maxLine: 1,
-                        isFilled: false,
+                        isFilled: _hodAssignCubit.addHodAssignModel.department?.name!=null,
                       ),
                     );
                   }
@@ -154,21 +151,21 @@ class _AssignHodDepartmentDialogState extends State<AssignHodDepartmentDialog> {
                   child: DropDownFieldWidget(
                     text:_hodAssignCubit.addHodAssignModel.assignedDate!=null? DateToStringHelper.dateMonthYearConvert(_hodAssignCubit.addHodAssignModel.assignedDate!):"Select",
                     maxLine: 1,
-                    isFilled: false,
+                    isFilled: _hodAssignCubit.addHodAssignModel.assignedDate!=null,
                     title: "Date of Assignment",
                   ),
                 ),
                 SizedBox(height: 10),
                 CustomPopMenuButton(
-                  menus: ConstantData.hodAssignStatus,
+                  menus: ["Active", "Inactive"],
                   offset: Offset(0, 30),
                   onSelected: (p0) {
-                    _hodAssignCubit.getHodAssignModel(_hodAssignCubit.addHodAssignModel.copyWith(status: ConstantData.hodAssignStatus[p0]));
+                    _hodAssignCubit.getHodAssignModel(_hodAssignCubit.addHodAssignModel.copyWith(status: ["Active", "Inactive"][p0]));
                   },
                   widget: DropDownFieldWidget(
                     text:_hodAssignCubit.addHodAssignModel.status?? "Select..",
                     maxLine: 1,
-                    isFilled: false,
+                    isFilled: _hodAssignCubit.addHodAssignModel.status!=null,
                   ),
                   title: "Status",
                 ),
@@ -191,18 +188,20 @@ class _AssignHodDepartmentDialogState extends State<AssignHodDepartmentDialog> {
                     Expanded(
                       child: CustomElevatedButton(
                         onPressed: () async {
-                          if(_hodAssignCubit.addHodAssignModel.teacherName==null || _hodAssignCubit.addHodAssignModel.departmentName==null || _hodAssignCubit.addHodAssignModel.assignedDate==null|| _hodAssignCubit.addHodAssignModel.status==null){
+                          if(_hodAssignCubit.addHodAssignModel.teacher!.teacherName==null || _hodAssignCubit.addHodAssignModel.department!.name ==null || _hodAssignCubit.addHodAssignModel.assignedDate==null|| _hodAssignCubit.addHodAssignModel.status==null){
                             showMessage("Please fill all fields",isError: true);
                             return;
                           }
+                          // showMessage("23: ${_hodAssignCubit.addHodAssignModel.toMap()}");
+                          // return;
                        var response=
                            widget.hodAssignModel!=null?
                        await _hodAssignCubit.update(_hodAssignCubit.addHodAssignModel):
                        await _hodAssignCubit.post(_hodAssignCubit.addHodAssignModel);
                         if(response){
                           context.pop();
+                          await _hodAssignCubit.get();
                         }
-                       await _hodAssignCubit.get();
                           },
                         text: "Save",
                       ),

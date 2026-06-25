@@ -4,8 +4,10 @@ import '../../data/models/student_enrollment_filter_model.dart';
 import '../../data/models/student_enrollment_model.dart';
 
 abstract class StudentEnrollmentRepository{
-  Future<Either<String,StudentEnrollmentModel>> post({required StudentEnrollmentModel value});
-  Future<Either<String,StudentEnrollmentModel>> update({required StudentEnrollmentModel value});
-  Future<Either<String,bool>> delete({required StudentEnrollmentModel value});
+  Future<Either<String,String>> post({required StudentEnrollmentModel value});
+  Future<Either<String,String>> promote({required StudentEnrollmentModel value});
+  Future<Either<String,String>> demote({required StudentEnrollmentModel value});
+  Future<Either<String,String>> update({required StudentEnrollmentModel value});
+  Future<Either<String,String>> delete({required StudentEnrollmentModel value});
   Future<Either<String,List<StudentEnrollmentModel>>> get({required StudentEnrollmentFilterModel value});
 }

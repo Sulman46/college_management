@@ -8,15 +8,15 @@ class HODAssignmentUseCase{
   HODAssignmentUseCase({required this.repository});
 
 
-  Future<Either<String,HodAssignModel>> post({required HodAssignModel value})async{
+  Future<Either<String,String>> post({required HodAssignModel value})async{
     return repository.post(value: value);
   }
 
-  Future<Either<String,HodAssignModel>> update({required HodAssignModel value}){
+  Future<Either<String,String>> update({required HodAssignModel value}){
     return repository.update(value: value);
   }
 
-  Future<Either<String,bool>> delete({required HodAssignModel value}){
+  Future<Either<String,String>> delete({required HodAssignModel value}){
     return repository.delete(value: value);
   }
 

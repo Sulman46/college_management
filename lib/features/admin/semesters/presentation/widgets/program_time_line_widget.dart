@@ -45,6 +45,9 @@ class ProgramTimelineCard extends StatelessWidget {
                     var model=semesterLevelsModel;
                     model= model.copyWith(status: semesterLevelsModel.status=="Active"?"Inactive":"Active");
                     bool  val= await  semesterCubit.editSemester(model);
+                    if(val){
+                     await semesterCubit.getSemesterList();
+                    }
                   }else{
                     showDialog(context: context, builder: (context) => CustomAnimatedDialog(
                       child: ConfirmationDialog(
@@ -53,6 +56,7 @@ class ProgramTimelineCard extends StatelessWidget {
                       bool val  =  await  semesterCubit.deleteSemester(semesterLevelsModel);
                           if(val){
                             Navigator.pop(context);
+                              await semesterCubit.getSemesterList();
                           }
                         },),
                     ));
@@ -67,14 +71,13 @@ class ProgramTimelineCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
 
-              /// LEFT SIDE
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
 
                     AppText(
-                      text: semesterLevelsModel.programName??"",
+                      text: semesterLevelsModel.programModel?.name??"",
                       fontSize: 15,
                       fontWeight: FontWeight.w700,
                     ),
@@ -82,14 +85,14 @@ class ProgramTimelineCard extends StatelessWidget {
                     SizedBox(height: 4),
 
                     AppText(
-                      text: "${semesterLevelsModel.department??""} •  ${semesterLevelsModel.degree??""} • ${semesterLevelsModel.section??""} • ${semesterLevelsModel.session}",
+                      text: "${semesterLevelsModel.programModel?.departmentName??""} •  ${semesterLevelsModel.programModel?.degree??""} • ${semesterLevelsModel.programModel?.section??""} • ${semesterLevelsModel.programModel?.session}",
                       fontSize: 11,
                       color: AppColor.greyLight,
                     ),
 
                     SizedBox(height: 3),
                     AppText(
-                      text: "${semesterLevelsModel.affiliation??""}",
+                      text: "${semesterLevelsModel.programModel?.affiliationName??""}",
                       fontSize: 11,
                       color: AppColor.greyLight,
                     ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 String generateKeyForTimeSlot({required String day,required String time}){
-  return "${day}_$time";
+  return "${day}-$time";
 }
 
 

@@ -11,17 +11,17 @@ class TeacherRecordsRepositoryImpl extends TeacherRecordsRepository{
 
 
   @override
-  Future<Either<String,TeacherModel>> addTeacher({required TeacherModel value})async{
+  Future<Either<String,String>> addTeacher({required TeacherModel value})async{
     return dataSource.addTeacher(value: value);
   }
 
   @override
-  Future<Either<String,TeacherModel>> update({required TeacherModel value}){
+  Future<Either<String,String>> update({required TeacherModel value}){
     return dataSource.update(value: value);
   }
 
   @override
-  Future<Either<String,bool>> delete({required TeacherModel value}){
+  Future<Either<String,String>> delete({required TeacherModel value}){
     return dataSource.delete(value: value);
   }
 

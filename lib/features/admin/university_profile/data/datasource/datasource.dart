@@ -7,11 +7,14 @@ import 'package:dio/dio.dart';
 
 import '../../models/profile_update_model.dart';
 import '../../models/university_model.dart';
+import '../../models/update_uni_specific_section_model.dart';
 
 abstract class UniversityProfileDataSource{
   Future<Either<String,UniversityModel>> addUniversitySetup({required UniversityModel universityModel });
+  Future<Either<String,String>> updateUniversitySetup({required UpdateUniSpecificSectionModel model });
   Future<Either<String,UniversityModel>> getUniversitySetup();
   Future<Either<String,String>> uploadProfile({required ProfileImageUpdateModel profileModel});
+  Future<Either<String,String>> deleteUniversitySetup({required UpdateUniSpecificSectionModel model });
 }
 
 
@@ -30,6 +33,46 @@ class FunctionClassUniversityProfile extends UniversityProfileDataSource{
       }
       return Left(
         data==null? "Failed":  data['message'] ??
+            "Failed",
+      );
+    }catch(e){
+      return Left(e.toString());
+    }
+  }
+
+
+  // function
+  @override
+  Future<Either<String,String>> updateUniversitySetup({required UpdateUniSpecificSectionModel model })async{
+    try{
+      var response=await _dioHelper.put(AppApis.universityProfileSetupUpdate,data: model.toMap());
+      var data=response.data;
+      if(response.statusCode! >=200 && response.statusCode! <=300){
+        String message=data['message'] ??data['error'] ??"Data updated successfully";
+        return Right(message);
+      }
+      return Left(
+        data==null? "Failed":  data['message'] ??data['error'] ??
+            "Failed",
+      );
+    }catch(e){
+      return Left(e.toString());
+    }
+  }
+
+
+  // function
+  @override
+  Future<Either<String,String>> deleteUniversitySetup({required UpdateUniSpecificSectionModel model })async{
+    try{
+      var response=await _dioHelper.delete("${AppApis.deleteUniversityProfileSetupUpdate}${model.deleteUrl()}",data: model.toMap());
+      var data=response.data;
+      if(response.statusCode! >=200 && response.statusCode! <=300){
+        String message=data['message'] ??data['error'] ??"Data updated successfully";
+        return Right(message);
+      }
+      return Left(
+        data==null? "Failed":  data['message'] ??data['error'] ??
             "Failed",
       );
     }catch(e){

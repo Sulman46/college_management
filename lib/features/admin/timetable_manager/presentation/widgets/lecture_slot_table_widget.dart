@@ -30,11 +30,12 @@ class _LectureSlotTableWidgetState extends State<LectureSlotTableWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SheetNodeHeadingWidget( text:"Days", color:AppColor.primary,timePeriodList: widget.model.timeSlots??[]),
+          SheetNodeHeadingWidget( text:"Days", color:AppColor.primaryDarkest,timePeriodList: widget.model.timeSlots??[]),
           ...List.generate(widget.model.days!.length, (index) =>
               SheetNodeSubTextWidget(
+                index: index,
                   text: widget.model.days?[index]??"",
-                  color: AppColor.primary.withOpacity(.7),
+                  color: AppColor.primaryDarkest.withOpacity(.7),
                   timeTableManagerModel: widget.model
               ),),
          ],
@@ -67,7 +68,10 @@ Widget SheetNodeHeadingWidget({required String text,required Color color,require
           alignment: Alignment.center,
           padding: EdgeInsetsGeometry.symmetric(vertical: 5,),
           decoration: BoxDecoration(
-            border:index==timePeriodList.length-1?null: Border(
+            border:index==timePeriodList.length-1?Border(
+                top: BorderSide(color: AppColor.grey.withOpacity(.5),width: 1),
+            ): Border(
+                top: BorderSide(color: AppColor.grey.withOpacity(.5),width: 1),
                 right: BorderSide(color: AppColor.grey.withOpacity(.5),width: 1)),
             color: color,
           ),
@@ -80,8 +84,9 @@ Widget SheetNodeHeadingWidget({required String text,required Color color,require
 
 
 class SheetNodeSubTextWidget extends StatelessWidget {
-   SheetNodeSubTextWidget({super.key,required this.text,required this.color,required this.timeTableManagerModel});
+   SheetNodeSubTextWidget({super.key,required this.text,required this.index,required this.color,required this.timeTableManagerModel});
   String text;Color color;
+  int index;
   TimeTableManagerModel timeTableManagerModel;
   @override
   Widget build(BuildContext context) {
@@ -99,11 +104,12 @@ class SheetNodeSubTextWidget extends StatelessWidget {
               padding: EdgeInsetsGeometry.symmetric(vertical: 5,),
               decoration: BoxDecoration(
                 color: color,
+                border: Border(right: BorderSide(color: AppColor.grey.withOpacity(.5),width: 1),)
               ),
               child: AppText(text: text,color: AppColor.white,fontSize: 12,),
             ),
             ...List.generate(timeTableManagerModel.timeSlots?.length??0, (index) {
-              String keyVal=generateKeyForTimeSlot(day: text, time: timeTableManagerModel.timeSlots?[index]??"");
+              String keyVal=generateKeyForTimeSlot(day: text, time: "$index");
               TimeTableCellModel? slotModel=timeTableManagerModel.data![keyVal];
               bool valueExist=slotModel!=null;
               return InkWell(
@@ -117,14 +123,14 @@ class SheetNodeSubTextWidget extends StatelessWidget {
                   padding: EdgeInsetsGeometry.symmetric(vertical: 5,horizontal: 5),
                   decoration: BoxDecoration(
                     border:index==timeTableManagerModel.timeSlots!.length-1?null: Border(right: BorderSide(color: AppColor.grey.withOpacity(.5),width: 1),),
-                    color:!valueExist? AppColor.greyLight.withOpacity(.8): AppColor.white,
+                    color:!valueExist? AppColor.grey.withOpacity(.05): AppColor.primary.withOpacity(.1),
                   ),
                   child: !valueExist? Icon(Icons.add,color: AppColor.whiteLight,size: 17,):Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      AppText(text: slotModel.teacher??"",color: AppColor.secondaryColor,fontSize: 11,),
-                      AppText(text: slotModel.subject??"",color: AppColor.secondaryColor,fontSize: 10,),
-                      AppText(text: "R#${slotModel.room??""}",color: AppColor.secondaryColor,fontSize: 10,),
+                      AppText(text: slotModel.teacher??"",color: AppColor.greyLight,fontSize: 11,),
+                      AppText(text: slotModel.subject??"",color: AppColor.greyLight,fontSize: 10,),
+                      AppText(text: "R#${slotModel.room??""}",color: AppColor.greyLight,fontSize: 10,),
                     ],
                   ),
                 ),

@@ -45,19 +45,19 @@ class _TimeTableSheetWidgetState extends State<TimeTableSheetWidget> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          detailTextWidget(text1: "Dept.", text2:widget.model.department??""),
+                          detailTextWidget(text1: "Dept.", text2:widget.model.programModel?.department?.name??""),
                           SizedBox(height: 5,),
                           Row(
                             children: [
-                              detailTextWidget(text1: "Program.", text2: widget.model.programName??""),
+                              detailTextWidget(text1: "Program.", text2: widget.model.programModel?.name??""),
                               SizedBox(width: 10,),
-                              detailTextWidget(text1: "Semester.", text2: widget.model.semesterLevel.toString()),
+                              detailTextWidget(text1: "Semester.", text2: widget.model.semesterModel!.semesterName.toString()),
                               SizedBox(width: 10,),
-                              detailTextWidget(text1: "Section.", text2: widget.model.session??""),
+                              detailTextWidget(text1: "Section.", text2: widget.model.programModel?.session??""),
                             ],
                           ),
                         SizedBox(height: 5,),
-                          detailTextWidget(text1: "Affiliation.", text2:widget.model.affiliation??""),
+                          detailTextWidget(text1: "Affiliation.", text2:widget.model.programModel?.affiliationName??""),
                           SizedBox(height: 5,),
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,6 +102,7 @@ class _TimeTableSheetWidgetState extends State<TimeTableSheetWidget> {
 
                                       if(val){
                                         Navigator.pop(context);
+                                        await _timeTableCubit.get();
                                       }
                                     },),
                                 ));

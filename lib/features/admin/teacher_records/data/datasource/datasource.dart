@@ -5,9 +5,9 @@ import '../../../../../core/controllers/dio_helper.dart';
 import '../../models/teacher_model.dart';
 
 abstract class TeacherRecordsDataSource{
-  Future<Either<String,TeacherModel>> addTeacher({required TeacherModel value});
-  Future<Either<String,TeacherModel>> update({required TeacherModel value});
-  Future<Either<String,bool>> delete({required TeacherModel value});
+  Future<Either<String,String>> addTeacher({required TeacherModel value});
+  Future<Either<String,String>> update({required TeacherModel value});
+  Future<Either<String,String>> delete({required TeacherModel value});
   Future<Either<String,List<TeacherModel>>> getTeachers();
 }
 
@@ -17,50 +17,48 @@ class FunctionClassTeacherRecords extends TeacherRecordsDataSource{
   final DioHelper _dioHelper=DioHelper();
 
   @override
-  Future<Either<String,TeacherModel>> addTeacher({required TeacherModel value})async{
+  Future<Either<String,String>> addTeacher({required TeacherModel value})async{
     try{
       var response=await _dioHelper.post(AppApis.teachers,data: value.toMap());
-      if(response.statusCode! >= 200 && response.statusCode! <=300){
-        log("3223423: ${response.data}");
-        TeacherModel model=TeacherModel.fromMap(response.data!);
-        return Right(model);
-      }
       var data=response.data;
-      return Left(data['message'] ?? "Failed",
-      );
+      if(response.statusCode! >= 200 && response.statusCode! <=300){
+        return Right(data["message"]??data["error"]??"Data added");
+
+      }
+      return Left(data["message"]??data["error"]??"Failed");
+
     }catch(e){
       return Left(e.toString());
     }
   }
 
   @override
-  Future<Either<String,TeacherModel>> update({required TeacherModel value})async{
+  Future<Either<String,String>> update({required TeacherModel value})async{
     try{
       var response=await _dioHelper.put("${AppApis.teachers}/${value.id}",data: value.toMap());
-      if(response.statusCode! >= 200 && response.statusCode! <=300){
-        log("3223423: ${response.data}");
-        TeacherModel model=TeacherModel.fromMap(response.data!);
-        return Right(model);
-      }
       var data=response.data;
-      return Left(data['message'] ?? "Failed",
-      );
+      if(response.statusCode! >= 200 && response.statusCode! <=300){
+        return Right(data["message"]??data["error"]??"Data updated");
+
+      }
+      return Left(data["message"]??data["error"]??"Failed");
+
     }catch(e){
       return Left(e.toString());
     }
   }
 
   @override
-  Future<Either<String,bool>> delete({required TeacherModel value})async{
+  Future<Either<String,String>> delete({required TeacherModel value})async{
     try{
       var response=await _dioHelper.delete("${AppApis.teachers}/${value.id}");
-      if(response.statusCode! >= 200 && response.statusCode! <=300){
-        log("3223423: ${response.data}");
-        return Right(true);
-      }
       var data=response.data;
-      return Left(data['message'] ?? "Failed",
-      );
+      if(response.statusCode! >= 200 && response.statusCode! <=300){
+        return Right(data["message"]??data["error"]??"Data updated");
+
+      }
+      return Left(data["message"]??data["error"]??"Failed");
+
     }catch(e){
       return Left(e.toString());
     }

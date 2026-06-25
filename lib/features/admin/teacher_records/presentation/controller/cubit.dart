@@ -22,7 +22,6 @@ class TeacherRecordsCubit extends Cubit<TeacherRecordsState> {
   List<TeacherModel> _filterTeacher=[];
   List<TeacherModel> get filterTeacher=>_filterTeacher;
 
-
   TeacherModel teacherModel=TeacherModel();
   double top=mdHeight(navigatorKey.currentContext!)*.9;
   double right=30;
@@ -45,17 +44,14 @@ class TeacherRecordsCubit extends Cubit<TeacherRecordsState> {
     emit(TeacherRecordsLoading());
     var response=await _useCase.addTeacher(value: value);
     if(response.isLeft()){
-      showMessage(response.asLeft());
+      showMessage(response.asLeft(),isError: true);
       emit(TeacherRecordsLoaded());
       closeLoadingDialog();
       return false;
     }else{
-      searchController.clear();
-      var data=response.asRight();
-      _teacherList.add(data);
-      _filterTeacher=List.from(teacherList);
       emit(TeacherRecordsLoaded());
       closeLoadingDialog();
+      showMessage(response.asRight());
       return true;
     }
   }
@@ -65,37 +61,31 @@ class TeacherRecordsCubit extends Cubit<TeacherRecordsState> {
     emit(TeacherRecordsLoading());
     var response=await _useCase.delete(value: value);
     if(response.isLeft()){
-      showMessage(response.asLeft());
+      showMessage(response.asLeft(),isError: true);
       emit(TeacherRecordsLoaded());
       closeLoadingDialog();
       return false;
     }else{
-      searchController.clear();
-      _teacherList.removeWhere((element) => element.id==value.id,);
-      _filterTeacher=List.from(teacherList);
       emit(TeacherRecordsLoaded());
       closeLoadingDialog();
+      showMessage(response.asRight());
       return true;
     }
   }
 
-  Future<bool> update(TeacherModel value)async{
+  Future<bool> update(TeacherModel value,{String? message})async{
     showLoadingDialog();
     emit(TeacherRecordsLoading());
     var response=await _useCase.update(value: value);
     if(response.isLeft()){
-      showMessage(response.asLeft());
+      showMessage(response.asLeft(),isError: true);
       emit(TeacherRecordsLoaded());
       closeLoadingDialog();
       return false;
     }else{
-      var data=response.asRight();
-      int index= teacherList.indexWhere((element) => element.id==value.id,);
-      searchController.clear();
-      _teacherList[index]=data;
-      _filterTeacher=List.from(teacherList);
       emit(TeacherRecordsLoaded());
       closeLoadingDialog();
+      showMessage(response.asRight());
       return true;
     }
   }
@@ -106,7 +96,7 @@ class TeacherRecordsCubit extends Cubit<TeacherRecordsState> {
     searchController.clear();
     var response=await _useCase.getTeachers();
     if(response.isLeft()){
-      showMessage(response.asLeft());
+      showMessage(response.asLeft(),isError: true);
       emit(TeacherRecordsLoaded());
       closeLoadingDialog();
     }else{

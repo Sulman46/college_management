@@ -34,25 +34,27 @@ class _TeacherRecordDetailsScreenState extends State<TeacherRecordDetailsScreen>
                 context.push('/Admin-add-teacher-record',extra: widget.model);
               }else if(value==1){
                 if(widget.model.status=="Active"){
-                 var val= await  teacherRecordCubit.update(widget.model.copyWith(status: "Inactive"));
+                 var val= await  teacherRecordCubit.update(widget.model.copyWith(status: "Inactive"),message: "Status updated");
                  if(val){
-                   setState(() {
-                   widget.model=widget.model.copyWith(status:"Inactive");
-                   });
+                   context.pop();
+                   await teacherRecordCubit.getTeachers();
                  }
                 }else{
                   var val=  await  teacherRecordCubit.update(widget.model.copyWith(status: "Active"));
                   if(val){
-                    setState(() {
-                      widget.model=widget.model.copyWith(status:"Active");
-
-                    });
+                    context.pop();
+                    await teacherRecordCubit.getTeachers();
                   }
                 }
               }else{
-                await  teacherRecordCubit.delete(widget.model);
+             var val=   await  teacherRecordCubit.delete(widget.model);
+                if(val){
+                    context.pop();
+                    await teacherRecordCubit.getTeachers();
+                  }
               }
-            },widget: Icon(Icons.more_vert,size: 20,color: AppColor.white,),),),
+            },widget: Icon(Icons.more_vert,size: 20,color: AppColor.white,),
+          ),),
 
           Expanded(
             child: SingleChildScrollView(
@@ -92,7 +94,7 @@ class _TeacherRecordDetailsScreenState extends State<TeacherRecordDetailsScreen>
                   _sectionCard(
                     "Department Role",
                     [
-                      _row("Department", widget.model.department?.join(", ")??""),
+                      _row("Department", widget.model.department?.map((e) => e.name,).join(", ")??""),
                       _row("Designation", widget.model.designation??""),
                       _row("Joining Date", widget.model.joiningDate??""),
                     ],
@@ -176,7 +178,7 @@ class _TeacherRecordDetailsScreenState extends State<TeacherRecordDetailsScreen>
               ),
               SizedBox(height: 3),
               AppText(
-                text: "${widget.model.designation??""} • Faculty of ${widget.model.department?.join(", ")??""}",
+                text: "${widget.model.designation??""}",
                 fontSize: 11,
                 color: AppColor.grey,
               ),

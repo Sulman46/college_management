@@ -8,15 +8,15 @@ class TimetableManagerUseCase{
   TimetableManagerUseCase({required this.repository});
 
 
-  Future<Either<String,TimeTableManagerModel>> post({required TimeTableManagerModel value})async{
+  Future<Either<String,String>> post({required TimeTableManagerModel value})async{
     return repository.post(value: value);
   }
 
-  Future<Either<String,TimeTableManagerModel>> update({required TimeTableManagerModel value}){
+  Future<Either<String,String>> update({required TimeTableManagerModel value}){
     return repository.update(value: value);
   }
 
-  Future<Either<String,bool>> delete({required TimeTableManagerModel value}){
+  Future<Either<String,String>> delete({required TimeTableManagerModel value}){
     return repository.delete(value: value);
   }
 

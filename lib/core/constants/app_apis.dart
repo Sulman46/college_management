@@ -3,9 +3,9 @@ class AppApis {
 
   //base urls
   // static String baseUrl = "http://172.29.64.1:9500";
-  // static String baseUrl = "http://192.168.100.195:9500";
-  static String baseUrl = "http://192.168.100.200:9500";
-  // static String baseUrl = "http://10.193.167.161:9500";
+  // static String baseUrl = "http://192.168.0.100:9500";
+  // static String baseUrl = "http://192.168.100.198:9500";
+  static String baseUrl = "http://10.20.70.161:9500";
 
   static String login = "/api/auth/login";
 
@@ -14,6 +14,8 @@ class AppApis {
 
   /// university profile update, affiliation etc
   static String universityProfileSetup="/api/university-setup";
+  static String universityProfileSetupUpdate="/api/university-setup/update-section";
+  static String deleteUniversityProfileSetupUpdate="/api/university-setup/delete/";
 
   /// profile image update
   static String profileImageUpdate="/update-profile-img";
@@ -39,6 +41,9 @@ class AppApis {
   /// teacher allocation
   static String teacherAllocation="/api/allocations";
 
+  /// teacher allocation
+  static String workload="/api/workload-data";
+
   /// teacher attendance
   static String teacherAttendancePost="/api/teacher-attendance/mark";
   static String teacherAttendanceEdit="/api/teacher-attendance/edit/";
@@ -57,11 +62,17 @@ class AppApis {
   // timetable manager
   static String timeTableManager="/api/timetables";
 
+
+  static String coordinatorRegister="/api/coordinators/register";
+  static String coordinatorManagement="/api/coordinators";
+
   /// student register
   static String studentRegister="/api/students";
 
   /// student enrollment
   static String studentEnrollments="/api/enrollments";
+  static String studentEnrollmentsPromote="/api/enrollments/promote";
+  static String studentEnrollmentsDemote="/api/enrollments/demote";
 
 
 

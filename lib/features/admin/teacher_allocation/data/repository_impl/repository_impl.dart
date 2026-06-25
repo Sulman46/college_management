@@ -11,17 +11,17 @@ class TeacherAllocationRepositoryImpl extends TeacherAllocationRepository{
 
 
   @override
-  Future<Either<String,TeacherAllocationModel>> post({required TeacherAllocationModel value})async{
+  Future<Either<String,String>> post({required TeacherAllocationModel value})async{
     return dataSource.post(value: value);
   }
 
   @override
-  Future<Either<String,TeacherAllocationModel>> update({required TeacherAllocationModel value}){
+  Future<Either<String,String>> update({required TeacherAllocationModel value}){
     return dataSource.update(value: value);
   }
 
   @override
-  Future<Either<String,bool>> delete({required TeacherAllocationModel value}){
+  Future<Either<String,String>> delete({required TeacherAllocationModel value}){
     return dataSource.delete(value: value);
   }
 

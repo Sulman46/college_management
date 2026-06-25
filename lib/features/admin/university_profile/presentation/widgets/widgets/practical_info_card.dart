@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-
 import '../../../../../../core/theme/AppColor.dart';
 import '../../../../../../widgets/app_text.dart';
-import '../../../models/affil/affiliated_details_model.dart';
 import '../../../models/affiliation_model.dart';
 import 'badge_widget.dart';
 
@@ -26,13 +24,13 @@ class PracticalInfoCard extends StatelessWidget {
                 text: "Practical Component",
                 fontWeight: FontWeight.w600,
               ),
-              BadgeWidget(text:"Pass: ${model.practical.passPercentage}%", color:AppColor.primary),
+              BadgeWidget(text:"Pass: ${model.practical?.passPercentage??0}%", color:AppColor.primary),
             ],
           ),
           SizedBox(height: 10),
 
           AppText(
-            text: "Max Marks: ${model.practical.maxMarks}",
+            text: "Max Marks: ${model.practical?.maxMarks??0}",
             fontSize: 13,
             fontWeight: FontWeight.w500,
           ),

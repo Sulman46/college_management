@@ -18,6 +18,7 @@ class AnnouncementsCubit extends Cubit<AnnouncementsState> {
   List<AnnouncementModel> _dataList=[];
   List<AnnouncementModel> get dataList=>_dataList;
 
+
   List<AnnouncementModel> _filterList=[];
   List<AnnouncementModel> get filterList=>_filterList;
 
@@ -58,7 +59,7 @@ class AnnouncementsCubit extends Cubit<AnnouncementsState> {
     emit(AnnouncementsLoading());
     var response=await _useCase.post(value: value);
     if(response.isLeft()){
-      showMessage(response.asLeft());
+      showMessage(response.asLeft(),isError: true);
       emit(AnnouncementsLoaded());
       closeLoadingDialog();
       return false;
@@ -80,7 +81,7 @@ class AnnouncementsCubit extends Cubit<AnnouncementsState> {
     searchController.clear();
     var response=await _useCase.get();
     if(response.isLeft()){
-      showMessage(response.asLeft());
+      showMessage(response.asLeft(),isError: true);
       emit(AnnouncementsLoaded());
       closeLoadingDialog();
     }else{
@@ -97,7 +98,7 @@ class AnnouncementsCubit extends Cubit<AnnouncementsState> {
     emit(AnnouncementsLoading());
     var response=await _useCase.delete(value: value);
     if(response.isLeft()){
-      showMessage(response.asLeft());
+      showMessage(response.asLeft(),isError: true);
       emit(AnnouncementsLoaded());
       closeLoadingDialog();
       return false;
@@ -118,7 +119,7 @@ class AnnouncementsCubit extends Cubit<AnnouncementsState> {
     emit(AnnouncementsLoading());
     var response=await _useCase.update(value: value);
     if(response.isLeft()){
-      showMessage(response.asLeft());
+      showMessage(response.asLeft(),isError: true);
       emit(AnnouncementsLoaded());
       closeLoadingDialog();
       return false;

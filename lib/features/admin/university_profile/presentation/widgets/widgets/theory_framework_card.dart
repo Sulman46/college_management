@@ -38,9 +38,9 @@ class TheoryFrameworkCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _infoColumn("Mids", model.theory.mids),
-              _infoColumn("Sess",  model.theory.sessional),
-              _infoColumn("Final",  model.theory.finalMarks),
+              _infoColumn("Mids", model.theory?.mids??0),
+              _infoColumn("Sess",  model.theory?.sessional??0),
+              _infoColumn("Final",  model.theory?.finalMarks??0),
             ],
           ),
 
@@ -49,7 +49,7 @@ class TheoryFrameworkCard extends StatelessWidget {
           Align(
             alignment: Alignment.centerRight,
             child: AppText(
-              text: "Total: ${ model.theory.totalTheory}",
+              text: "Total: ${ model.theory?.totalTheory??0}",
               color: AppColor.grey,
               fontSize: 12,
             ),

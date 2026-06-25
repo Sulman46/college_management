@@ -33,7 +33,7 @@ class TeacherRecordItemWidget extends StatelessWidget {
             SizedBox(height: 3,),
             Row(
               children: [
-                Expanded(child: AppText(text: "Dept. ${model.department!.join(", ")}",fontSize: 11,color: AppColor.grey,fontWeight: FontWeight.w500,)),
+                Expanded(child: AppText(text: "Dept. ${model.department!.map((e) => e.name,).join(", ")}",fontSize: 11,color: AppColor.grey,fontWeight: FontWeight.w500,)),
                 AppText(text: "(${model.qualification})",fontSize: 11,color: AppColor.white,fontWeight: FontWeight.w500,),
               ],
             ),
@@ -49,16 +49,16 @@ class TeacherRecordItemWidget extends StatelessWidget {
                     if(value==0){
                       context.push('/Admin-add-teacher-record',extra: model);
                     }else if(value==1){
-                      if(model.status=="Active"){
-                        await  teacherRecordCubit.update(model.copyWith(status: "Inactive"));
-
-                      }else{
-                        await  teacherRecordCubit.update(model.copyWith(status: "Active"));
-
+                     var val= await  teacherRecordCubit.update(model.copyWith(status: model.status=="Active"?"Inactive":"Active"),message: "Status updated");
+                      if(val){
+                        await teacherRecordCubit.getTeachers();
                       }
                     }
                     else{
-                   await  teacherRecordCubit.delete(model);
+                  var val= await  teacherRecordCubit.delete(model);
+                   if(val){
+                     await teacherRecordCubit.getTeachers();
+                   }
                     }
                   },),
               ],

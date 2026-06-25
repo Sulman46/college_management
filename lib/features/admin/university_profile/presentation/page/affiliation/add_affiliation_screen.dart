@@ -35,7 +35,6 @@ class _AddAffiliationScreenState extends State<AddAffiliationScreen> {
   TextEditingController midsController = TextEditingController();
   TextEditingController sessional = TextEditingController();
   TextEditingController finalController = TextEditingController();
-  TextEditingController totalTheory = TextEditingController();
   TextEditingController theoryPassController = TextEditingController();
   TextEditingController practicalMarksController = TextEditingController();
   TextEditingController practicalPassController = TextEditingController();
@@ -49,13 +48,16 @@ class _AddAffiliationScreenState extends State<AddAffiliationScreen> {
         nameController.text=model?.name??"";
         location.text=model?.location??"";
         website.text=model?.website??"";
-        midsController.text="${model?.theory.mids??""}";
-        sessional.text="${model?.theory.sessional??""}";
-        finalController.text="${model?.theory.finalMarks??""}";
-        totalTheory.text="${model?.theory.totalTheory??""}";
-        theoryPassController.text="${model?.theory.passPercentage??""}";
-        practicalMarksController.text="${model?.practical.maxMarks??""}";
-        practicalPassController.text="${model?.practical.passPercentage??""}";
+
+        /// todo uncomment
+        midsController.text="${model?.theory?.mids??""}";
+        sessional.text="${model?.theory?.sessional??""}";
+        finalController.text="${model?.theory?.finalMarks??""}";
+        theoryPassController.text="${model?.theory?.passPercentage??""}";
+        practicalMarksController.text="${model?.practical?.maxMarks??""}";
+        practicalPassController.text="${model?.practical?.passPercentage??""}";
+
+
         universityProfileCubit.getStatusEnum(universityProfileCubit.updateModel!.status=="Active"?StatusEnum.Active:StatusEnum.Inactive);
         universityProfileCubit.getSectorEnum(universityProfileCubit.updateModel?.sector??"");
       }else{
@@ -209,27 +211,18 @@ class _AddAffiliationScreenState extends State<AddAffiliationScreen> {
                           ),
                           SizedBox(width: 10),
                           Expanded(
-                            child: CustomTextFormField(
+                            child:CustomTextFormField(
                               keyboardType: TextInputType.number,
                               inputFormatters: [
                                 FilteringTextInputFormatter.digitsOnly
                               ],
-                              controller: totalTheory,
-                              subTitle: "Total Theory",
+                              controller: theoryPassController,
+                              subTitle: "Theory Pass %",
                             ),
                           ),
                         ],
                       ),
 
-                      SizedBox(height: 10),
-                      CustomTextFormField(
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly
-                        ],
-                        controller: theoryPassController,
-                        subTitle: "Theory Pass %",
-                      ),
                       SizedBox(height: 10),
 
                       /// 🔹 PRACTICAL
@@ -275,7 +268,10 @@ class _AddAffiliationScreenState extends State<AddAffiliationScreen> {
                         child: CustomElevatedButton(
                           width: mdWidth(context)*.6,
                           onPressed: () async {
-
+                            int midN=int.parse(midsController.text);
+                            int sessionalN=int.parse(sessional.text);
+                            int finalN=int.parse(finalController.text);
+                            int totalTheor=midN+sessionalN+finalN;
                             if (
                             nameController.text.isEmpty ||
                                 location.text.isEmpty ||
@@ -284,7 +280,6 @@ class _AddAffiliationScreenState extends State<AddAffiliationScreen> {
                                 midsController.text.isEmpty ||
                                 sessional.text.isEmpty ||
                                 finalController.text.isEmpty ||
-                                totalTheory.text.isEmpty ||
                                 theoryPassController.text.isEmpty ||
                                 practicalMarksController.text.isEmpty ||
                                 practicalPassController.text.isEmpty||
@@ -297,20 +292,21 @@ class _AddAffiliationScreenState extends State<AddAffiliationScreen> {
                             AffiliationModel affiliationModel;
                             List<AffiliationModel> temp=[];
                             if(universityProfileCubit.updateModel==null){
-                               affiliationModel=AffiliationModel(name: nameController.text, sector: universityProfileCubit.sector??"", location: location.text, website: website.text, status: universityProfileCubit.statusEnum!.name, theory: TheoryGradingCriteria(mids: int.parse(midsController.text), sessional: int.parse(sessional.text), finalMarks: int.parse(finalController.text), totalTheory: int.parse(totalTheory.text), passPercentage: int.parse(theoryPassController.text)), practical: PracticalGradingCriteria(maxMarks: int.parse(practicalMarksController.text), passPercentage: int.parse(practicalPassController.text)));
+                               affiliationModel=AffiliationModel(name: nameController.text, sector: universityProfileCubit.sector??"", location: location.text, website: website.text, status: universityProfileCubit.statusEnum!.name, theory: TheoryGradingCriteria(mids: int.parse(midsController.text), sessional: int.parse(sessional.text), finalMarks: int.parse(finalController.text), totalTheory: totalTheor, passPercentage: int.parse(theoryPassController.text)), practical: PracticalGradingCriteria(maxMarks: int.parse(practicalMarksController.text), passPercentage: int.parse(practicalPassController.text)));
 
-                               temp=universityProfileCubit.universityModel!.affiliationModel??[];
-                               temp.add(affiliationModel);
+                               temp=[...universityProfileCubit.universityModel!.affiliationModel??[],affiliationModel];
                             }else{
-                              affiliationModel=AffiliationModel(id: universityProfileCubit.updateModel?.id??"",name: nameController.text, sector: universityProfileCubit.sector??"", location: location.text, website: website.text, status: universityProfileCubit.statusEnum!.name, theory: TheoryGradingCriteria(mids: int.parse(midsController.text), sessional: int.parse(sessional.text), finalMarks: int.parse(finalController.text), totalTheory: int.parse(totalTheory.text), passPercentage: int.parse(theoryPassController.text)), practical: PracticalGradingCriteria(maxMarks: int.parse(practicalMarksController.text), passPercentage: int.parse(practicalPassController.text)));
+                              affiliationModel=AffiliationModel(id: universityProfileCubit.updateModel?.id??"",name: nameController.text, sector: universityProfileCubit.sector??"", location: location.text, website: website.text, status: universityProfileCubit.statusEnum!.name, theory: TheoryGradingCriteria(mids: int.parse(midsController.text), sessional: int.parse(sessional.text), finalMarks: int.parse(finalController.text), totalTheory:totalTheor, passPercentage: int.parse(theoryPassController.text)), practical: PracticalGradingCriteria(maxMarks: int.parse(practicalMarksController.text), passPercentage: int.parse(practicalPassController.text)));
                               temp=universityProfileCubit.universityModel!.affiliationModel??[];
                               int index=temp.indexWhere((element) => element.id==affiliationModel.id,);
                               temp[index]=affiliationModel;
                             }
 
                             UniversityModel model=UniversityModel(affiliationModel: temp);
-
-                            bool val= await universityProfileCubit.addUniversitySetup(model);
+                            bool val=
+                            universityProfileCubit.updateModel!=null?
+                            await universityProfileCubit.updateAffiliation(affiliationModel):
+                            await universityProfileCubit.addUniversitySetup(model);
                             if(val){
                               context.pop();
                             }

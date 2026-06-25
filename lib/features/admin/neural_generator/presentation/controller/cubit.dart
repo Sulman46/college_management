@@ -25,7 +25,7 @@ class NeuralGeneratorCubit extends Cubit<NeuralGeneratorState> {
     emit(NeuralGeneratorLoading());
     var response=await _useCase.post(value: value);
     if(response.isLeft()){
-      showMessage(response.asLeft());
+      showMessage(response.asLeft(),isError: true);
       emit(NeuralGeneratorLoaded());
       closeLoadingDialog();
       return false;

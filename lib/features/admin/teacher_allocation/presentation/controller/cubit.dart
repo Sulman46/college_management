@@ -20,6 +20,8 @@ class TeacherAllocationCubit extends Cubit<TeacherAllocationState> {
 
   List<TeacherAllocationModel> _teacherAllocationList=[];
   List<TeacherAllocationModel> get teacherAllocationList=>_teacherAllocationList;
+  List<TeacherAllocationModel> get activeTeacherAllocationList=>teacherAllocationList.where((element) => element.status=="Active",).toList();
+
 
   List<TeacherAllocationModel> _filterTeacherAllocation=[];
   List<TeacherAllocationModel> get filterTeacherAllocation=>_filterTeacherAllocation;
@@ -52,18 +54,15 @@ class TeacherAllocationCubit extends Cubit<TeacherAllocationState> {
     emit(TeacherAllocationLoading());
     var response=await _useCase.post(value: value);
     if(response.isLeft()){
-      showMessage(response.asLeft());
+      showMessage(response.asLeft(),isError: true);
       emit(TeacherAllocationLoaded());
       closeLoadingDialog();
       return false;
     }else{
-      searchController.clear();
-      var data=response.asRight();
-      _teacherAllocationList.add(data);
-      _filterTeacherAllocation=List.from(teacherAllocationList);
-      _filterTeacherAllocation.toSet();
       emit(TeacherAllocationLoaded());
       closeLoadingDialog();
+      showMessage(response.asRight());
+
       return true;
     }
   }
@@ -73,16 +72,14 @@ class TeacherAllocationCubit extends Cubit<TeacherAllocationState> {
     emit(TeacherAllocationLoading());
     var response=await _useCase.delete(value: value);
     if(response.isLeft()){
-      showMessage(response.asLeft());
+      showMessage(response.asLeft(),isError: true);
       emit(TeacherAllocationLoaded());
       closeLoadingDialog();
       return false;
     }else{
-      searchController.clear();
-      _teacherAllocationList.removeWhere((element) => element.id==value.id,);
-      _filterTeacherAllocation=List.from(teacherAllocationList);
       emit(TeacherAllocationLoaded());
       closeLoadingDialog();
+      showMessage(response.asRight());
       return true;
     }
   }
@@ -99,16 +96,12 @@ class TeacherAllocationCubit extends Cubit<TeacherAllocationState> {
     emit(TeacherAllocationLoading());
     var response=await _useCase.update(value: value);
     if(response.isLeft()){
-      showMessage(response.asLeft());
+      showMessage(response.asLeft(),isError: true);
       emit(TeacherAllocationLoaded());
       closeLoadingDialog();
       return false;
     }else{
-      var data=response.asRight();
-      int index= teacherAllocationList.indexWhere((element) => element.id==value.id,);
-      searchController.clear();
-      _teacherAllocationList[index]=value;
-      _filterTeacherAllocation=List.from(teacherAllocationList);
+      showMessage(response.asRight());
       emit(TeacherAllocationLoaded());
       closeLoadingDialog();
       return true;
@@ -117,11 +110,13 @@ class TeacherAllocationCubit extends Cubit<TeacherAllocationState> {
 
   Future<void> get()async{
     showLoadingDialog();
+    _teacherAllocationList=[];
+    _filterTeacherAllocation=[];
     emit(TeacherAllocationLoading());
     searchController.clear();
     var response=await _useCase.get();
     if(response.isLeft()){
-      showMessage(response.asLeft());
+      showMessage(response.asLeft(),isError: true);
       emit(TeacherAllocationLoaded());
       closeLoadingDialog();
     }else{
@@ -138,7 +133,7 @@ class TeacherAllocationCubit extends Cubit<TeacherAllocationState> {
     emit(TeacherAllocationLoading());
     List<TeacherAllocationModel> temp=[];
     for(var i in teacherAllocationList){
-      if(i.programName!.toLowerCase().toString().contains(val)||i.teacherName!.toLowerCase().toString().contains(val)|| i.department!.toLowerCase().toString().contains(val)|| i.degree!.toLowerCase().toString().contains(val)|| i.affiliation!.toLowerCase().toString().contains(val)|| i.status!.toLowerCase().toString().contains(val)){
+      if(i.programName!.toLowerCase().toString().contains(val)||i.courseCode!.toLowerCase().toString().contains(val)||i.teacherName!.toLowerCase().toString().contains(val)|| i.department!.toLowerCase().toString().contains(val)|| i.degree!.toLowerCase().toString().contains(val)|| i.affiliation!.toLowerCase().toString().contains(val)|| i.status!.toLowerCase().toString().contains(val)|| i.courseName!.toLowerCase().toString().contains(val)){
         temp.add(i);
       }
     }

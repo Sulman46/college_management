@@ -1,10 +1,11 @@
 import 'package:college_management/features/admin/programs/models/program_model.dart';
+import 'package:college_management/features/admin/semesters/models/semester_program_model.dart';
 
 class SemesterLevelsModel {
   final String? id;
   final String? semesterName;
   final String? programId;
-  final ProgramModel? programModel;
+  final SemesterProgramModel? programModel;
   final DateTime? startDate;
   final DateTime? endDate;
   final String? status;
@@ -28,7 +29,7 @@ class SemesterLevelsModel {
           ? map['programId']['_id']
           : map['programId'] ?? "",
 
-      programModel: ProgramModel.fromMap(map['program']??""),
+      programModel: SemesterProgramModel.fromMap(map['programId']??""),
       startDate: map['startDate'] != null
           ? DateTime.tryParse(map['startDate'])
           : null,
@@ -43,6 +44,8 @@ class SemesterLevelsModel {
 
   Map<String, dynamic> toMap() {
     return {
+      if(id!=null)
+        '_id':id,
       'semesterName': semesterName,
       'programId': programId,
       'startDate': startDate?.toIso8601String(),
@@ -55,7 +58,7 @@ class SemesterLevelsModel {
     String? id,
     String? semesterName,
     String? programId,
-    ProgramModel? programModel,
+    SemesterProgramModel? programModel,
     DateTime? startDate,
     DateTime? endDate,
     String? status,

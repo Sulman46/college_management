@@ -11,10 +11,11 @@ import '../core/theme/AppColor.dart';
 import 'custom_button.dart';
 
 class ConfirmationDialog extends StatelessWidget {
-   ConfirmationDialog({super.key, this.buttonWidget,this.onSubmit, this.title,required this.subText});
+   ConfirmationDialog({super.key, this.buttonWidget,this.submitText,this.onSubmit, this.title,required this.subText});
 String? title;
 String subText;
 Widget? buttonWidget;
+String? submitText;
 VoidCallback? onSubmit;
   @override
   Widget build(BuildContext context) {
@@ -22,28 +23,26 @@ VoidCallback? onSubmit;
       mainAxisSize: MainAxisSize.min,
       children: [
         SizedBox(height: 10),
-        Container(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              AppText(text: "",fontSize: 12,),
-              AppText(text: title??"Are you sure?",fontSize: 15,color: AppColor.white,),
-              InkWell(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(width: 1,color: AppColor.grey
-                    ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            AppText(text: "",fontSize: 12,),
+            AppText(text: title??"Are you sure?",fontSize: 15,color: AppColor.white,),
+            InkWell(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(width: 1,color: AppColor.grey
                   ),
-                  child: Icon(Icons.close,size: 15,color: AppColor.grey,),
                 ),
+                child: Icon(Icons.close,size: 15,color: AppColor.grey,),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
         SizedBox(height: 10,),
         AppText(text: subText,fontSize: 11,color: AppColor.greyLight1,),
@@ -61,7 +60,7 @@ VoidCallback? onSubmit;
             ),
             SizedBox(width: 40,),
             Expanded(
-              child: CustomElevatedButton(onPressed:onSubmit??(){}, text: "Delete"),
+              child: CustomElevatedButton(onPressed:onSubmit??(){}, text:submitText?? "Delete"),
             ),
           ],
         ),

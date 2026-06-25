@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-
 import '../../../../../core/app/di_container.dart';
-import '../../../../../core/constants/app_assets.dart';
 import '../../../../../core/theme/AppColor.dart';
 import '../../../../../widgets/active_inactive_status_widget.dart';
 import '../../../../../widgets/app_text.dart';
@@ -19,11 +17,7 @@ class RegisteredStudentItem extends StatelessWidget {
     return Container(
       margin: EdgeInsets.only(bottom: 12, left: 5, right: 5),
       padding: EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColor.white,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: AppColor.shadowBlack,
-      ),
+      decoration: AppColor.containerNeon,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -75,7 +69,7 @@ class RegisteredStudentItem extends StatelessWidget {
                   AppText(text: "Reg No.",fontSize: 11,color: AppColor.grey,),
                   SizedBox(width: 5,),
                   AppText(
-                    text: "${studentModel.srNo??""}",
+                    text: studentModel.registrationNumber??"",
                     fontWeight: FontWeight.w600,
                     fontSize: 13,
                   ),
@@ -91,12 +85,12 @@ class RegisteredStudentItem extends StatelessWidget {
                     padding: EdgeInsets.symmetric(horizontal: 5,vertical: 5),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5),
-                        color: AppColor.bgPrimary
+                        color: AppColor.white.withOpacity(.1)
                     ),
                     child: AppText(
-                      text: "${studentModel.rollNo??""}",
+                      text: studentModel.rollNo??"",
                       fontSize: 11,
-                      color: AppColor.primary,
+                      color: AppColor.white,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -107,11 +101,7 @@ class RegisteredStudentItem extends StatelessWidget {
           SizedBox(height: 5),
           Container(
             padding: EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: AppColor.whiteLight,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: AppColor.greyLight1),
-            ),
+            decoration: AppColor.containerDecoration,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

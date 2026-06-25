@@ -1,26 +1,20 @@
+import 'package:college_management/features/admin/programs/models/program_model.dart';
+
 class TimeTableManagerModel {
   final String? id;
-  final String? department;
-  final String? programName;
-  final String? affiliation;
-  final String? degree;
-  final int? semesterLevel;
-  final String? section;
-  final String? session;
+  final ProgramModel? programModel;
+  final TimeTableSemesterModel? semesterModel;
   final DateTime? wefDate;
+  final String? shiftType;
   final List<String>? timeSlots;
   final List<String>? days;
   final Map<String, TimeTableCellModel>? data;
 
   TimeTableManagerModel({
     this.id,
-    this.department,
-    this.programName,
-    this.affiliation,
-    this.degree,
-    this.semesterLevel,
-    this.section,
-    this.session,
+    this.shiftType,
+    this.programModel,
+    this.semesterModel,
     this.wefDate,
     this.timeSlots,
     this.days,
@@ -30,15 +24,10 @@ class TimeTableManagerModel {
   factory TimeTableManagerModel.fromMap(Map<String, dynamic> map) {
     return TimeTableManagerModel(
       id: map['_id'] ?? "",
-      department: map['department'] ?? "",
-      programName: map['programName'] ?? "",
-      affiliation: map['affiliation'] ?? "",
-      degree: map['degree'] ?? "",
-      semesterLevel: map['semesterLevel'] != null
-          ? int.tryParse("${map['semesterLevel']}") ?? 0
-          : 0,
-      section: map['section'] ?? "",
-      session: map['session'] ?? "",
+      programModel: ProgramModel.fromMap(map['programId']??{}),
+      shiftType: map['shiftType'] ?? "",
+      semesterModel: map['semesterId'] != null
+          ?TimeTableSemesterModel.fromMap(map['semesterId']): null,
       wefDate: map['wef'] != null
           ? DateTime.tryParse(map['wef'].toString())
           : null,
@@ -64,17 +53,13 @@ class TimeTableManagerModel {
   Map<String, dynamic> toMap() {
     return {
       if (id != null && id!.isNotEmpty) '_id': id,
-      if (department != null) 'department': department,
-      if (programName != null) 'programName': programName,
-      if (affiliation != null) 'affiliation': affiliation,
-      if (degree != null) 'degree': degree,
-      if (semesterLevel != null) 'semesterLevel': semesterLevel,
-      if (section != null) 'section': section,
-      if (session != null) 'session': session,
+      if (programModel != null) 'programId': programModel?.id??"",
+      if (shiftType != null) 'shiftType': shiftType,
+      if (semesterModel != null) 'semesterId': semesterModel!.id,
       if (wefDate != null)
         'wef': wefDate!.toIso8601String(),
       if (timeSlots != null) 'timeSlots': timeSlots,
-      if (days != null) 'days': days,
+      'days': ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
       if (data != null)
         'data': data!.map(
               (key, value) => MapEntry(key, value.toMap()),
@@ -85,10 +70,11 @@ class TimeTableManagerModel {
   TimeTableManagerModel copyWith({
     String? id,
     String? department,
-    String? programName,
+    String? shiftType,
+    ProgramModel? programModel,
     String? affiliation,
     String? degree,
-    int? semesterLevel,
+    TimeTableSemesterModel? semesterModel,
     String? section,
     String? session,
     DateTime? wefDate,
@@ -98,13 +84,9 @@ class TimeTableManagerModel {
   }) {
     return TimeTableManagerModel(
       id: id ?? this.id,
-      department: department ?? this.department,
-      programName: programName ?? this.programName,
-      affiliation: affiliation ?? this.affiliation,
-      degree: degree ?? this.degree,
-      semesterLevel: semesterLevel ?? this.semesterLevel,
-      section: section ?? this.section,
-      session: session ?? this.session,
+      shiftType: shiftType ?? this.shiftType,
+      programModel: programModel ?? this.programModel,
+      semesterModel: semesterModel ?? this.semesterModel,
       wefDate: wefDate ?? this.wefDate,
       timeSlots: timeSlots ?? this.timeSlots,
       days: days ?? this.days,
@@ -128,7 +110,7 @@ class TimeTableCellModel {
 
   factory TimeTableCellModel.fromMap(Map<String, dynamic> map) {
     return TimeTableCellModel(
-      courseId: map['courseId'] ?? "",
+      courseId: map['teacherId'] ?? "",
       teacher: map['teacher'] ?? "",
       subject: map['subject'] ?? "",
       room: map['room'] ?? "",
@@ -155,6 +137,209 @@ class TimeTableCellModel {
       teacher: teacher ?? this.teacher,
       subject: subject ?? this.subject,
       room: room ?? this.room,
+    );
+  }
+}
+
+
+
+class TimeTableSemesterModel {
+  final String? id;
+  final String? semesterName;
+  final DateTime? startDate;
+  final DateTime? endDate;
+  final String? status;
+
+  const TimeTableSemesterModel({
+    this.id,
+    this.semesterName,
+    this.startDate,
+    this.endDate,
+    this.status,
+  });
+
+  factory TimeTableSemesterModel.fromMap(Map<String, dynamic> map) {
+    return TimeTableSemesterModel(
+      id: map['_id']?.toString(),
+      semesterName: map['semesterName']?.toString(),
+      startDate: map['startDate']!=null ? DateTime.tryParse(map['startDate'].toString()):DateTime.now(),
+      endDate:  map['endDate']!=null ? DateTime.tryParse(map['endDate'].toString()):DateTime.now(),
+      status: map['status']?.toString(),
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      if (id != null) '_id': id,
+      'semesterName': semesterName,
+      'startDate': startDate!.toIso8601String(),
+      'endDate': endDate!.toIso8601String(),
+      'status': status,
+    };
+  }
+
+  TimeTableSemesterModel copyWith({
+    String? id,
+    String? semesterName,
+    DateTime? startDate,
+    DateTime? endDate,
+    String? status,
+  }) {
+    return TimeTableSemesterModel(
+      id: id ?? this.id,
+      semesterName: semesterName ?? this.semesterName,
+      startDate: startDate ?? this.startDate,
+      endDate: endDate ?? this.endDate,
+      status: status ?? this.status,
+    );
+  }
+}
+
+
+class TimeTableGetDataModel {
+  final String? affiliation;
+  final String? department;
+  final String? programName;
+  final String? degree;
+  final String? section;
+  final String? session;
+  final String? semesterName;
+  final String? semesterId;
+  final String? programId;
+  final DateTime? wef;
+  final String? shiftType;
+
+  const TimeTableGetDataModel({
+    this.affiliation,
+    this.department,
+    this.programName,
+    this.degree,
+    this.section,
+    this.session,
+    this.semesterName,
+    this.semesterId,
+    this.programId,
+    this.wef,
+    this.shiftType,
+  });
+
+  TimeTableGetDataModel copyWith({
+    String? affiliation,
+    String? department,
+    String? programName,
+    String? degree,
+    String? section,
+    String? session,
+    String? semesterName,
+    String? semesterId,
+    String? programId,
+    DateTime? wef,
+    String? shiftType,
+  }) {
+    return TimeTableGetDataModel(
+      affiliation: affiliation ?? this.affiliation,
+      department: department ?? this.department,
+      programName: programName ?? this.programName,
+      degree: degree ?? this.degree,
+      section: section ?? this.section,
+      session: session ?? this.session,
+      semesterName: semesterName ?? this.semesterName,
+      semesterId: semesterId ?? this.semesterId,
+      programId: programId ?? this.programId,
+      wef: wef ?? this.wef,
+      shiftType: shiftType ?? this.shiftType,
+    );
+  }
+
+  /// Affiliation changed
+  TimeTableGetDataModel resetAfterAffiliation() {
+    return TimeTableGetDataModel(
+      affiliation: affiliation,
+    );
+  }
+
+  /// Department changed
+  TimeTableGetDataModel resetAfterDepartment() {
+    return TimeTableGetDataModel(
+      affiliation: affiliation,
+      department: department,
+    );
+  }
+
+  /// Program changed
+  TimeTableGetDataModel resetAfterProgram() {
+    return TimeTableGetDataModel(
+      affiliation: affiliation,
+      department: department,
+      programId: programId,
+      programName: programName,
+    );
+  }
+
+  /// Degree changed
+  TimeTableGetDataModel resetAfterDegree() {
+    return TimeTableGetDataModel(
+      affiliation: affiliation,
+      department: department,
+      programId: programId,
+      programName: programName,
+      degree: degree,
+    );
+  }
+
+  /// Section changed
+  TimeTableGetDataModel resetAfterSection() {
+    return TimeTableGetDataModel(
+      affiliation: affiliation,
+      department: department,
+      programId: programId,
+      programName: programName,
+      degree: degree,
+      section: section,
+    );
+  }
+
+  /// Session changed
+  TimeTableGetDataModel resetAfterSession() {
+    return TimeTableGetDataModel(
+      affiliation: affiliation,
+      department: department,
+      programId: programId,
+      programName: programName,
+      degree: degree,
+      section: section,
+      session: session,
+    );
+  }
+
+  /// Semester changed
+  TimeTableGetDataModel resetAfterSemester() {
+    return TimeTableGetDataModel(
+      affiliation: affiliation,
+      department: department,
+      programId: programId,
+      programName: programName,
+      degree: degree,
+      section: section,
+      session: session,
+      semesterId: semesterId,
+      semesterName: semesterName,
+    );
+  }
+
+  /// WEF changed
+  TimeTableGetDataModel resetAfterWef() {
+    return TimeTableGetDataModel(
+      affiliation: affiliation,
+      department: department,
+      programId: programId,
+      programName: programName,
+      degree: degree,
+      section: section,
+      session: session,
+      semesterId: semesterId,
+      semesterName: semesterName,
+      wef: wef,
     );
   }
 }

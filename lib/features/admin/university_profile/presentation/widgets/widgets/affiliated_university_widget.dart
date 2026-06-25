@@ -66,18 +66,13 @@ AffiliationModel model;
                   universityProfileCubit.getUpdateModel(model);
                   Navigator.push(context, MaterialPageRoute(builder: (context) => AddAffiliationScreen(),));
                 }else if(p0==1){
-                  var  temp=universityProfileCubit.universityModel!.affiliationModel??[];
-                  int index=temp.indexWhere((e)=>e.id==model.id);
-                  temp[index]=model.copyWith(status:model.status=="Active"?"Inactive":"Active" );
-                  UniversityModel uniModel=UniversityModel(affiliationModel: temp);
-                  bool val= await universityProfileCubit.addUniversitySetup(uniModel,message: "Status Updated");
+                  model=model.copyWith(status:model.status=="Active"?"Inactive":"Active" );
+                  bool val= await universityProfileCubit.updateAffiliation(model,message: "Status Updated");
                 }else{
                   showDialog(context: context, builder: (context) => CustomAnimatedDialog(
                     child: ConfirmationDialog(title: "Are you sure?", subText: 'This affiliation will be permanently removed.',onSubmit: () async {
-                      var  temp=universityProfileCubit.universityModel!.affiliationModel??[];
-                      temp.removeWhere((element) => element.id==model.id,);
-                      UniversityModel uniModel=UniversityModel(affiliationModel: temp);
-                      bool val= await universityProfileCubit.addUniversitySetup(uniModel,message: "Data Deleted");                            if(val){
+
+                      bool val= await universityProfileCubit.deletedAffiliation(model);                            if(val){
                         Navigator.pop(context);
                       }
                     },),

@@ -56,11 +56,9 @@ class CourseMappingCubit extends Cubit<CourseMappingState> {
     var response=await _useCase.addMapping(value: value);
     if(response.isRight()){
       courseMappingModel=CourseMappingModel();
-      searchController.clear();
-      _courseMappingList.add(response.asRight());
-      _filterMapping=List.from(courseMappingList);
       emit(CourseMappingLoaded());
       closeLoadingDialog();
+      showMessage(response.asRight());
       return true;
     }else{
       showMessage(response.asLeft(),isError: true);
@@ -70,6 +68,16 @@ class CourseMappingCubit extends Cubit<CourseMappingState> {
     }
   }
 
+  void updateStatus(CourseMappingModel value){
+    emit(CourseMappingLoading());
+   int index= _courseMappingList.indexWhere((element) => element.id==value.id,);
+    _courseMappingList[index]=value;
+    searchController.clear();
+    _filterMapping=courseMappingList;
+    emit(CourseMappingLoaded());
+
+  }
+
   Future<bool> update(CourseMappingModel value)async{
     showLoadingDialog();
     emit(CourseMappingLoading());
@@ -77,12 +85,10 @@ class CourseMappingCubit extends Cubit<CourseMappingState> {
     var response=await _useCase.update(value: value);
     if(response.isRight()){
       courseMappingModel=CourseMappingModel();
-      searchController.clear();
-      int index=courseMappingList.indexWhere((element) => element.id==value.id,);
-      _courseMappingList[index]=response.asRight();
-      _filterMapping=List.from(courseMappingList);
       emit(CourseMappingLoaded());
       closeLoadingDialog();
+      showMessage(response.asRight());
+
       return true;
     }else{
       showMessage(response.asLeft(),isError: true);
@@ -98,11 +104,10 @@ class CourseMappingCubit extends Cubit<CourseMappingState> {
     var response=await _useCase.delete(value: value);
     if(response.isRight()){
       courseMappingModel=CourseMappingModel();
-      searchController.clear();
-      _courseMappingList.removeWhere((element) => element.id==value.id,);
-      _filterMapping=List.from(courseMappingList);
+
       emit(CourseMappingLoaded());
       closeLoadingDialog();
+      showMessage(response.asRight());
       return true;
     }else{
       showMessage(response.asLeft(),isError: true);
@@ -114,6 +119,8 @@ class CourseMappingCubit extends Cubit<CourseMappingState> {
 
   Future<void> getMappingData()async{
     searchController.clear();
+    _courseMappingList=[];
+    _filterMapping=[];
     showLoadingDialog();
     emit(CourseMappingLoading());
     var response=await _useCase.getMappingData();
@@ -133,7 +140,7 @@ class CourseMappingCubit extends Cubit<CourseMappingState> {
     emit(CourseMappingLoading());
     List<CourseMappingModel> temp=[];
     for(var i in courseMappingList){
-      if(i.semesterName!.toLowerCase().toString().contains(val)||i.program!.toLowerCase().toString().contains(val)|| i.department!.toLowerCase().toString().contains(val)|| i.degree!.toLowerCase().toString().contains(val)|| i.affiliation!.toLowerCase().toString().contains(val)|| i.status!.toLowerCase().toString().contains(val)||i.courseCode!.toLowerCase().toString().contains(val) || i.courseTitle!.toLowerCase().toString().contains(val)){
+      if(i.semesterName!.toLowerCase().toString().contains(val)||i.programName!.toLowerCase().toString().contains(val)|| i.departmentName!.toLowerCase().toString().contains(val)|| i.degree!.toLowerCase().toString().contains(val)|| i.affiliationName!.toLowerCase().toString().contains(val)|| i.status!.toLowerCase().toString().contains(val)||i.courseCode!.toLowerCase().toString().contains(val) || i.courseTitle!.toLowerCase().toString().contains(val)){
         temp.add(i);
       }
     }

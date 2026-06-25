@@ -4,43 +4,45 @@ import 'package:college_management/features/admin/university_profile/models/affi
 import '../../../../core/enums/status_enum.dart';
 
 class ProgramModel {
-  String id;
-  String name;
-  String code;
-  DepartmentModel department;
-  AffiliationModel affiliation;
-  String degree;
-  String session;
-  String section;
-  StatusEnum status;
+  String? id;
+  String? name;
+  String? code;
+  DepartmentModel? department;
+  String? affiliationId;
+  String? affiliationName;
+  String? degree;
+  String? session;
+  String? section;
+  StatusEnum? status;
 
-  int mids;
-  int sessional;
-  int finalMarks;
+  int? mids;
+  int? sessional;
+  int? finalMarks;
 
-  int totalTheory;
-  int theoryPassPercentage;
+  int? totalTheory;
+  int? theoryPassPercentage;
 
-  int practicalMax;
-  int practicalPassPercentage;
+  int? practicalMax;
+  int? practicalPassPercentage;
 
   ProgramModel({
-    required this.id,
-    required this.name,
-    required this.code,
-    required this.department,
-    required this.affiliation,
-    required this.degree,
-    required this.session,
-    required this.section,
-    required this.status,
-    required this.mids,
-    required this.sessional,
-    required this.finalMarks,
-    required this.totalTheory,
-    required this.theoryPassPercentage,
-    required this.practicalMax,
-    required this.practicalPassPercentage,
+     this.id,
+     this.name,
+     this.code,
+     this.department,
+     this.affiliationId,
+     this.affiliationName,
+     this.degree,
+     this.session,
+     this.section,
+     this.status,
+     this.mids,
+     this.sessional,
+     this.finalMarks,
+     this.totalTheory,
+     this.theoryPassPercentage,
+     this.practicalMax,
+     this.practicalPassPercentage,
   });
 
   factory ProgramModel.fromMap(
@@ -50,7 +52,8 @@ class ProgramModel {
       name: map['name'] ?? '',
       code: map['code'] ?? '',
       department: DepartmentModel.fromMap(map['department']??""),
-      affiliation:AffiliationModel.fromMap(map['affiliation']??""),
+      affiliationId:map['affiliation']??"",
+      affiliationName:map['affiliationName']??"",
       degree: map['degree'] ?? '',
       session: map['session'] ?? '',
       section: map['section'] ?? '',
@@ -77,12 +80,12 @@ class ProgramModel {
       '_id': id,
       'name': name,
       'code': code,
-      'department': department.id,
-      'affiliation': affiliation.id,
+      'department': department?.id,
+      'affiliation': affiliationId,
       'degree': degree,
       'session': session,
       'section': section,
-      'status': status.name,
+      'status': status?.name,
       'mids': mids,
       'sessional': sessional,
       'final': finalMarks,
@@ -101,7 +104,8 @@ class ProgramModel {
     String? name,
     String? code,
     DepartmentModel? department,
-    AffiliationModel? affiliation,
+    String? affiliationId,
+    String? affiliationName,
     String? degree,
     String? session,
     String? section,
@@ -119,7 +123,8 @@ class ProgramModel {
       name: name ?? this.name,
       code: code ?? this.code,
       department: department ?? this.department,
-      affiliation: affiliation ?? this.affiliation,
+      affiliationId: affiliationId ?? this.affiliationId,
+      affiliationName: affiliationName ?? this.affiliationName,
       degree: degree ?? this.degree,
       session: session ?? this.session,
       section: section ?? this.section,

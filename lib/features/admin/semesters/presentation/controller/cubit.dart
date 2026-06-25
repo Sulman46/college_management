@@ -13,7 +13,6 @@ import 'state.dart';
 class SemesterAdminCubit extends Cubit<SemesterAdminState> {
   final SemesterAdminUseCase _useCase;
   SemesterAdminCubit(this._useCase) : super(SemesterAdminInit());
-
   List<SemesterLevelsModel> filterSemesterList=[];
   List<SemesterLevelsModel> _semesterList=[];
   List<SemesterLevelsModel> get semesterList=>_semesterList;
@@ -42,6 +41,9 @@ class SemesterAdminCubit extends Cubit<SemesterAdminState> {
 
   Future<void> getSemesterList()async{
     showLoadingDialog();
+    _semesterList=[];
+    filterSemesterList=[];
+    searchController.clear();
     emit(SemesterAdminLoading());
     var response=await _useCase.getSemester();
 
@@ -49,7 +51,7 @@ class SemesterAdminCubit extends Cubit<SemesterAdminState> {
       _semesterList=response.asRight();
       filterSemesterList=semesterList;
     }else{
-      showMessage(response.asLeft());
+      showMessage(response.asLeft(),isError: true);
     }
     emit(SemesterAdminLoaded());
     closeLoadingDialog();
@@ -60,9 +62,7 @@ class SemesterAdminCubit extends Cubit<SemesterAdminState> {
     emit(SemesterAdminLoading());
     var respo=await _useCase.addSemester(semesterModel: value);
     if(respo.isRight()){
-      _semesterList.add(respo.asRight());
-      filterSemesterList=semesterList;
-      searchController.clear();
+      showMessage(respo.asRight());
       closeLoadingDialog();
       emit(SemesterAdminLoaded());
       return true;
@@ -79,10 +79,7 @@ class SemesterAdminCubit extends Cubit<SemesterAdminState> {
     emit(SemesterAdminLoading());
     var respo=await _useCase.updateSemester(semesterModel: value);
     if(respo.isRight()){
-      int index=semesterList.indexWhere((element) => element.id==value.id,);
-      _semesterList[index]=respo.asRight();
-      filterSemesterList=semesterList;
-      searchController.clear();
+      showMessage(respo.asRight());
       closeLoadingDialog();
       emit(SemesterAdminLoaded());
       return true;
@@ -99,9 +96,7 @@ class SemesterAdminCubit extends Cubit<SemesterAdminState> {
     emit(SemesterAdminLoading());
     var respo=await _useCase.deleteSemester(semesterModel: value);
     if(respo.isRight()){
-      _semesterList.removeWhere((element) => element.id==value.id,);
-      filterSemesterList=semesterList;
-      searchController.clear();
+      showMessage(respo.asRight());
       closeLoadingDialog();
       emit(SemesterAdminLoaded());
       return true;
@@ -117,7 +112,7 @@ class SemesterAdminCubit extends Cubit<SemesterAdminState> {
     emit(SemesterAdminLoading());
     List<SemesterLevelsModel> temp=[];
       for(var i in semesterList){
-        if(i.programModel!.name.toLowerCase().toString().contains(val)|| i.programModel!.department.name.toLowerCase().toString().contains(val)|| i.programModel!.degree.toLowerCase().toString().contains(val)|| i.programModel!.affiliation.name.toLowerCase().toString().contains(val)|| i.status!.toLowerCase().toString().contains(val)){
+        if(i.programModel!.name.toLowerCase().toString().contains(val)|| i.programModel!.departmentName.toLowerCase().toString().contains(val)|| i.programModel!.degree.toLowerCase().toString().contains(val)|| i.programModel!.affiliationName.toLowerCase().toString().contains(val)|| i.status!.toLowerCase().toString().contains(val)){
           temp.add(i);
         }
       }

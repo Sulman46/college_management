@@ -18,7 +18,7 @@ class AttendancePolicyModel {
   factory AttendancePolicyModel.fromMap(
       Map<String, dynamic> map) {
     return AttendancePolicyModel(
-      id: map['id'] ?? 0,
+      id: map['_id'] ?? 0,
       type: map['type'] ?? 'safe',
       tag: map['tag'] ?? '',
       title: map['title'] ?? '',
@@ -29,7 +29,7 @@ class AttendancePolicyModel {
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
+      '_id': id,
       'type': type,
       'tag': tag,
       'title': title,

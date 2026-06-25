@@ -35,17 +35,7 @@ class ConstantData{
   ];
 
 
-  static List<String> designationList = [
-    "Lecturer",
-    "Assistant Professor",
-    "Associate Professor",
-    "Professor",
-    "Visiting Lecturer",
-    "Lab Instructor",
-    "Program Coordinator",
-    "Head of Department (HOD)",
-    "Dean",
-  ];
+  static List<String> designationList = ["Lecturer", "Assistant Professor", "Associate Professor", "Professor", "Head of Department", "Visiting Faculty"];
 
 
   static List<String> announcementCategoryList = [
@@ -96,4 +86,6 @@ class ConstantData{
   static List<String>  eveningSlot = [
     "12:00-13:00","13:00-14:00","14:00-15:00","15:00-16:00","16:00-17:00",
   ];
+
+  static List<String> coordinatorDesignation=["Program Coordinator","Assistant Coordinator","Deputy Coordinator","Senior Coordinator"];
 }

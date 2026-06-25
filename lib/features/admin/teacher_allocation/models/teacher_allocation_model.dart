@@ -1,48 +1,79 @@
 class TeacherAllocationModel {
   final String? id;
-  final String? affiliation;
-  final String? department;
-  final String? programName;
+  final String? courseMappingId;
+  final List<String>? combinedProgramsIds;
   final List<String>? combinedPrograms;
+  final String? teacherId;
+  final String? teacherName;
+  final List<String>? teacherDepartments;
+  final String? bankName;
+  final String? accountNo;
+  final String? phone;
+  final String? email;
+  final String? department;
+  final String? programId;
+  final String? programName;
   final String? degree;
   final String? batch;
   final String? section;
   final String? semester;
+  final String? semesterId;
   final String? courseName;
   final String? courseCode;
   final String? creditHours;
-  final String? teacherName;
   final bool? isCombinedClass;
-  final String? allocationType;
-  final double? rate;
+
+  final String? affiliation;
   final String? status;
 
-  TeacherAllocationModel({
+
+
+  const TeacherAllocationModel({
     this.id,
-    this.affiliation,
-    this.department,
-    this.programName,
+    this.courseMappingId,
+
+    this.combinedProgramsIds,
     this.combinedPrograms,
+
+    this.teacherId,
+    this.teacherName,
+    this.teacherDepartments,
+
+    this.bankName,
+    this.accountNo,
+    this.phone,
+    this.email,
+
+    this.department,
+    this.programId,
+    this.programName,
+
     this.degree,
     this.batch,
     this.section,
+
     this.semester,
+    this.semesterId,
+
     this.courseName,
     this.courseCode,
     this.creditHours,
-    this.teacherName,
+
     this.isCombinedClass,
-    this.allocationType,
-    this.rate,
+    this.affiliation,
     this.status,
   });
 
   factory TeacherAllocationModel.fromMap(Map<String, dynamic> map) {
     return TeacherAllocationModel(
-      id: map['_id'] ?? "",
-      affiliation: map['affiliation'] ?? "",
-      department: map['department'] ?? "",
-      programName: map['programName'] ?? "",
+      id: map['_id']?.toString(),
+      courseMappingId: map['courseMappingId']?.toString(),
+
+      combinedProgramsIds: map['combinedProgramsIds'] == null
+          ? []
+          : List<String>.from(
+        map['combinedProgramsIds'].map((e) => e.toString()),
+      ),
 
       combinedPrograms: map['combinedPrograms'] == null
           ? []
@@ -50,86 +81,113 @@ class TeacherAllocationModel {
         map['combinedPrograms'].map((e) => e.toString()),
       ),
 
-      degree: map['degree'] ?? "",
-      batch: map['batch'] ?? "",
-      section: map['section'] ?? "",
-      semester: map['semester'] ?? "",
-      courseName: map['courseName'] ?? "",
-      courseCode: map['courseCode'] ?? "",
-      creditHours: map['creditHours'] ?? "",
-      teacherName: map['teacherName'] ?? "",
+      teacherId: map['teacherId']?.toString(),
+      teacherName: map['teacherName']?.toString(),
+
+      teacherDepartments: map['teacherDepartments'] == null
+          ? []
+          : List<String>.from(
+        map['teacherDepartments'].map((e) => e.toString()),
+      ),
+
+      bankName: map['bankName']?.toString(),
+      accountNo: map['accountNo']?.toString(),
+      phone: map['phone']?.toString(),
+      email: map['email']?.toString(),
+
+      department: map['department']?.toString(),
+      programId: map['programId']?.toString(),
+      programName: map['programName']?.toString(),
+
+      degree: map['degree']?.toString(),
+      batch: map['batch']?.toString(),
+      section: map['section']?.toString(),
+
+      semester: map['semester']?.toString(),
+      semesterId: map['semesterId']?.toString(),
+
+      courseName: map['courseName']?.toString(),
+      courseCode: map['courseCode']?.toString(),
+      creditHours: map['creditHours']?.toString(),
 
       isCombinedClass: map['isCombinedClass'] ?? false,
 
-      allocationType: map['allocationType'] ?? "Workload",
-
-      rate: map['rate'] != null
-          ? double.tryParse("${map['rate']}") ?? 0
-          : 0,
-
-      status: map['status'] ?? "Active",
+      affiliation: map['affiliation']?.toString(),
+      status: map['status']?.toString(),
     );
   }
 
   Map<String, dynamic> toMap() {
+
     return {
-      if(id!=null)
-      '_id': id,
-      'affiliation': affiliation,
-      'department': department,
-      'programName': programName,
-      'combinedPrograms': combinedPrograms,
-      'degree': degree,
-      'batch': batch,
-      'section': section,
-      'semester': semester,
-      'courseName': courseName,
-      'courseCode': courseCode,
-      'creditHours': creditHours,
-      'teacherName': teacherName,
+
+      if (id != null) '_id': id,
+      'courseMappingId': courseMappingId,
+      'combinedPrograms': combinedProgramsIds==null?[]: combinedProgramsIds!.map((e) => e.toString(),).toList(),
+
+      'teacherId': teacherId,
+
       'isCombinedClass': isCombinedClass,
-      'allocationType': allocationType,
-      'rate': rate,
+
+      'affiliation': affiliation,
       'status': status,
     };
   }
 
   TeacherAllocationModel copyWith({
     String? id,
-    String? affiliation,
-    String? department,
-    String? programName,
+    String? courseMappingId,
+    List<String>? combinedProgramsIds,
     List<String>? combinedPrograms,
+    String? teacherId,
+    String? teacherName,
+    List<String>? teacherDepartments,
+    String? bankName,
+    String? accountNo,
+    String? phone,
+    String? email,
+    String? department,
+    String? programId,
+    String? programName,
     String? degree,
     String? batch,
     String? section,
     String? semester,
+    String? semesterId,
     String? courseName,
     String? courseCode,
     String? creditHours,
-    String? teacherName,
     bool? isCombinedClass,
-    String? allocationType,
-    double? rate,
+    String? affiliation,
     String? status,
   }) {
     return TeacherAllocationModel(
       id: id ?? this.id,
-      affiliation: affiliation ?? this.affiliation,
-      department: department ?? this.department,
-      programName: programName ?? this.programName,
+      courseMappingId: courseMappingId ?? this.courseMappingId,
+      combinedProgramsIds:
+      combinedProgramsIds ?? this.combinedProgramsIds,
       combinedPrograms: combinedPrograms ?? this.combinedPrograms,
+      teacherId: teacherId ?? this.teacherId,
+      teacherName: teacherName ?? this.teacherName,
+      teacherDepartments:
+      teacherDepartments ?? this.teacherDepartments,
+      bankName: bankName ?? this.bankName,
+      accountNo: accountNo ?? this.accountNo,
+      phone: phone ?? this.phone,
+      email: email ?? this.email,
+      department: department ?? this.department,
+      programId: programId ?? this.programId,
+      programName: programName ?? this.programName,
       degree: degree ?? this.degree,
       batch: batch ?? this.batch,
       section: section ?? this.section,
       semester: semester ?? this.semester,
+      semesterId: semesterId ?? this.semesterId,
       courseName: courseName ?? this.courseName,
       courseCode: courseCode ?? this.courseCode,
       creditHours: creditHours ?? this.creditHours,
-      teacherName: teacherName ?? this.teacherName,
       isCombinedClass: isCombinedClass ?? this.isCombinedClass,
-      allocationType: allocationType ?? this.allocationType,
-      rate: rate ?? this.rate,
+      affiliation: affiliation ?? this.affiliation,
       status: status ?? this.status,
     );
   }

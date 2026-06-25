@@ -1,4 +1,5 @@
 import 'package:college_management/core/constants/app_apis.dart';
+import 'package:college_management/core/helper/show_message.dart';
 import 'package:college_management/features/admin/departments/data/model/department_model.dart';
 import 'package:college_management/features/admin/departments/data/model/request_new_department_model.dart';
 import 'package:dartz/dartz.dart';
@@ -90,7 +91,7 @@ class FunctionClassAdminDepartment extends AdminDepartmentDataSource{
       final response=await dioHelper.delete("${AppApis.department}/$id",);
       var data=response.data;
       if(response.statusCode! >=200 && response.statusCode! <=300){
-        String message=data['message']??"Department Deleted";
+        String message=data['message']??data['error']??"Department Deleted";
         return Right(message);
       }
 

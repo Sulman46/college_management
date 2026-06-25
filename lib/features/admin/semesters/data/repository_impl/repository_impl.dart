@@ -10,17 +10,17 @@ class SemesterAdminRepositoryImpl extends SemesterAdminRepository{
 
 
   @override
-  Future<Either<String,SemesterLevelsModel>> addSemester({required SemesterLevelsModel semesterModel})async {
+  Future<Either<String,String>> addSemester({required SemesterLevelsModel semesterModel})async {
     return dataSource.addSemester(semesterModel: semesterModel);
   }
 
   @override
-  Future<Either<String,SemesterLevelsModel>> updateSemester({required SemesterLevelsModel semesterModel})async {
+  Future<Either<String,String>> updateSemester({required SemesterLevelsModel semesterModel})async {
     return dataSource.updateSemester(semesterModel: semesterModel);
   }
 
   @override
-  Future<Either<String,bool>> deleteSemester({required SemesterLevelsModel semesterModel})async {
+  Future<Either<String,String>> deleteSemester({required SemesterLevelsModel semesterModel})async {
     return dataSource.deleteSemester(semesterModel: semesterModel);
   }
 

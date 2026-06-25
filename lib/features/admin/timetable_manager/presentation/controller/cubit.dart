@@ -3,13 +3,10 @@ import 'package:college_management/features/admin/timetable_manager/models/table
 import 'package:college_management/features/admin/timetable_manager/models/time_table_manger_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../../core/app/myapp.dart';
-import '../../../../../core/constants/media_query.dart';
 import '../../../../../core/extensions/dart_extensions.dart';
 import '../../../../../core/helper/show_message.dart';
 import '../../../../../widgets/loader_dialog.dart';
 import '../../domain/usecase/usecase.dart';
-import '../../models/time_table_manger_model.dart';
 import 'state.dart';
 
 class TimetableManagerCubit extends Cubit<TimetableManagerState> {
@@ -26,20 +23,13 @@ class TimetableManagerCubit extends Cubit<TimetableManagerState> {
   List<TimeTableManagerModel> _filterList=[];
   List<TimeTableManagerModel> get filterList=>_filterList;
 
-  TimeTableManagerModel addTimeTableManagerModel=TimeTableManagerModel();
+  TimeTableGetDataModel addTimeTableManagerModel=TimeTableGetDataModel();
 
-  String? shiftType;
 
   NewSlotModel newSlotModel=NewSlotModel();
   TimeTableCellModel tableCellModel=TimeTableCellModel();
 
   TableFilterModel filterModel=TableFilterModel();
-
-  void getShiftType(String? val){
-    emit(TimetableManagerLoading());
-    shiftType=val;
-    emit(TimetableManagerLoaded());
-  }
 
   void getFilterModel({required TableFilterModel model}){
     emit(TimetableManagerLoading());
@@ -59,7 +49,7 @@ class TimetableManagerCubit extends Cubit<TimetableManagerState> {
     emit(TimetableManagerLoaded());
   }
 
-  void getTimeTableManagerModel(TimeTableManagerModel model){
+  void getTimeTableManagerModel(TimeTableGetDataModel model){
     emit(TimetableManagerLoading());
     addTimeTableManagerModel=model;
     emit(TimetableManagerLoaded());
@@ -70,16 +60,13 @@ class TimetableManagerCubit extends Cubit<TimetableManagerState> {
     emit(TimetableManagerLoading());
     var response=await _useCase.post(value: value);
     if(response.isLeft()){
-      showMessage(response.asLeft());
+      showMessage(response.asLeft(),isError: true);
       emit(TimetableManagerLoaded());
       closeLoadingDialog();
       return false;
     }else{
-      searchController.clear();
       var data=response.asRight();
-      _dataList.add(data);
-      _filterList=List.from(dataList);
-      _filterList.toSet();
+      showMessage(data);
       emit(TimetableManagerLoaded());
       closeLoadingDialog();
       return true;
@@ -88,11 +75,13 @@ class TimetableManagerCubit extends Cubit<TimetableManagerState> {
 
   Future<void> get()async{
     showLoadingDialog();
-    emit(TimetableManagerLoading());
     searchController.clear();
+    _filterList=[];
+    _dataList=[];
+    emit(TimetableManagerLoading());
     var response=await _useCase.get();
     if(response.isLeft()){
-      showMessage(response.asLeft());
+      showMessage(response.asLeft(),isError: true);
       emit(TimetableManagerLoaded());
       closeLoadingDialog();
     }else{
@@ -109,16 +98,16 @@ class TimetableManagerCubit extends Cubit<TimetableManagerState> {
     emit(TimetableManagerLoading());
     var response=await _useCase.delete(value: value);
     if(response.isLeft()){
-      showMessage(response.asLeft());
+      showMessage(response.asLeft(),isError: true);
       emit(TimetableManagerLoaded());
       closeLoadingDialog();
       return false;
     }else{
-      searchController.clear();
-      _dataList.removeWhere((element) => element.id==value.id,);
-      _filterList=List.from(dataList);
       emit(TimetableManagerLoaded());
       closeLoadingDialog();
+
+      var data=response.asRight();
+      showMessage(data);
       return true;
     }
   }
@@ -130,18 +119,16 @@ class TimetableManagerCubit extends Cubit<TimetableManagerState> {
     emit(TimetableManagerLoading());
     var response=await _useCase.update(value: value);
     if(response.isLeft()){
-      showMessage(response.asLeft());
+      showMessage(response.asLeft(),isError: true);
       emit(TimetableManagerLoaded());
       closeLoadingDialog();
       return false;
     }else{
-      var data=response.asRight();
-      int index= dataList.indexWhere((element) => element.id==value.id,);
-      searchController.clear();
-      _dataList[index]=value;
-      _filterList=List.from(dataList);
       emit(TimetableManagerLoaded());
       closeLoadingDialog();
+
+      var data=response.asRight();
+      showMessage(data);
       return true;
     }
   }
@@ -152,7 +139,7 @@ class TimetableManagerCubit extends Cubit<TimetableManagerState> {
     emit(TimetableManagerLoading());
     List<TimeTableManagerModel> temp=[];
     for(var i in dataList){
-      if(i.programName!.toLowerCase().toString().contains(val) || i.department!.toLowerCase().toString().contains(val) || i.degree!.toLowerCase().toString().contains(val) ){
+      if(i.programModel!.name!.toLowerCase().toString().contains(val) || i.programModel!.department!.name.toLowerCase().toString().contains(val) || i.programModel!.degree!.toLowerCase().toString().contains(val) ){
         temp.add(i);
       }
     }

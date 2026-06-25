@@ -1,5 +1,6 @@
 import 'package:college_management/core/enums/status_enum.dart';
 import 'package:college_management/features/admin/programs/models/program_model.dart';
+import 'package:college_management/features/admin/university_profile/models/affiliation_model.dart';
 import 'package:college_management/widgets/active_inactive_status_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -37,7 +38,7 @@ ProgramModel model;
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: AppText(
-                  text: model.code,
+                  text: model.code??"",
                   fontSize: 11,
                   color: AppColor.greyLight,
                 ),
@@ -53,21 +54,20 @@ ProgramModel model;
 
                     ProgramRequestModel
                     programRequestModel = ProgramRequestModel(
-                      name: model.name,
-                      code: model.code,
-                      degree: model.degree,
-                      session: model.session,
-                      section: model.section,
-                      department: model.department,
-                      mids: model.mids,
-                      sessional: model.sessional,
-                      finalMarks: model.finalMarks,
-                      affiliation:
-                      model.affiliation,
-                      practicalMax: model.practicalMax,
-                      practicalPassPercentage: model.practicalPassPercentage,
-                      theoryPassPercentage: model.theoryPassPercentage,
-                      totalTheory: model.totalTheory,
+                      name: model.name!,
+                      code: model.code!,
+                      degree: model.degree!,
+                      session: model.session!,
+                      section: model.section!,
+                      department: model.department!,
+                      mids: model.mids!,
+                      sessional: model.sessional!,
+                      finalMarks: model.finalMarks!,
+                      affiliation:AffiliationModel(id: model.affiliationId),
+                      practicalMax: model.practicalMax!,
+                      practicalPassPercentage: model.practicalPassPercentage!,
+                      theoryPassPercentage: model.theoryPassPercentage!,
+                      totalTheory: model.totalTheory!,
                       status:model.status==StatusEnum.Active?"Inactive":"Active",
                       id: model.id,
                     );
@@ -93,7 +93,7 @@ ProgramModel model;
 
           /// 🔹 TITLE
           AppText(
-            text: model.name,
+            text: model.name!,
             fontSize: 15,
             fontWeight: FontWeight.w600,
           ),
@@ -102,7 +102,7 @@ ProgramModel model;
 
           /// 🔹 SUBTITLE
           AppText(
-            text: "Dept. of ${model.department}",
+            text: "Dept. of ${model.department!.name}",
             fontSize: 11,
             color: AppColor.grey,
           ),
@@ -114,11 +114,11 @@ ProgramModel model;
             decoration: AppColor.containerDecoration,
             child: Row(
               children: [
-                infoItem("SECTION", model.section),
+                infoItem("SECTION", model.section!),
                 divider(),
-                infoItem("DEGREE", model.degree),
+                infoItem("DEGREE", model.degree!),
                 divider(),
-                infoItem("SESSION", model.session),
+                infoItem("SESSION", model.session!),
               ],
             ),
           ),
@@ -177,7 +177,7 @@ ProgramModel model;
                     SizedBox(width: 6),
                     Expanded(
                       child: AppText(
-                        text: model.affiliation.name,
+                        text: model.affiliationName!,
                         fontSize: 11,
                         color: AppColor.grey,
                       ),

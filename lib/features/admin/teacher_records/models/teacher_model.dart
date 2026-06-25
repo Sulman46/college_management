@@ -1,3 +1,5 @@
+import 'package:college_management/features/admin/departments/data/model/department_model.dart';
+
 class TeacherModel {
   final String? id;
   final String? teacherName;
@@ -5,7 +7,7 @@ class TeacherModel {
   final String? phone;
   final String? gender;
   final String? status;
-  final List<String>? department;
+  final List<DepartmentModel>? department;
   final String? designation;
   final String? qualification;
   final String? specialization;
@@ -48,8 +50,8 @@ class TeacherModel {
 
       department: map['department'] == null
           ? []
-          : List<String>.from(
-        map['department'].map((e) => e.toString()),
+          : List<DepartmentModel>.from(
+        map['department'].map((e) =>  DepartmentModel.fromMap(e)),
       ),
 
       designation: map['designation'] ?? "",
@@ -81,7 +83,7 @@ class TeacherModel {
       'phone': phone,
       'gender': gender,
       'status': status,
-      'department': department,
+      'department': department?.map((e) => e.id,).toList()??[],
       'designation': designation,
       'qualification': qualification,
       'specialization': specialization,
@@ -102,7 +104,7 @@ class TeacherModel {
     String? phone,
     String? gender,
     String? status,
-    List<String>? department,
+    List<DepartmentModel>? department,
     String? designation,
     String? qualification,
     String? specialization,

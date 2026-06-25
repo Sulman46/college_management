@@ -10,17 +10,17 @@ class TimetableManagerRepositoryImpl extends TimetableManagerRepository{
 
 
   @override
-  Future<Either<String,TimeTableManagerModel>> post({required TimeTableManagerModel value})async{
+  Future<Either<String,String>> post({required TimeTableManagerModel value})async{
     return dataSource.post(value: value);
   }
 
   @override
-  Future<Either<String,TimeTableManagerModel>> update({required TimeTableManagerModel value}){
+  Future<Either<String,String>> update({required TimeTableManagerModel value}){
     return dataSource.update(value: value);
   }
 
   @override
-  Future<Either<String,bool>> delete({required TimeTableManagerModel value}){
+  Future<Either<String,String>> delete({required TimeTableManagerModel value}){
     return dataSource.delete(value: value);
   }
 

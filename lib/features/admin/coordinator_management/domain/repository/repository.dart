@@ -1,5 +1,10 @@
 import 'package:dartz/dartz.dart';
 
-abstract class NewFileNameRepository{
-  Future<Either<String,bool>> function1();
+import '../../presentation/models/coordinator_register_model.dart';
+
+abstract class CoordinatorManagementRepository{
+  Future<Either<String,String>> post({required CoordinatorRegisterModel value});
+  Future<Either<String,String>> update({required CoordinatorRegisterModel value});
+  Future<Either<String,String>> delete({required CoordinatorRegisterModel value});
+  Future<Either<String,List<CoordinatorRegisterModel>>> get();
 }

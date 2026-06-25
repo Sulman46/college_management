@@ -1,10 +1,7 @@
 import 'package:college_management/core/app/di_container.dart';
-import 'package:college_management/core/helper/data_extractor.dart';
 import 'package:college_management/core/helper/show_message.dart';
 import 'package:college_management/core/theme/AppColor.dart';
-import 'package:college_management/features/admin/course_mapping/presentation/controller/cubit.dart';
 import 'package:college_management/features/admin/teacher_allocation/presentation/controller/cubit.dart';
-import 'package:college_management/features/admin/timetable_manager/models/new_slot_model.dart';
 import 'package:college_management/features/admin/timetable_manager/models/time_table_manger_model.dart';
 import 'package:college_management/features/admin/timetable_manager/presentation/controller/cubit.dart';
 import 'package:college_management/widgets/app_text.dart';
@@ -27,13 +24,13 @@ String keyValue;
 
 class _AddLectureTimeSlotDialogState extends State<AddLectureTimeSlotDialog> {
   TextEditingController roomController=TextEditingController();
-  var _courseMappingController=DiContainer().sl<CourseMappingCubit>();
-  var _teacherAllocationCubit=DiContainer().sl<TeacherAllocationCubit>();
-  var _timeTableManagerCubit=DiContainer().sl<TimetableManagerCubit>();
+  final _teacherAllocationCubit=DiContainer().sl<TeacherAllocationCubit>();
+  final _timeTableManagerCubit=DiContainer().sl<TimetableManagerCubit>();
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       _timeTableManagerCubit.getTableCell(model: TimeTableCellModel());
+      await _teacherAllocationCubit.get();
     },);
     // TODO: implement initState
     super.initState();
@@ -49,23 +46,22 @@ class _AddLectureTimeSlotDialogState extends State<AddLectureTimeSlotDialog> {
             AppText(text: "Add Slot",fontSize: 15,color: AppColor.white,fontWeight: FontWeight.w600,),
             SizedBox(height: 10,),
             BlocBuilder(
-              bloc: _courseMappingController,
+              bloc: _teacherAllocationCubit,
               builder: (context,stateskja) {
-                return _courseMappingController.courseMappingList.isNotEmpty?
-                CustomPopMenuButton(menus: _courseMappingController.courseMappingList.where((element) => element.affiliation==widget.timeTableManagerModel.affiliation&&element.degree==widget.timeTableManagerModel.degree&&element.department==widget.timeTableManagerModel.department&&element.program==widget.timeTableManagerModel.programName&&element.session==widget.timeTableManagerModel.session&&element.section==widget.timeTableManagerModel.section&&DataExtractor.extractInt(element.semesterName)==widget.timeTableManagerModel.semesterLevel,).map((e) => e.courseTitle??"",).toList(),
+                return _teacherAllocationCubit.activeTeacherAllocationList.isNotEmpty?
+                CustomPopMenuButton(menus: _teacherAllocationCubit.activeTeacherAllocationList.where((element) => element.semesterId==widget.timeTableManagerModel.semesterModel?.id).map((e) => "${e.courseName??""} ",).toSet().toList(),
                   onSelected: (p0) {
-                  String subjectName=_courseMappingController.courseMappingList.where((element) => element.affiliation==widget.timeTableManagerModel.affiliation&&element.degree==widget.timeTableManagerModel.degree&&element.department==widget.timeTableManagerModel.department&&element.program==widget.timeTableManagerModel.programName&&element.session==widget.timeTableManagerModel.session&&element.section==widget.timeTableManagerModel.section&&DataExtractor.extractInt(element.semesterName)==widget.timeTableManagerModel.semesterLevel,).map((e) => e.courseTitle??"",).toList()[p0];
-                  String courseId=_courseMappingController.courseMappingList.where((element) => element.affiliation==widget.timeTableManagerModel.affiliation&&element.degree==widget.timeTableManagerModel.degree&&element.department==widget.timeTableManagerModel.department&&element.program==widget.timeTableManagerModel.programName&&element.session==widget.timeTableManagerModel.session&&element.section==widget.timeTableManagerModel.section&&DataExtractor.extractInt(element.semesterName)==widget.timeTableManagerModel.semesterLevel,).map((e) => e.courseId??"",).toList()[p0];
-                    _timeTableManagerCubit.getTableCell(model:_timeTableManagerCubit.tableCellModel.copyWith(subject:subjectName,courseId: courseId ));
+                  String subjectName=_teacherAllocationCubit.activeTeacherAllocationList.where((element) => element.semesterId==widget.timeTableManagerModel.semesterModel?.id).map((e) => e.courseName??"",).toSet().toList()[p0];
+                    _timeTableManagerCubit.getTableCell(model:TimeTableCellModel(subject: subjectName));
                   },
                   title: "Subject"
-                  ,widget: DropDownFieldWidget(text:_timeTableManagerCubit.tableCellModel.subject?? "Select..",isFilled: false,),): InkWell(
+                  ,widget: DropDownFieldWidget(text:_timeTableManagerCubit.tableCellModel.subject?? "Select..",isFilled: _timeTableManagerCubit.tableCellModel.subject!=null,),): InkWell(
                     onTap: () async{
-                     await _courseMappingController.getMappingData();
+                      await _teacherAllocationCubit.get();
                     },
                     child: DropDownFieldWidget(
                       title: "Subject",
-                      text:_timeTableManagerCubit.tableCellModel.subject?? "Select..",isFilled: false,));
+                      text:_timeTableManagerCubit.tableCellModel.subject?? "Select..",isFilled: _timeTableManagerCubit.tableCellModel.subject!=null,));
               }
             ),
             SizedBox(height: 10,),
@@ -73,21 +69,21 @@ class _AddLectureTimeSlotDialogState extends State<AddLectureTimeSlotDialog> {
               bloc: _teacherAllocationCubit,
               builder: (context,statevbjhak) {
                 return _teacherAllocationCubit.teacherAllocationList.isNotEmpty?
-                CustomPopMenuButton(menus: _teacherAllocationCubit.teacherAllocationList.where((element) => element.affiliation==widget.timeTableManagerModel.affiliation&&element.degree==widget.timeTableManagerModel.degree&&element.department==widget.timeTableManagerModel.department&&element.programName==widget.timeTableManagerModel.programName&&element.section==widget.timeTableManagerModel.section).map((e) => e.teacherName??"",).toList(),
+                CustomPopMenuButton(menus: _teacherAllocationCubit.activeTeacherAllocationList.where((element) => element.semesterId==widget.timeTableManagerModel.semesterModel?.id && element.courseName==_timeTableManagerCubit.tableCellModel.subject).map((e) => e.teacherName??"",).toList(),
                   onSelected: (p0) {
-                    String teacherName=_teacherAllocationCubit.teacherAllocationList.where((element) => element.affiliation==widget.timeTableManagerModel.affiliation&&element.degree==widget.timeTableManagerModel.degree&&element.department==widget.timeTableManagerModel.department&&element.programName==widget.timeTableManagerModel.programName&&element.section==widget.timeTableManagerModel.section).map((e) => e.teacherName??"",).toList()[p0];
-                    _timeTableManagerCubit.getTableCell(model: _timeTableManagerCubit.tableCellModel.copyWith(teacher: teacherName));
+                    String teacherName= _teacherAllocationCubit.activeTeacherAllocationList.where((element) => element.semesterId==widget.timeTableManagerModel.semesterModel?.id && element.courseName==_timeTableManagerCubit.tableCellModel.subject).map((e) => e.teacherName??"",).toList()[p0];
+                    String courseId= _teacherAllocationCubit.activeTeacherAllocationList.where((element) => element.semesterId==widget.timeTableManagerModel.semesterModel?.id && element.courseName==_timeTableManagerCubit.tableCellModel.subject && element.teacherName==teacherName).map((e) => e.id??"",).first;
+                    _timeTableManagerCubit.getTableCell(model:TimeTableCellModel(subject: _timeTableManagerCubit.tableCellModel.subject,teacher: teacherName,courseId:courseId ));
                     },
                   title: "Instructor",
-                  widget: DropDownFieldWidget(text:_timeTableManagerCubit.tableCellModel.teacher?? "Select..",isFilled: false,),)
-                    :
-                InkWell(
+                  widget: DropDownFieldWidget(text:_timeTableManagerCubit.tableCellModel.teacher?? "Select..",isFilled: _timeTableManagerCubit.tableCellModel.teacher!=null,),)
+                  : InkWell(
                   onTap: () async{
                     await _teacherAllocationCubit.get();
                   },
                   child: DropDownFieldWidget(
                     title: "Instructor",
-                    text:_timeTableManagerCubit.tableCellModel.teacher?? "Select..",isFilled: false,),
+                    text:_timeTableManagerCubit.tableCellModel.teacher?? "Select..",isFilled: _timeTableManagerCubit.tableCellModel.teacher!=null,),
                 );
               }
             ),
@@ -127,6 +123,7 @@ class _AddLectureTimeSlotDialogState extends State<AddLectureTimeSlotDialog> {
                       var response=await _timeTableManagerCubit.update(oldTimeModel);
                       if(response){
                         Navigator.pop(context);
+                        await _timeTableManagerCubit.get();
                       }
                     },
                     text: "Save",

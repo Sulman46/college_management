@@ -1,19 +1,16 @@
-import 'dart:developer';
-
 import 'package:college_management/core/constants/app_widgets_size.dart';
 import 'package:college_management/core/constants/media_query.dart';
 import 'package:college_management/core/helper/show_message.dart';
 import 'package:college_management/features/admin/course_mapping/model/course_mapping_model.dart';
 import 'package:college_management/features/admin/course_mapping/presentation/controller/cubit.dart';
+import 'package:college_management/features/admin/course_mapping/presentation/controller/mapping_helper.dart';
 import 'package:college_management/features/admin/semesters/presentation/controller/cubit.dart';
 import 'package:college_management/widgets/drop_down_field_widget.dart';
 import 'package:college_management/widgets/more_vert_pop_menu_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
 import '../../../../../core/app/di_container.dart';
-import '../../../../../core/constants/constant_data.dart';
 import '../../../../../core/theme/AppColor.dart';
 import '../../../../../widgets/app_text.dart';
 import '../../../../../widgets/custom_button.dart';
@@ -90,23 +87,23 @@ class _AddNewCourseMappingScreenState extends State<AddNewCourseMappingScreen> {
                               builder: (context,statesnkkl) {
                                 return _semesterCubit.activeSemesterList.isNotEmpty?
                                 CustomPopMenuButton(
-                                  menus: List.from(_semesterCubit.activeSemesterList.map((e) => e.programModel.department.id).toSet().toList()),
+                                  menus: List.from(_semesterCubit.activeSemesterList.map((e) => e.programModel?.departmentName??"").toSet().toList()),
                                   onSelected: (p0) {
-                                    CourseMappingModel model=CourseMappingModel(department: List.from(_semesterCubit.activeSemesterList.map((e) => e.department).toSet().toList())[p0]);
+                                    CourseMappingModel model=CourseMappingModel(departmentName: List.from(_semesterCubit.activeSemesterList.map((e) => e.programModel?.departmentName??"").toSet().toList())[p0]);
                                     _courseMappingCubit.getCourseMappingModel(model);
                                   },
                                   offset: Offset(0, 30),widget: SizedBox(
                                     width: mdWidth(context),
                                     child: DropDownFieldWidget(
                                         title:"Department :",
-                                        text: _courseMappingCubit.courseMappingModel.department??"Select..",maxLine: 1, isFilled: _courseMappingCubit.courseMappingModel.department!=null)),):
+                                        text: _courseMappingCubit.courseMappingModel.departmentName??"Select..",maxLine: 1, isFilled: _courseMappingCubit.courseMappingModel.departmentName!=null)),):
                                 InkWell(
                                   onTap: () async{
                                     await _semesterCubit.getSemesterList();
                                   },
                                   child: DropDownFieldWidget(
                                       title:"Department :",
-                                      text: _courseMappingCubit.courseMappingModel.department!=null? _courseMappingCubit.courseMappingModel.department??"":"depart..",maxLine: 1, isFilled: _courseMappingCubit.courseMappingModel.department!=null),
+                                      text: _courseMappingCubit.courseMappingModel.departmentName!=null? _courseMappingCubit.courseMappingModel.departmentName??"":"depart..",maxLine: 1, isFilled: _courseMappingCubit.courseMappingModel.departmentName!=null),
                                 );
                               }
                             ),
@@ -119,26 +116,26 @@ class _AddNewCourseMappingScreenState extends State<AddNewCourseMappingScreen> {
                               builder: (context,statesbklljw) {
                                 return _semesterCubit.activeSemesterList.isNotEmpty?
                                 CustomPopMenuButton(
-                                  menus: List.from(_semesterCubit.activeSemesterList.where((element) => element.department ==_courseMappingCubit.courseMappingModel.department,).map((e) => e.programName,).toSet().toList()),
+                                  menus: List.from(_semesterCubit.activeSemesterList.where((element) => element.programModel?.departmentName ==_courseMappingCubit.courseMappingModel.departmentName,).map((e) => e.programModel?.name,).toSet().toList()),
                                   onSelected: (p0) {
-                                   String value= List.from(_semesterCubit.activeSemesterList.where((element) => element.department ==_courseMappingCubit.courseMappingModel.department,).map((e) => e.programName,).toSet().toList())[p0];
-                                   CourseMappingModel model=CourseMappingModel(department: _courseMappingCubit.courseMappingModel.department,program: value);
+                                   String value= List.from(_semesterCubit.activeSemesterList.where((element) => element.programModel?.departmentName ==_courseMappingCubit.courseMappingModel.departmentName,).map((e) => e.programModel?.name,).toSet().toList())[p0];
+                                   CourseMappingModel model=CourseMappingModel(departmentName: _courseMappingCubit.courseMappingModel.departmentName,programName: value);
                                    _courseMappingCubit.getCourseMappingModel(model);
                                  },
                                   offset: Offset(0, 30),widget: SizedBox(
                                     width: mdWidth(context),
                                     child: DropDownFieldWidget(
                                         title: "Program :",
-                                        text:_courseMappingCubit.courseMappingModel.program??"Select..",
-                                        maxLine: 1, isFilled: _courseMappingCubit.courseMappingModel.program!=null)),)
+                                        text:_courseMappingCubit.courseMappingModel.programName??"Select..",
+                                        maxLine: 1, isFilled: _courseMappingCubit.courseMappingModel.programName!=null)),)
                                     : InkWell(
                                   onTap: () async{
                                    await _semesterCubit.getSemesterList();
                                   },
                                       child: DropDownFieldWidget(
                                       title: "Program :",
-                                          text: _courseMappingCubit.courseMappingModel.program!=null? _courseMappingCubit.courseMappingModel.program??"":"Select..",
-                                          maxLine: 1, isFilled: _courseMappingCubit.courseMappingModel.program!=null),
+                                          text: _courseMappingCubit.courseMappingModel.programName!=null? _courseMappingCubit.courseMappingModel.programName??"":"Select..",
+                                          maxLine: 1, isFilled: _courseMappingCubit.courseMappingModel.programName!=null),
                                     );
                               }
                             ),
@@ -155,10 +152,10 @@ class _AddNewCourseMappingScreenState extends State<AddNewCourseMappingScreen> {
                                 builder: (context,statklljw) {
                                   return _semesterCubit.activeSemesterList.isNotEmpty?
                                  CustomPopMenuButton(
-                                   menus: List.from(_semesterCubit.activeSemesterList.where((element) => element.department ==_courseMappingCubit.courseMappingModel.department && element.programName==_courseMappingCubit.courseMappingModel.program,).map((e) => e.affiliation,).toSet().toList()),
+                                   menus: List.from(_semesterCubit.activeSemesterList.where((element) => element.programModel?.departmentName ==_courseMappingCubit.courseMappingModel.departmentName && element.programModel?.name==_courseMappingCubit.courseMappingModel.programName,).map((e) => e.programModel?.affiliationName,).toSet().toList()),
                                    onSelected: (p0) {
-                                   String value=List.from(_semesterCubit.activeSemesterList.where((element) => element.department ==_courseMappingCubit.courseMappingModel.department && element.programName==_courseMappingCubit.courseMappingModel.program,).map((e) => e.affiliation,).toSet().toList())[p0];
-                                   CourseMappingModel model=CourseMappingModel(department: _courseMappingCubit.courseMappingModel.department,program:_courseMappingCubit.courseMappingModel.program,affiliation:  value);
+                                   String value=List.from(_semesterCubit.activeSemesterList.where((element) => element.programModel?.departmentName ==_courseMappingCubit.courseMappingModel.departmentName && element.programModel?.name==_courseMappingCubit.courseMappingModel.programName,).map((e) => e.programModel?.affiliationName,).toSet().toList())[p0];
+                                   CourseMappingModel model=CourseMappingModel(departmentName: _courseMappingCubit.courseMappingModel.departmentName,programName:_courseMappingCubit.courseMappingModel.programName,affiliationName:  value);
                                    _courseMappingCubit.getCourseMappingModel(model);
 
                                  },
@@ -166,7 +163,7 @@ class _AddNewCourseMappingScreenState extends State<AddNewCourseMappingScreen> {
                                     width: mdWidth(context),
                                     child: DropDownFieldWidget(
                                         title: "Affiliation :",
-                                        text:_courseMappingCubit.courseMappingModel.affiliation!=null? _courseMappingCubit.courseMappingModel.affiliation??"":"Select..",maxLine: 1, isFilled: _courseMappingCubit.courseMappingModel.affiliation!=null)),)
+                                        text:_courseMappingCubit.courseMappingModel.affiliationName!=null? _courseMappingCubit.courseMappingModel.affiliationName??"":"Select..",maxLine: 1, isFilled: _courseMappingCubit.courseMappingModel.affiliationName!=null)),)
                                       :InkWell(
                                     onTap: () async {
                                       await _semesterCubit.getSemesterList();
@@ -174,7 +171,7 @@ class _AddNewCourseMappingScreenState extends State<AddNewCourseMappingScreen> {
                                     },
                                         child: DropDownFieldWidget(
                                         title: "Affiliation :",
-                                        text:_courseMappingCubit.courseMappingModel.affiliation!=null? _courseMappingCubit.courseMappingModel.affiliation??"":"Select..",maxLine: 1, isFilled: _courseMappingCubit.courseMappingModel.affiliation!=null
+                                        text:_courseMappingCubit.courseMappingModel.affiliationName!=null? _courseMappingCubit.courseMappingModel.affiliationName??"":"Select..",maxLine: 1, isFilled: _courseMappingCubit.courseMappingModel.affiliationName!=null
                                                                           ),
                                       );
                                 }
@@ -188,10 +185,10 @@ class _AddNewCourseMappingScreenState extends State<AddNewCourseMappingScreen> {
                                 builder: (context,statklljw) {
                                   return _semesterCubit.activeSemesterList.isNotEmpty?
                                   CustomPopMenuButton(
-                                    menus: List.from(_semesterCubit.activeSemesterList.where((element) => element.department ==_courseMappingCubit.courseMappingModel.department && element.programName==_courseMappingCubit.courseMappingModel.program && element.affiliation==_courseMappingCubit.courseMappingModel.affiliation,).map((e) => e.degree,).toSet().toList()),
+                                    menus: List.from(_semesterCubit.activeSemesterList.where((element) => element.programModel?.departmentName ==_courseMappingCubit.courseMappingModel.departmentName && element.programModel?.name==_courseMappingCubit.courseMappingModel.programName && element.programModel?.affiliationName==_courseMappingCubit.courseMappingModel.affiliationName,).map((e) => e.programModel?.degree,).toSet().toList()),
                                     onSelected: (p0) {
-                                      String value=List.from(_semesterCubit.activeSemesterList.where((element) => element.department ==_courseMappingCubit.courseMappingModel.department && element.programName==_courseMappingCubit.courseMappingModel.program && element.affiliation==_courseMappingCubit.courseMappingModel.affiliation,).map((e) => e.degree,).toSet().toList())[p0];
-                                      CourseMappingModel model=CourseMappingModel(department: _courseMappingCubit.courseMappingModel.department,program:_courseMappingCubit.courseMappingModel.program,affiliation:  _courseMappingCubit.courseMappingModel.affiliation,degree:value);
+                                      String value=List.from(_semesterCubit.activeSemesterList.where((element) => element.programModel?.departmentName ==_courseMappingCubit.courseMappingModel.departmentName && element.programModel?.name==_courseMappingCubit.courseMappingModel.programName && element.programModel?.affiliationName==_courseMappingCubit.courseMappingModel.affiliationName,).map((e) => e.programModel?.degree,).toSet().toList())[p0];
+                                      CourseMappingModel model=CourseMappingModel(departmentName: _courseMappingCubit.courseMappingModel.departmentName,programName:_courseMappingCubit.courseMappingModel.programName,affiliationName:  _courseMappingCubit.courseMappingModel.affiliationName,degree:value);
                                       _courseMappingCubit.getCourseMappingModel(model);
 
                                     },
@@ -225,10 +222,10 @@ class _AddNewCourseMappingScreenState extends State<AddNewCourseMappingScreen> {
                               Expanded(
                                 child: _semesterCubit.activeSemesterList.isNotEmpty?
                                 CustomPopMenuButton(
-                                  menus:List.from(_semesterCubit.activeSemesterList.where((element) => element.department ==_courseMappingCubit.courseMappingModel.department && element.programName==_courseMappingCubit.courseMappingModel.program && element.affiliation==_courseMappingCubit.courseMappingModel.affiliation && element.degree==_courseMappingCubit.courseMappingModel.degree,).map((e) => e.session,).toSet().toList()),
+                                  menus:List.from(_semesterCubit.activeSemesterList.where((element) => element.programModel?.departmentName ==_courseMappingCubit.courseMappingModel.departmentName && element.programModel?.name==_courseMappingCubit.courseMappingModel.programName && element.programModel?.affiliationName==_courseMappingCubit.courseMappingModel.affiliationName && element.programModel?.degree==_courseMappingCubit.courseMappingModel.degree,).map((e) => e.programModel?.session,).toSet().toList()),
                                   onSelected: (p0) {
-                                    String value=List.from(_semesterCubit.activeSemesterList.where((element) => element.department ==_courseMappingCubit.courseMappingModel.department && element.programName==_courseMappingCubit.courseMappingModel.program && element.affiliation==_courseMappingCubit.courseMappingModel.affiliation && element.degree==_courseMappingCubit.courseMappingModel.degree,).map((e) => e.session,).toSet().toList())[p0];
-                                    CourseMappingModel model=CourseMappingModel(department: _courseMappingCubit.courseMappingModel.department,program:_courseMappingCubit.courseMappingModel.program,affiliation:  _courseMappingCubit.courseMappingModel.affiliation,degree:_courseMappingCubit.courseMappingModel.degree,session: value);
+                                    String value=List.from(_semesterCubit.activeSemesterList.where((element) => element.programModel?.departmentName ==_courseMappingCubit.courseMappingModel.departmentName && element.programModel?.name==_courseMappingCubit.courseMappingModel.programName && element.programModel?.affiliationName==_courseMappingCubit.courseMappingModel.affiliationName && element.programModel?.degree==_courseMappingCubit.courseMappingModel.degree,).map((e) => e.programModel?.session,).toSet().toList())[p0];
+                                    CourseMappingModel model=CourseMappingModel(departmentName: _courseMappingCubit.courseMappingModel.departmentName,programName:_courseMappingCubit.courseMappingModel.programName,affiliationName:  _courseMappingCubit.courseMappingModel.affiliationName,degree:_courseMappingCubit.courseMappingModel.degree,session: value);
                                     _courseMappingCubit.getCourseMappingModel(model);
 
                                   },
@@ -253,10 +250,10 @@ class _AddNewCourseMappingScreenState extends State<AddNewCourseMappingScreen> {
                               Expanded(
                                 child:_semesterCubit.activeSemesterList.isNotEmpty?
                                 CustomPopMenuButton(
-                                  menus:List.from(_semesterCubit.activeSemesterList.where((element) => element.department ==_courseMappingCubit.courseMappingModel.department && element.programName==_courseMappingCubit.courseMappingModel.program && element.affiliation==_courseMappingCubit.courseMappingModel.affiliation && element.degree==_courseMappingCubit.courseMappingModel.degree && element.session==_courseMappingCubit.courseMappingModel.session,).map((e) => e.section,).toSet().toList()),
+                                  menus:List.from(_semesterCubit.activeSemesterList.where((element) => element.programModel?.departmentName ==_courseMappingCubit.courseMappingModel.departmentName && element.programModel?.name==_courseMappingCubit.courseMappingModel.programName && element.programModel?.affiliationName==_courseMappingCubit.courseMappingModel.affiliationName && element.programModel?.degree==_courseMappingCubit.courseMappingModel.degree && element.programModel?.session==_courseMappingCubit.courseMappingModel.session,).map((e) => e.programModel?.section,).toSet().toList()),
                                   onSelected: (p0) {
-                                    String value=List.from(_semesterCubit.activeSemesterList.where((element) => element.department ==_courseMappingCubit.courseMappingModel.department && element.programName==_courseMappingCubit.courseMappingModel.program && element.affiliation==_courseMappingCubit.courseMappingModel.affiliation && element.degree==_courseMappingCubit.courseMappingModel.degree && element.session==_courseMappingCubit.courseMappingModel.session,).map((e) => e.section,).toSet().toList())[p0];
-                                    CourseMappingModel model=CourseMappingModel(department: _courseMappingCubit.courseMappingModel.department,program:_courseMappingCubit.courseMappingModel.program,affiliation:  _courseMappingCubit.courseMappingModel.affiliation,degree:_courseMappingCubit.courseMappingModel.degree,session: _courseMappingCubit.courseMappingModel.session,section:value);
+                                    String value=List.from(_semesterCubit.activeSemesterList.where((element) => element.programModel?.departmentName ==_courseMappingCubit.courseMappingModel.departmentName && element.programModel?.name==_courseMappingCubit.courseMappingModel.programName && element.programModel?.affiliationName==_courseMappingCubit.courseMappingModel.affiliationName && element.programModel?.degree==_courseMappingCubit.courseMappingModel.degree && element.programModel?.session==_courseMappingCubit.courseMappingModel.session,).map((e) => e.programModel?.section,).toSet().toList())[p0];
+                                    CourseMappingModel model=CourseMappingModel(departmentName: _courseMappingCubit.courseMappingModel.departmentName,programName:_courseMappingCubit.courseMappingModel.programName,affiliationName:  _courseMappingCubit.courseMappingModel.affiliationName,degree:_courseMappingCubit.courseMappingModel.degree,session: _courseMappingCubit.courseMappingModel.session,section:value);
                                     _courseMappingCubit.getCourseMappingModel(model);
 
                                   },
@@ -288,11 +285,11 @@ class _AddNewCourseMappingScreenState extends State<AddNewCourseMappingScreen> {
                             child: BlocBuilder(
                               bloc: _semesterCubit,
                               builder: (context,statesbkl) {
-                                return _semesterCubit.activeSemesterList.isNotEmpty? CustomPopMenuButton(menus:List.from(_semesterCubit.activeSemesterList.where((element) => element.department ==_courseMappingCubit.courseMappingModel.department && element.programName==_courseMappingCubit.courseMappingModel.program && element.affiliation==_courseMappingCubit.courseMappingModel.affiliation && element.degree==_courseMappingCubit.courseMappingModel.degree&& element.session==_courseMappingCubit.courseMappingModel.session&& element.section==_courseMappingCubit.courseMappingModel.section,).map((e) => e.semesterName,).toSet().toList()),
+                                return _semesterCubit.activeSemesterList.isNotEmpty? CustomPopMenuButton(menus:List.from(_semesterCubit.activeSemesterList.where((element) => element.programModel?.departmentName ==_courseMappingCubit.courseMappingModel.departmentName && element.programModel?.name==_courseMappingCubit.courseMappingModel.programName && element.programModel?.affiliationName==_courseMappingCubit.courseMappingModel.affiliationName && element.programModel?.degree==_courseMappingCubit.courseMappingModel.degree&& element.programModel?.session==_courseMappingCubit.courseMappingModel.session&& element.programModel?.section==_courseMappingCubit.courseMappingModel.section,).map((e) => e.semesterName,).toSet().toList()),
                                   onSelected: (p0) {
-                                  String semesterName=List.from(_semesterCubit.activeSemesterList.where((element) => element.department ==_courseMappingCubit.courseMappingModel.department && element.programName==_courseMappingCubit.courseMappingModel.program && element.affiliation==_courseMappingCubit.courseMappingModel.affiliation && element.degree==_courseMappingCubit.courseMappingModel.degree&& element.session==_courseMappingCubit.courseMappingModel.session&& element.section==_courseMappingCubit.courseMappingModel.section,).map((e) => e.semesterName,).toSet().toList())[p0];
-                                  String semesterId=List.from(_semesterCubit.activeSemesterList.where((element) => element.department ==_courseMappingCubit.courseMappingModel.department && element.programName==_courseMappingCubit.courseMappingModel.program && element.affiliation==_courseMappingCubit.courseMappingModel.affiliation && element.degree==_courseMappingCubit.courseMappingModel.degree&& element.session==_courseMappingCubit.courseMappingModel.session&& element.section==_courseMappingCubit.courseMappingModel.section&& element.semesterName==semesterName,).map((e) => e.id,).toSet().toList())[p0];
-                                  CourseMappingModel model=CourseMappingModel(department: _courseMappingCubit.courseMappingModel.department,program:_courseMappingCubit.courseMappingModel.program,affiliation:  _courseMappingCubit.courseMappingModel.affiliation,degree:_courseMappingCubit.courseMappingModel.degree,session: _courseMappingCubit.courseMappingModel.session,section:_courseMappingCubit.courseMappingModel.section,
+                                  String semesterName=List.from(_semesterCubit.activeSemesterList.where((element) => element.programModel?.departmentName ==_courseMappingCubit.courseMappingModel.departmentName && element.programModel?.name==_courseMappingCubit.courseMappingModel.programName && element.programModel?.affiliationName==_courseMappingCubit.courseMappingModel.affiliationName && element.programModel?.degree==_courseMappingCubit.courseMappingModel.degree&& element.programModel?.session==_courseMappingCubit.courseMappingModel.session&& element.programModel?.section==_courseMappingCubit.courseMappingModel.section,).map((e) => e.semesterName,).toSet().toList())[p0];
+                                  String semesterId=List.from(_semesterCubit.activeSemesterList.where((element) => element.programModel?.departmentName ==_courseMappingCubit.courseMappingModel.departmentName && element.programModel?.name==_courseMappingCubit.courseMappingModel.programName && element.programModel?.affiliationName==_courseMappingCubit.courseMappingModel.affiliationName && element.programModel?.degree==_courseMappingCubit.courseMappingModel.degree&& element.programModel?.session==_courseMappingCubit.courseMappingModel.session&& element.programModel?.section==_courseMappingCubit.courseMappingModel.section&& element.semesterName==semesterName,).map((e) => e.id,).toSet().toList())[p0];
+                                  CourseMappingModel model=CourseMappingModel(departmentName: _courseMappingCubit.courseMappingModel.departmentName,programName:_courseMappingCubit.courseMappingModel.programName,affiliationName:  _courseMappingCubit.courseMappingModel.affiliationName,degree:_courseMappingCubit.courseMappingModel.degree,session: _courseMappingCubit.courseMappingModel.session,section:_courseMappingCubit.courseMappingModel.section,
                                   semesterName: semesterName,semesterId: semesterId);
                                     _courseMappingCubit.getCourseMappingModel(model);
                                   },
@@ -322,7 +319,7 @@ class _AddNewCourseMappingScreenState extends State<AddNewCourseMappingScreen> {
                                 return _courseCatalogCubit.activeCourseCatalogList.isNotEmpty? CustomPopMenuButton(
                                   onSelected: (p0) {
                                     String name=_courseCatalogCubit.activeCourseCatalogList.map((e) => e.courseTitle??"",).toSet().toList()[p0];
-                                    CourseMappingModel model=CourseMappingModel(semesterId: _courseMappingCubit.courseMappingModel.semesterId,department: _courseMappingCubit.courseMappingModel.department,program:_courseMappingCubit.courseMappingModel.program,affiliation:  _courseMappingCubit.courseMappingModel.affiliation,degree:_courseMappingCubit.courseMappingModel.degree,session: _courseMappingCubit.courseMappingModel.session,section:_courseMappingCubit.courseMappingModel.section,semesterName: _courseMappingCubit.courseMappingModel.semesterName,courseTitle:name,);
+                                    CourseMappingModel model=CourseMappingModel(semesterId: _courseMappingCubit.courseMappingModel.semesterId,departmentName: _courseMappingCubit.courseMappingModel.departmentName,programName:_courseMappingCubit.courseMappingModel.programName,affiliationName:  _courseMappingCubit.courseMappingModel.affiliationName,degree:_courseMappingCubit.courseMappingModel.degree,session: _courseMappingCubit.courseMappingModel.session,section:_courseMappingCubit.courseMappingModel.section,semesterName: _courseMappingCubit.courseMappingModel.semesterName,courseTitle:name,);
                                     _courseMappingCubit.getCourseMappingModel(model);
                                   },
                                   menus: _courseCatalogCubit.activeCourseCatalogList.map((e) => e.courseTitle??"",).toSet().toList(),
@@ -355,7 +352,7 @@ class _AddNewCourseMappingScreenState extends State<AddNewCourseMappingScreen> {
                                   return _courseCatalogCubit.activeCourseCatalogList.isNotEmpty? CustomPopMenuButton(
                                     onSelected: (p0) {
                                       String code=_courseCatalogCubit.activeCourseCatalogList.where((element) => element.courseTitle==_courseMappingCubit.courseMappingModel.courseTitle,).map((e) => e.courseCode??"",).toSet().toList()[p0];
-                                      CourseMappingModel model=CourseMappingModel(semesterId: _courseMappingCubit.courseMappingModel.semesterId,courseCode: code,department: _courseMappingCubit.courseMappingModel.department,program:_courseMappingCubit.courseMappingModel.program,affiliation:  _courseMappingCubit.courseMappingModel.affiliation,degree:_courseMappingCubit.courseMappingModel.degree,session: _courseMappingCubit.courseMappingModel.session,section:_courseMappingCubit.courseMappingModel.section,semesterName: _courseMappingCubit.courseMappingModel.semesterName,courseTitle:_courseMappingCubit.courseMappingModel.courseTitle,);
+                                      CourseMappingModel model=CourseMappingModel(semesterId: _courseMappingCubit.courseMappingModel.semesterId,courseCode: code,departmentName: _courseMappingCubit.courseMappingModel.departmentName,programName:_courseMappingCubit.courseMappingModel.programName,affiliationName:  _courseMappingCubit.courseMappingModel.affiliationName,degree:_courseMappingCubit.courseMappingModel.degree,session: _courseMappingCubit.courseMappingModel.session,section:_courseMappingCubit.courseMappingModel.section,semesterName: _courseMappingCubit.courseMappingModel.semesterName,courseTitle:_courseMappingCubit.courseMappingModel.courseTitle,);
                                       _courseMappingCubit.getCourseMappingModel(model);
                                     },
                                     menus: _courseCatalogCubit.activeCourseCatalogList.where((element) => element.courseTitle==_courseMappingCubit.courseMappingModel.courseTitle,).map((e) => e.courseCode??"",).toSet().toList(),
@@ -382,7 +379,7 @@ class _AddNewCourseMappingScreenState extends State<AddNewCourseMappingScreen> {
                                   return _courseCatalogCubit.activeCourseCatalogList.isNotEmpty? CustomPopMenuButton(
                                     onSelected: (p0) {
                                       String type=_courseCatalogCubit.activeCourseCatalogList.where((element) => element.courseTitle==_courseMappingCubit.courseMappingModel.courseTitle && element.courseCode==_courseMappingCubit.courseMappingModel.courseCode,).map((e) => e.type??"",).toSet().toList()[p0];
-                                      CourseMappingModel model=CourseMappingModel(semesterId: _courseMappingCubit.courseMappingModel.semesterId,courseCode: _courseMappingCubit.courseMappingModel.courseCode,courseType: type,department: _courseMappingCubit.courseMappingModel.department,program:_courseMappingCubit.courseMappingModel.program,affiliation:  _courseMappingCubit.courseMappingModel.affiliation,degree:_courseMappingCubit.courseMappingModel.degree,session: _courseMappingCubit.courseMappingModel.session,section:_courseMappingCubit.courseMappingModel.section,semesterName: _courseMappingCubit.courseMappingModel.semesterName,courseTitle:_courseMappingCubit.courseMappingModel.courseTitle,);
+                                      CourseMappingModel model=CourseMappingModel(semesterId: _courseMappingCubit.courseMappingModel.semesterId,courseCode: _courseMappingCubit.courseMappingModel.courseCode,courseType: type,departmentName: _courseMappingCubit.courseMappingModel.departmentName,programName:_courseMappingCubit.courseMappingModel.programName,affiliationName:  _courseMappingCubit.courseMappingModel.affiliationName,degree:_courseMappingCubit.courseMappingModel.degree,session: _courseMappingCubit.courseMappingModel.session,section:_courseMappingCubit.courseMappingModel.section,semesterName: _courseMappingCubit.courseMappingModel.semesterName,courseTitle:_courseMappingCubit.courseMappingModel.courseTitle,);
                                       _courseMappingCubit.getCourseMappingModel(model);
                                     },
                                     menus: _courseCatalogCubit.activeCourseCatalogList.where((element) => element.courseTitle==_courseMappingCubit.courseMappingModel.courseTitle && element.courseCode==_courseMappingCubit.courseMappingModel.courseCode,).map((e) => e.type??"",).toSet().toList(),
@@ -415,7 +412,7 @@ class _AddNewCourseMappingScreenState extends State<AddNewCourseMappingScreen> {
                                   return _courseCatalogCubit.activeCourseCatalogList.isNotEmpty? CustomPopMenuButton(
                                     onSelected: (p0) {
                                       String category=_courseCatalogCubit.activeCourseCatalogList.where((element) => element.courseTitle==_courseMappingCubit.courseMappingModel.courseTitle && element.courseCode==_courseMappingCubit.courseMappingModel.courseCode && element.type==_courseMappingCubit.courseMappingModel.courseType,).map((e) => e.category??"",).toSet().toList()[p0];
-                                      CourseMappingModel model=CourseMappingModel(semesterId: _courseMappingCubit.courseMappingModel.semesterId,courseCategory: category,courseCode: _courseMappingCubit.courseMappingModel.courseCode,courseType: _courseMappingCubit.courseMappingModel.courseType,department: _courseMappingCubit.courseMappingModel.department,program:_courseMappingCubit.courseMappingModel.program,affiliation:  _courseMappingCubit.courseMappingModel.affiliation,degree:_courseMappingCubit.courseMappingModel.degree,session: _courseMappingCubit.courseMappingModel.session,section:_courseMappingCubit.courseMappingModel.section,semesterName: _courseMappingCubit.courseMappingModel.semesterName,courseTitle:_courseMappingCubit.courseMappingModel.courseTitle,);
+                                      CourseMappingModel model=CourseMappingModel(semesterId: _courseMappingCubit.courseMappingModel.semesterId,courseCategory: category,courseCode: _courseMappingCubit.courseMappingModel.courseCode,courseType: _courseMappingCubit.courseMappingModel.courseType,departmentName: _courseMappingCubit.courseMappingModel.departmentName,programName:_courseMappingCubit.courseMappingModel.programName,affiliationName:  _courseMappingCubit.courseMappingModel.affiliationName,degree:_courseMappingCubit.courseMappingModel.degree,session: _courseMappingCubit.courseMappingModel.session,section:_courseMappingCubit.courseMappingModel.section,semesterName: _courseMappingCubit.courseMappingModel.semesterName,courseTitle:_courseMappingCubit.courseMappingModel.courseTitle,);
                                       _courseMappingCubit.getCourseMappingModel(model);
                                     },
                                     menus: _courseCatalogCubit.activeCourseCatalogList.where((element) => element.courseTitle==_courseMappingCubit.courseMappingModel.courseTitle && element.courseCode==_courseMappingCubit.courseMappingModel.courseCode && element.type==_courseMappingCubit.courseMappingModel.courseType,).map((e) => e.category??"",).toSet().toList(),
@@ -443,7 +440,7 @@ class _AddNewCourseMappingScreenState extends State<AddNewCourseMappingScreen> {
                                     onSelected: (p0) {
                                       double val=_courseCatalogCubit.activeCourseCatalogList.where((element) => element.courseTitle==_courseMappingCubit.courseMappingModel.courseTitle && element.courseCode==_courseMappingCubit.courseMappingModel.courseCode && element.type==_courseMappingCubit.courseMappingModel.courseType&& element.category==_courseMappingCubit.courseMappingModel.courseCategory,).map((e) => e.creditHours??0,).toSet().toList()[p0];
                                       String id=_courseCatalogCubit.activeCourseCatalogList.where((element) => element.courseTitle==_courseMappingCubit.courseMappingModel.courseTitle && element.courseCode==_courseMappingCubit.courseMappingModel.courseCode && element.type==_courseMappingCubit.courseMappingModel.courseType&& element.category==_courseMappingCubit.courseMappingModel.courseCategory&& element.creditHours==val,).map((e) => e.id??"",).toSet().toList()[p0];
-                                      CourseMappingModel model=CourseMappingModel(semesterId: _courseMappingCubit.courseMappingModel.semesterId,status: "Active",courseId: id,creditHours: val,courseCategory: _courseMappingCubit.courseMappingModel.courseCategory,courseCode: _courseMappingCubit.courseMappingModel.courseCode,courseType: _courseMappingCubit.courseMappingModel.courseType,department: _courseMappingCubit.courseMappingModel.department,program:_courseMappingCubit.courseMappingModel.program,affiliation:  _courseMappingCubit.courseMappingModel.affiliation,degree:_courseMappingCubit.courseMappingModel.degree,session: _courseMappingCubit.courseMappingModel.session,section:_courseMappingCubit.courseMappingModel.section,semesterName: _courseMappingCubit.courseMappingModel.semesterName,courseTitle:_courseMappingCubit.courseMappingModel.courseTitle,);
+                                      CourseMappingModel model=CourseMappingModel(semesterId: _courseMappingCubit.courseMappingModel.semesterId,status: "Active",courseId: id,creditHours: val,courseCategory: _courseMappingCubit.courseMappingModel.courseCategory,courseCode: _courseMappingCubit.courseMappingModel.courseCode,courseType: _courseMappingCubit.courseMappingModel.courseType,departmentName: _courseMappingCubit.courseMappingModel.departmentName,programName:_courseMappingCubit.courseMappingModel.programName,affiliationName:  _courseMappingCubit.courseMappingModel.affiliationName,degree:_courseMappingCubit.courseMappingModel.degree,session: _courseMappingCubit.courseMappingModel.session,section:_courseMappingCubit.courseMappingModel.section,semesterName: _courseMappingCubit.courseMappingModel.semesterName,courseTitle:_courseMappingCubit.courseMappingModel.courseTitle,);
 
                                       _courseMappingCubit.getCourseMappingModel(model);
                                     },
@@ -474,10 +471,12 @@ class _AddNewCourseMappingScreenState extends State<AddNewCourseMappingScreen> {
                           onPressed: () async {
                             var dataModel=_courseMappingCubit.courseMappingModel;
 
-                            if (dataModel.department == null ||
-                                dataModel.program == null ||
+
+                            if (
+                            dataModel.departmentName == null ||
+                                dataModel.programName == null ||
                                 dataModel.degree == null ||
-                                dataModel.affiliation == null ||
+                                dataModel.affiliationName == null ||
                                 dataModel.session == null ||
                                 dataModel.section == null ||
                                 dataModel.semesterName == null ||
@@ -498,8 +497,9 @@ class _AddNewCourseMappingScreenState extends State<AddNewCourseMappingScreen> {
                          await  _courseMappingCubit.addMapping(dataModel);
 
                             if(response){
-                              showMessage(widget.updateCourseMapping!=null? "Data Updated":"Data Added");
                               context.pop();
+                              await _courseMappingCubit.getMappingData();
+
                             }
                           },
                           text:widget.updateCourseMapping!=null? "Update":"Save",

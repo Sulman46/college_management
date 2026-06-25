@@ -11,18 +11,32 @@ class StudentEnrollmentRepositoryImpl extends StudentEnrollmentRepository{
 
 
 
-  Future<Either<String,StudentEnrollmentModel>> post({required StudentEnrollmentModel value})async{
+  @override
+  Future<Either<String,String>> post({required StudentEnrollmentModel value})async{
     return dataSource.post(value: value);
   }
 
-  Future<Either<String,StudentEnrollmentModel>> update({required StudentEnrollmentModel value}){
+  @override
+  Future<Either<String,String>> promote({required StudentEnrollmentModel value})async{
+    return dataSource.promote(value: value);
+  }
+
+  @override
+  Future<Either<String,String>> demote({required StudentEnrollmentModel value})async{
+    return dataSource.demote(value: value);
+  }
+
+  @override
+  Future<Either<String,String>> update({required StudentEnrollmentModel value}){
     return dataSource.update(value: value);
   }
 
-  Future<Either<String,bool>> delete({required StudentEnrollmentModel value}){
+  @override
+  Future<Either<String,String>> delete({required StudentEnrollmentModel value}){
     return dataSource.delete(value: value);
   }
 
+  @override
   Future<Either<String,List<StudentEnrollmentModel>>> get({required StudentEnrollmentFilterModel value}){
     return dataSource.get(value: value);
   }

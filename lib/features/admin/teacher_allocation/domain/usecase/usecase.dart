@@ -8,15 +8,15 @@ class TeacherAllocationUseCase{
   final TeacherAllocationRepository repository;
   TeacherAllocationUseCase({required this.repository});
 
-  Future<Either<String,TeacherAllocationModel>> post({required TeacherAllocationModel value})async{
+  Future<Either<String,String>> post({required TeacherAllocationModel value})async{
     return repository.post(value: value);
   }
 
-  Future<Either<String,TeacherAllocationModel>> update({required TeacherAllocationModel value}){
+  Future<Either<String,String>> update({required TeacherAllocationModel value}){
     return repository.update(value: value);
   }
 
-  Future<Either<String,bool>> delete({required TeacherAllocationModel value}){
+  Future<Either<String,String>> delete({required TeacherAllocationModel value}){
     return repository.delete(value: value);
   }
 

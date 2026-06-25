@@ -7,15 +7,15 @@ class CourseMappingUseCase{
   final CourseMappingRepository repository;
   CourseMappingUseCase({required this.repository});
 
-  Future<Either<String,CourseMappingModel>> addMapping({required CourseMappingModel value})async {
+  Future<Either<String,String>> addMapping({required CourseMappingModel value})async {
     return repository.addMapping(value: value);
   }
 
-  Future<Either<String,CourseMappingModel>> update({required CourseMappingModel value}){
+  Future<Either<String,String>> update({required CourseMappingModel value}){
     return repository.update(value: value);
   }
 
-  Future<Either<String,bool>> delete({required CourseMappingModel value}){
+  Future<Either<String,String>> delete({required CourseMappingModel value}){
     return repository.delete(value: value);
   }
 

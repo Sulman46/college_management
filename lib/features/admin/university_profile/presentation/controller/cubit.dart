@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:college_management/core/app/myapp.dart';
 import 'package:college_management/core/enums/status_enum.dart';
@@ -9,6 +10,7 @@ import 'package:college_management/core/helper/show_message.dart';
 import 'package:college_management/features/Authentication/models/user_model.dart';
 import 'package:college_management/features/admin/university_profile/models/affiliation_model.dart';
 import 'package:college_management/features/admin/university_profile/models/university_model.dart';
+import 'package:college_management/features/admin/university_profile/models/update_uni_specific_section_model.dart';
 import 'package:college_management/widgets/loader_dialog.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -44,7 +46,7 @@ class UniversityProfileCubit extends Cubit<UniversityProfileState> {
 
   List<AffiliationModel> affiliationFilterList=[]
   ;
-  List<AffiliationModel> activeAffiliationList=[];
+  List<AffiliationModel> get activeAffiliationList=>universityModel?.affiliationModel?.where((element) => element.status=="Active",).toList()??[];
 
   void getSeverityValue(String? val){
     emit(UniversityProfileLoading());
@@ -101,6 +103,52 @@ class UniversityProfileCubit extends Cubit<UniversityProfileState> {
     emit(UniversityProfileLoaded());
   }
 
+  Future<bool> updateAffiliation(AffiliationModel model,{String? message})async{
+    emit(UniversityProfileLoading());
+    showLoadingDialog();
+    var list=universityModel?.affiliationModel??[];
+    int index=list.indexWhere((element) => element.id==model.id,);
+    UpdateUniSpecificSectionModel uniSpecificSectionModel=UpdateUniSpecificSectionModel(index: index,affiliationModel: model,id: universityModel?.id??"");
+    var response=await _useCase.updateUniversitySetup(model: uniSpecificSectionModel);
+    if(response.isLeft()){
+      showMessage(response.asLeft(),isError: true);
+      closeLoadingDialog();
+      emit(UniversityProfileLoaded());
+      return false;
+    }else{
+      list[index]=model;
+      universityModel= universityModel!.copyWith(affiliationModel: list);
+      filterData("");
+      showMessage(message??response.asRight());
+      closeLoadingDialog();
+      emit(UniversityProfileLoaded());
+      return true;
+    }
+  }
+
+
+  Future<bool> deletedAffiliation(AffiliationModel model)async{
+    emit(UniversityProfileLoading());
+    showLoadingDialog();
+    var list=universityModel?.affiliationModel??[];
+    int index=list.indexWhere((element) => element.id==model.id,);
+    UpdateUniSpecificSectionModel uniSpecificSectionModel=UpdateUniSpecificSectionModel(index: index,affiliationModel: model,id: universityModel?.id??"");
+    
+    var response=await _useCase.deleteUniversitySetup(model: uniSpecificSectionModel);
+    if(response.isLeft()){
+      showMessage(response.asLeft(),isError: true);
+      closeLoadingDialog();
+      emit(UniversityProfileLoaded());
+      return false;
+    }else{
+      showMessage(response.asRight());
+      closeLoadingDialog();
+      emit(UniversityProfileLoaded());
+     await getUniversitySetup();
+      return true;
+    }
+  }
+
   Future<bool> addUniversitySetup(UniversityModel model,{String? message})async{
     emit(UniversityProfileLoading());
     showLoadingDialog();
@@ -110,13 +158,12 @@ class UniversityProfileCubit extends Cubit<UniversityProfileState> {
       universityModel=uniModel;
       editUniversityProfile=false;
       affiliationFilterList=uniModel.affiliationModel??[];
-      activeAffiliationList=List.from(affiliationFilterList.where((element) => element.status=="Active",));
       showMessage(message??"Data Added Successfully");
       closeLoadingDialog();
       emit(UniversityProfileLoaded());
       return true;
     }else{
-      showMessage(response.asLeft());
+      showMessage(response.asLeft(),isError: true);
       closeLoadingDialog();
       emit(UniversityProfileLoaded());
       return false;
@@ -132,12 +179,11 @@ class UniversityProfileCubit extends Cubit<UniversityProfileState> {
       universityModel=uniModel;
       editUniversityProfile=false;
       affiliationFilterList=uniModel.affiliationModel??[];
-      activeAffiliationList=List.from(affiliationFilterList.where((element) => element.status=="Active",));
       closeLoadingDialog();
       emit(UniversityProfileLoaded());
       return uniModel;
     }else{
-      showMessage(response.asLeft());
+      showMessage(response.asLeft(),isError: true);
       closeLoadingDialog();
       emit(UniversityProfileLoaded());
       return null;
@@ -161,8 +207,7 @@ class UniversityProfileCubit extends Cubit<UniversityProfileState> {
       UniversityProfileModel  tempModel=universityModel!.universityProfileModel!;
       universityModel=universityModel!.copyWith(universityProfileModel: tempModel.copyWith(logo: response.asRight()));
     }else{
-      showMessage(response.asLeft());
-      log("#@432432423: ${response.asLeft()}");
+      showMessage(response.asLeft(),isError: true);
       emit(UniversityProfileLoaded());
     }
     closeLoadingDialog();

@@ -9,6 +9,7 @@ class AppColor{
   // static  Color primary = HexColor("#972cb7");
   static  Color primary = HexColor("#6d28d9");
   static  Color primaryDark = HexColor("#4C1D95");
+  static  Color primaryDarkest = HexColor("#3f1a7a");
   static  Color secondaryColor =Colors.red;
   static Color bgPrimary=HexColor("#221246");
   static const Color black = Color(0xFF000000);

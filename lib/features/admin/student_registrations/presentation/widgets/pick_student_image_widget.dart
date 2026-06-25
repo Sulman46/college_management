@@ -20,7 +20,7 @@ class PickStudentImageWidget extends StatelessWidget {
         width: 140,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: AppColor.white,
+          color: AppColor.bgPrimary.withOpacity(.8),
           boxShadow: AppColor.shadowBlack,
           image:studentRegisterCubit.userImage != null
               ? DecorationImage(

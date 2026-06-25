@@ -7,9 +7,9 @@ import '../../../../../core/controllers/dio_helper.dart';
 import '../../models/hod_assign_model.dart';
 
 abstract class HODAssignmentDataSource{
-  Future<Either<String,HodAssignModel>> post({required HodAssignModel value});
-  Future<Either<String,HodAssignModel>> update({required HodAssignModel value});
-  Future<Either<String,bool>> delete({required HodAssignModel value});
+  Future<Either<String,String>> post({required HodAssignModel value});
+  Future<Either<String,String>> update({required HodAssignModel value});
+  Future<Either<String,String>> delete({required HodAssignModel value});
   Future<Either<String,List<HodAssignModel>>> get();
 }
 
@@ -19,55 +19,45 @@ class FunctionClassHODAssignment extends HODAssignmentDataSource{
   final DioHelper _dioHelper=DioHelper();
 
   @override
-  Future<Either<String,HodAssignModel>> post({required HodAssignModel value})async{
+  Future<Either<String,String>> post({required HodAssignModel value})async{
     try{
       var response=await _dioHelper.post(AppApis.hodAssign,data: value.toMap());
+      var data=response.data;
       if(response.statusCode! >= 200 && response.statusCode! <=300){
         log("3223423: ${response.data}");
-        var data=response.data;
-        // HodAssignModel model=HodAssignModel.fromMap(data);
-        HodAssignModel model=value;
 
-        return Right(model);
+        return Right(data["message"]??data["error"]??"Data added");
       }
-      var data=response.data;
-      return Left(data['message'] ?? "Failed",
-      );
+      return Left(data["message"]??data["error"]??"Failed");
     }catch(e){
       return Left(e.toString());
     }
   }
 
   @override
-  Future<Either<String,HodAssignModel>> update({required HodAssignModel value})async{
+  Future<Either<String,String>> update({required HodAssignModel value})async{
     try{
       var response=await _dioHelper.put("${AppApis.hodUpdate}/${value.id}",data: value.toMap());
       log("3223423: ${response.data}");
-      if(response.statusCode! >= 200 && response.statusCode! <=300){
-        log("3223423: ${response.data}");
-        var data=response.data;
-        HodAssignModel model=HodAssignModel.fromMap(data);
-        return Right(model);
-      }
       var data=response.data;
-      return Left(data['message'] ?? "Failed",
-      );
+      if(response.statusCode! >= 200 && response.statusCode! <=300){
+        return Right(data["message"]??data["error"]??"Data updated");
+      }
+      return Left(data["message"]??data["error"]??"Failed");
     }catch(e){
       return Left(e.toString());
     }
   }
 
   @override
-  Future<Either<String,bool>> delete({required HodAssignModel value})async{
+  Future<Either<String,String>> delete({required HodAssignModel value})async{
     try{
       var response=await _dioHelper.delete("${AppApis.hodDelete}/${value.id}");
-      if(response.statusCode! >= 200 && response.statusCode! <=300){
-        log("3223423: ${response.data}");
-        return Right(true);
-      }
       var data=response.data;
-      return Left(data['message'] ?? "Failed",
-      );
+      if(response.statusCode! >= 200 && response.statusCode! <=300){
+        return Right(data["message"]??data["error"]??"Data updated");
+      }
+      return Left(data["message"]??data["error"]??"Failed");
     }catch(e){
       return Left(e.toString());
     }
@@ -84,8 +74,7 @@ class FunctionClassHODAssignment extends HODAssignmentDataSource{
           List<HodAssignModel> model=data.map((e)=>HodAssignModel.fromMap(e)).toList();
           return Right(model);
         }else{
-          return Left(data['message'] ?? "Failed",
-          );
+          return Left(data["message"]??data["error"]??"Failed");
         }
       }
       var data=response.data;

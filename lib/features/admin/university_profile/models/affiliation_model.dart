@@ -6,17 +6,17 @@ class AffiliationModel {
   String status;
   String? id;
 
-  TheoryGradingCriteria theory;
-  PracticalGradingCriteria practical;
+  TheoryGradingCriteria? theory;
+  PracticalGradingCriteria? practical;
 
   AffiliationModel({
-    required this.name,
-    required this.sector,
-    required this.location,
-    required this.website,
-    required this.status,
-    required this.theory,
-    required this.practical,
+     this.name="",
+     this.sector="",
+     this.location="",
+     this.website="",
+     this.status="",
+     this.theory,
+     this.practical,
     this.id,
   });
 
@@ -42,6 +42,8 @@ class AffiliationModel {
 
   Map<String, dynamic> toMap() {
     return {
+      if(id!=null)
+      '_id':id??"",
       'name': name,
       'sector': sector,
       'location': location,
@@ -49,8 +51,8 @@ class AffiliationModel {
       'status': status,
 
       'gradingCriteria': {
-        'theory': theory.toMap(),
-        'practical': practical.toMap(),
+        'theory': theory!.toMap(),
+        'practical': practical!.toMap(),
       },
     };
   }

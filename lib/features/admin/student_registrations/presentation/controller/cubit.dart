@@ -79,7 +79,7 @@ class StudentRegistrationCubit extends Cubit<StudentRegistrationState> {
     emit(StudentRegistrationLoading());
     var response=await _useCase.post(value: value);
     if(response.isLeft()){
-      showMessage(response.asLeft());
+      showMessage(response.asLeft(),isError: true);
       emit(StudentRegistrationLoaded());
       closeLoadingDialog();
       return false;
@@ -98,7 +98,7 @@ class StudentRegistrationCubit extends Cubit<StudentRegistrationState> {
     emit(StudentRegistrationLoading());
     var response=await _useCase.get();
     if(response.isLeft()){
-      showMessage(response.asLeft());
+      showMessage(response.asLeft(),isError: true);
       emit(StudentRegistrationLoaded());
       closeLoadingDialog();
     }else{
@@ -116,7 +116,7 @@ class StudentRegistrationCubit extends Cubit<StudentRegistrationState> {
     emit(StudentRegistrationLoading());
     var response=await _useCase.delete(value: value);
     if(response.isLeft()){
-      showMessage(response.asLeft());
+      showMessage(response.asLeft(),isError: true);
       emit(StudentRegistrationLoaded());
       closeLoadingDialog();
       return false;
@@ -138,7 +138,7 @@ class StudentRegistrationCubit extends Cubit<StudentRegistrationState> {
     emit(StudentRegistrationLoading());
     var response=await _useCase.update(value: value);
     if(response.isLeft()){
-      showMessage(response.asLeft());
+      showMessage(response.asLeft(),isError: true);
       emit(StudentRegistrationLoaded());
       closeLoadingDialog();
       return false;

@@ -14,17 +14,17 @@ class CourseCatalogAdminRepositoryImpl extends CourseCatalogAdminRepository{
   }
 
   @override
-  Future<Either<String, CourseCatalogModel>> addCourseCatalog({required CourseCatalogModel model}) {
+  Future<Either<String, String>> addCourseCatalog({required CourseCatalogModel model}) {
     return dataSource.addCourseCatalog(model: model);
   }
 
   @override
-  Future<Either<String, CourseCatalogModel>> updateCatalog({required CourseCatalogModel model}) {
+  Future<Either<String, String>> updateCatalog({required CourseCatalogModel model}) {
     return dataSource.updateCatalog(model: model);
   }
 
   @override
-  Future<Either<String, bool>> deleteCourseCatalog({required CourseCatalogModel model}) {
+  Future<Either<String, String>> deleteCourseCatalog({required CourseCatalogModel model}) {
     return dataSource.deleteCourseCatalog(model: model);
   }
 

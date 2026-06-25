@@ -31,7 +31,7 @@ class _AddNewStudentScreenState extends State<AddNewStudentScreen> {
   final _semesterCubit = DiContainer().sl<SemesterAdminCubit>();
   // Controllers
   TextEditingController nameController = TextEditingController();
-  TextEditingController srNoController = TextEditingController();
+  TextEditingController registrationNumberController = TextEditingController();
   TextEditingController rollNoController = TextEditingController();
   TextEditingController fatherNameController = TextEditingController();
   TextEditingController contactNumberController = TextEditingController();
@@ -46,7 +46,7 @@ class _AddNewStudentScreenState extends State<AddNewStudentScreen> {
       if(_studentRegisterCubit.updateStudentModel!=null){
         _studentRegisterCubit.getStudentModel(_studentRegisterCubit.updateStudentModel??StudentModel());
         nameController.text=_studentRegisterCubit.updateStudentModel?.name??"";
-        srNoController.text=_studentRegisterCubit.updateStudentModel?.srNo??"";
+        registrationNumberController.text=_studentRegisterCubit.updateStudentModel?.registrationNumber??"";
         rollNoController.text=_studentRegisterCubit.updateStudentModel?.rollNo??"";
         fatherNameController.text=_studentRegisterCubit.updateStudentModel?.fatherName??"";
         contactNumberController.text=_studentRegisterCubit.updateStudentModel?.contact??"";
@@ -94,11 +94,7 @@ class _AddNewStudentScreenState extends State<AddNewStudentScreen> {
                           /// 🔹 CARD
                           Container(
                             padding: EdgeInsets.all(15),
-                            decoration: BoxDecoration(
-                              color: AppColor.white,
-                              borderRadius: BorderRadius.circular(15),
-                              boxShadow: AppColor.shadowBlack,
-                            ),
+                            decoration: AppColor.containerNeon,
                             child: Column(
                               children: [
                                 CustomTextFormField(
@@ -148,9 +144,9 @@ class _AddNewStudentScreenState extends State<AddNewStudentScreen> {
                                 SizedBox(height: 10),
                                 CustomTextFormField(
                                   isHintText: true,
-                                  controller: srNoController,
-                                  subTitle: "sr..",
-                                  title: "Sr No",
+                                  controller: registrationNumberController,
+                                  subTitle: "Reg No..",
+                                  title: "Reg No",
                                 ),
                                 SizedBox(height: 10),
                                 CustomTextFormField(
@@ -190,9 +186,9 @@ class _AddNewStudentScreenState extends State<AddNewStudentScreen> {
                                   bloc: _semesterCubit,
                                   builder: (context,statebska) {
                                     return _semesterCubit.semesterList.isNotEmpty? CustomPopMenuButton(
-                                      menus: _semesterCubit.semesterList.map((e) => e.affiliation??"",).toSet().toList(),
+                                      menus: _semesterCubit.semesterList.map((e) => e.programModel?.affiliationName??"",).toSet().toList(),
                                       onSelected: (p0) {
-                                        _studentRegisterCubit.getStudentModel(_studentRegisterCubit.studentModel.copyWith(affiliation: _semesterCubit.semesterList.map((e) => e.affiliation??"",).toSet().toList()[p0]));
+                                        _studentRegisterCubit.getStudentModel(_studentRegisterCubit.studentModel.copyWith(affiliation: _semesterCubit.semesterList.map((e) => e.programModel?.affiliationName??"",).toSet().toList()[p0]));
                                       },
                                       widget: DropDownFieldWidget(
                                         title: "Affiliation",
@@ -217,9 +213,9 @@ class _AddNewStudentScreenState extends State<AddNewStudentScreen> {
                                   bloc: _semesterCubit,
                                   builder: (context,statebska) {
                                     return _semesterCubit.semesterList.isNotEmpty && _studentRegisterCubit.studentModel.affiliation!=null? CustomPopMenuButton(
-                                      menus: _semesterCubit.semesterList.where((element) => element.affiliation==_studentRegisterCubit.studentModel.affiliation,).map((e) => e.department??"",).toSet().toList(),
+                                      menus: _semesterCubit.semesterList.where((element) => element.programModel?.affiliationName==_studentRegisterCubit.studentModel.affiliation,).map((e) => e.programModel?.departmentName??"",).toSet().toList(),
                                       onSelected: (p0) {
-                                        _studentRegisterCubit.getStudentModel(StudentModel(affiliation: _studentRegisterCubit.studentModel.affiliation,department: _semesterCubit.semesterList.where((element) => element.affiliation==_studentRegisterCubit.studentModel.affiliation,).map((e) => e.department??"",).toSet().toList()[p0]));
+                                        _studentRegisterCubit.getStudentModel(StudentModel(affiliation: _studentRegisterCubit.studentModel.affiliation,department: _semesterCubit.semesterList.where((element) => element.programModel?.affiliationName==_studentRegisterCubit.studentModel.affiliation,).map((e) =>e.programModel?.departmentName??"",).toSet().toList()[p0]));
                                       },
                                       widget: DropDownFieldWidget(
                                         title: "Department",
@@ -248,9 +244,9 @@ class _AddNewStudentScreenState extends State<AddNewStudentScreen> {
                                     bloc: _semesterCubit,
                                     builder: (context,statebska) {
                                       return _semesterCubit.semesterList.isNotEmpty && _studentRegisterCubit.studentModel.department!=null? CustomPopMenuButton(
-                                        menus: _semesterCubit.semesterList.where((element) => element.affiliation==_studentRegisterCubit.studentModel.affiliation&&element.department==_studentRegisterCubit.studentModel.department,).map((e) => e.programName??"",).toSet().toList(),
+                                        menus: _semesterCubit.semesterList.where((element) => element.programModel?.affiliationName==_studentRegisterCubit.studentModel.affiliation&&element.programModel?.departmentName==_studentRegisterCubit.studentModel.department,).map((e) => e.programModel?.name??"",).toSet().toList(),
                                         onSelected: (p0) {
-                                          String val=_semesterCubit.semesterList.where((element) => element.affiliation==_studentRegisterCubit.studentModel.affiliation&&element.department==_studentRegisterCubit.studentModel.department,).map((e) => e.programName??"",).toSet().toList()[p0];
+                                          String val=_semesterCubit.semesterList.where((element) => element.programModel?.affiliationName==_studentRegisterCubit.studentModel.affiliation&&element.programModel?.departmentName==_studentRegisterCubit.studentModel.department,).map((e) => e.programModel?.name??"",).toSet().toList()[p0];
                                           _studentRegisterCubit.getStudentModel(StudentModel(affiliation: _studentRegisterCubit.studentModel.affiliation,department: _studentRegisterCubit.studentModel.department??"",programName:val));
                                         },
                                         widget: DropDownFieldWidget(
@@ -281,9 +277,9 @@ class _AddNewStudentScreenState extends State<AddNewStudentScreen> {
                                     bloc: _semesterCubit,
                                     builder: (context,statebska) {
                                       return _semesterCubit.semesterList.isNotEmpty && _studentRegisterCubit.studentModel.programName!=null? CustomPopMenuButton(
-                                        menus: _semesterCubit.semesterList.where((element) => element.affiliation==_studentRegisterCubit.studentModel.affiliation&&element.department==_studentRegisterCubit.studentModel.department&&element.programName==_studentRegisterCubit.studentModel.programName,).map((e) => e.degree??"",).toSet().toList(),
+                                        menus: _semesterCubit.semesterList.where((element) => element.programModel?.affiliationName==_studentRegisterCubit.studentModel.affiliation&&element.programModel?.departmentName==_studentRegisterCubit.studentModel.department&&element.programModel?.name==_studentRegisterCubit.studentModel.programName,).map((e) => e.programModel?.degree??"",).toSet().toList(),
                                         onSelected: (p0) {
-                                          String val=_semesterCubit.semesterList.where((element) => element.affiliation==_studentRegisterCubit.studentModel.affiliation&&element.department==_studentRegisterCubit.studentModel.department&&element.programName==_studentRegisterCubit.studentModel.programName,).map((e) => e.degree??"",).toSet().toList()[p0];
+                                          String val=_semesterCubit.semesterList.where((element) => element.programModel?.affiliationName==_studentRegisterCubit.studentModel.affiliation&&element.programModel?.departmentName==_studentRegisterCubit.studentModel.department&&element.programModel?.name==_studentRegisterCubit.studentModel.programName,).map((e) => e.programModel?.degree??"",).toSet().toList()[p0];
                                           _studentRegisterCubit.getStudentModel(StudentModel(affiliation: _studentRegisterCubit.studentModel.affiliation,department: _studentRegisterCubit.studentModel.department??"",programName:_studentRegisterCubit.studentModel.programName,degree:val));
                                         },
                                         widget: DropDownFieldWidget(
@@ -313,9 +309,9 @@ class _AddNewStudentScreenState extends State<AddNewStudentScreen> {
                                     bloc: _semesterCubit,
                                     builder: (context,statebska) {
                                       return _semesterCubit.semesterList.isNotEmpty && _studentRegisterCubit.studentModel.degree!=null? CustomPopMenuButton(
-                                        menus: _semesterCubit.semesterList.where((element) => element.affiliation==_studentRegisterCubit.studentModel.affiliation&&element.department==_studentRegisterCubit.studentModel.department&&element.programName==_studentRegisterCubit.studentModel.programName&&element.degree==_studentRegisterCubit.studentModel.degree,).map((e) => e.section??"",).toSet().toList(),
+                                        menus: _semesterCubit.semesterList.where((element) => element.programModel?.affiliationName==_studentRegisterCubit.studentModel.affiliation&&element.programModel?.departmentName==_studentRegisterCubit.studentModel.department&&element.programModel?.name==_studentRegisterCubit.studentModel.programName&&element.programModel?.degree==_studentRegisterCubit.studentModel.degree,).map((e) => e.programModel?.section??"",).toSet().toList(),
                                         onSelected: (p0) {
-                                          String val=_semesterCubit.semesterList.where((element) => element.affiliation==_studentRegisterCubit.studentModel.affiliation&&element.department==_studentRegisterCubit.studentModel.department&&element.programName==_studentRegisterCubit.studentModel.programName&&element.degree==_studentRegisterCubit.studentModel.degree,).map((e) => e.section??"",).toSet().toList()[p0];
+                                          String val=_semesterCubit.semesterList.where((element) => element.programModel?.affiliationName==_studentRegisterCubit.studentModel.affiliation&&element.programModel?.departmentName==_studentRegisterCubit.studentModel.department&&element.programModel?.name==_studentRegisterCubit.studentModel.programName&&element.programModel?.degree==_studentRegisterCubit.studentModel.degree,).map((e) =>e.programModel?.section??"",).toSet().toList()[p0];
                                           _studentRegisterCubit.getStudentModel(StudentModel(affiliation: _studentRegisterCubit.studentModel.affiliation,department: _studentRegisterCubit.studentModel.department??"",programName:_studentRegisterCubit.studentModel.programName,degree:_studentRegisterCubit.studentModel.degree,section:val));
                                         },
                                         widget: DropDownFieldWidget(
@@ -345,9 +341,9 @@ class _AddNewStudentScreenState extends State<AddNewStudentScreen> {
                                     bloc: _semesterCubit,
                                     builder: (context,statebska) {
                                       return _semesterCubit.semesterList.isNotEmpty && _studentRegisterCubit.studentModel.section!=null? CustomPopMenuButton(
-                                        menus: _semesterCubit.semesterList.where((element) => element.affiliation==_studentRegisterCubit.studentModel.affiliation&&element.department==_studentRegisterCubit.studentModel.department&&element.programName==_studentRegisterCubit.studentModel.programName&&element.degree==_studentRegisterCubit.studentModel.degree&&element.section==_studentRegisterCubit.studentModel.section,).map((e) => e.session??"",).toSet().toList(),
+                                        menus: _semesterCubit.semesterList.where((element) => element.programModel?.affiliationName==_studentRegisterCubit.studentModel.affiliation&&element.programModel?.departmentName==_studentRegisterCubit.studentModel.department&&element.programModel?.name==_studentRegisterCubit.studentModel.programName&&element.programModel?.degree==_studentRegisterCubit.studentModel.degree&&element.programModel?.section==_studentRegisterCubit.studentModel.section,).map((e) => e.programModel?.session??"",).toSet().toList(),
                                         onSelected: (p0) {
-                                          String val=_semesterCubit.semesterList.where((element) => element.affiliation==_studentRegisterCubit.studentModel.affiliation&&element.department==_studentRegisterCubit.studentModel.department&&element.programName==_studentRegisterCubit.studentModel.programName&&element.degree==_studentRegisterCubit.studentModel.degree&&element.section==_studentRegisterCubit.studentModel.section,).map((e) => e.session??"",).toSet().toList()[p0];
+                                          String val=_semesterCubit.semesterList.where((element) => element.programModel?.affiliationName==_studentRegisterCubit.studentModel.affiliation&&element.programModel?.departmentName==_studentRegisterCubit.studentModel.department&&element.programModel?.name==_studentRegisterCubit.studentModel.programName&&element.programModel?.degree==_studentRegisterCubit.studentModel.degree&&element.programModel?.section==_studentRegisterCubit.studentModel.section,).map((e) => e.programModel?.session??"",).toSet().toList()[p0];
                                           _studentRegisterCubit.getStudentModel(StudentModel(degree:_studentRegisterCubit.studentModel.degree,affiliation: _studentRegisterCubit.studentModel.affiliation,department: _studentRegisterCubit.studentModel.department??"",programName:_studentRegisterCubit.studentModel.programName,section:_studentRegisterCubit.studentModel.section,session: val));
                                         },
                                         widget: DropDownFieldWidget(
@@ -377,10 +373,12 @@ class _AddNewStudentScreenState extends State<AddNewStudentScreen> {
                                     bloc: _semesterCubit,
                                     builder: (context,statebska) {
                                       return _semesterCubit.semesterList.isNotEmpty && _studentRegisterCubit.studentModel.session!=null? CustomPopMenuButton(
-                                        menus: _semesterCubit.semesterList.where((element) => element.affiliation==_studentRegisterCubit.studentModel.affiliation&&element.department==_studentRegisterCubit.studentModel.department&&element.programName==_studentRegisterCubit.studentModel.programName&&element.degree==_studentRegisterCubit.studentModel.degree&&element.section==_studentRegisterCubit.studentModel.section&&element.session==_studentRegisterCubit.studentModel.session,).map((e) => DataExtractor.extractInt(e.semesterName??"").toString(),).toSet().toList(),
+                                        menus: _semesterCubit.semesterList.where((element) => element.programModel?.affiliationName==_studentRegisterCubit.studentModel.affiliation&&element.programModel?.departmentName==_studentRegisterCubit.studentModel.department&&element.programModel?.name==_studentRegisterCubit.studentModel.programName&&element.programModel?.degree==_studentRegisterCubit.studentModel.degree&&element.programModel?.section==_studentRegisterCubit.studentModel.section&&element.programModel?.session==_studentRegisterCubit.studentModel.session,).map((e) => DataExtractor.extractInt(e.semesterName??"").toString(),).toSet().toList(),
                                         onSelected: (p0) {
-                                          String val=_semesterCubit.semesterList.where((element) => element.affiliation==_studentRegisterCubit.studentModel.affiliation&&element.department==_studentRegisterCubit.studentModel.department&&element.programName==_studentRegisterCubit.studentModel.programName&&element.degree==_studentRegisterCubit.studentModel.degree&&element.section==_studentRegisterCubit.studentModel.section&&element.session==_studentRegisterCubit.studentModel.session,).map((e) => DataExtractor.extractInt(e.semesterName??"").toString(),).toSet().toList()[p0];
-                                          _studentRegisterCubit.getStudentModel(StudentModel(degree:_studentRegisterCubit.studentModel.degree,affiliation: _studentRegisterCubit.studentModel.affiliation,department: _studentRegisterCubit.studentModel.department??"",programName:_studentRegisterCubit.studentModel.programName,section:_studentRegisterCubit.studentModel.section,session: _studentRegisterCubit.studentModel.session,semester: val));
+                                          String val=_semesterCubit.semesterList.where((element) => element.programModel?.affiliationName==_studentRegisterCubit.studentModel.affiliation&&element.programModel?.departmentName==_studentRegisterCubit.studentModel.department&&element.programModel?.name==_studentRegisterCubit.studentModel.programName&&element.programModel?.degree==_studentRegisterCubit.studentModel.degree&&element.programModel?.section==_studentRegisterCubit.studentModel.section&&element.programModel?.session==_studentRegisterCubit.studentModel.session,).map((e) => DataExtractor.extractInt(e.semesterName??"").toString(),).toSet().toList()[p0];
+                                          String semesterId=_semesterCubit.semesterList.where((element) => element.programModel?.affiliationName==_studentRegisterCubit.studentModel.affiliation&&element.programModel?.departmentName==_studentRegisterCubit.studentModel.department&&element.programModel?.name==_studentRegisterCubit.studentModel.programName&&element.programModel?.degree==_studentRegisterCubit.studentModel.degree&&element.programModel?.section==_studentRegisterCubit.studentModel.section&&element.programModel?.session==_studentRegisterCubit.studentModel.session && element.semesterName==val,).toSet().toList().first.id??"";
+
+                                          _studentRegisterCubit.getStudentModel(StudentModel(semesterId: semesterId,degree:_studentRegisterCubit.studentModel.degree,affiliation: _studentRegisterCubit.studentModel.affiliation,department: _studentRegisterCubit.studentModel.department??"",programName:_studentRegisterCubit.studentModel.programName,section:_studentRegisterCubit.studentModel.section,session: _studentRegisterCubit.studentModel.session,semester: val));
                                         },
                                         widget: DropDownFieldWidget(
                                           title: "Semester",
@@ -431,7 +429,7 @@ class _AddNewStudentScreenState extends State<AddNewStudentScreen> {
                                   fatherNameController.text.isEmpty ||
                                   contactNumberController.text.isEmpty ||
                                   addressController.text.isEmpty ||
-                                  srNoController.text.isEmpty ||
+                                  registrationNumberController.text.isEmpty ||
                                   rollNoController.text.isEmpty ||
                                   _studentRegisterCubit.gender==null||
                                   _studentRegisterCubit.status==null
@@ -447,9 +445,10 @@ class _AddNewStudentScreenState extends State<AddNewStudentScreen> {
                               }
 
                               model=model.copyWith(name: nameController.text,fatherName: fatherNameController.text,contact: contactNumberController.text,
-                                address: addressController.text,srNo: srNoController.text,rollNo: rollNoController.text,gender: _studentRegisterCubit.gender,
+                                address: addressController.text,registrationNumber: registrationNumberController.text,rollNo: rollNoController.text,gender: _studentRegisterCubit.gender,
                                 userImage: _studentRegisterCubit.userImage,status: _studentRegisterCubit.status
-                             ,id:_studentRegisterCubit.updateStudentModel==null?null:_studentRegisterCubit.updateStudentModel!.id, image:_studentRegisterCubit.updateStudentModel?.image??"" );
+                             ,id:_studentRegisterCubit.updateStudentModel?.id, image:_studentRegisterCubit.updateStudentModel?.image??"" );
+
 
                               var response=
                               _studentRegisterCubit.updateStudentModel!=null?
@@ -461,7 +460,7 @@ class _AddNewStudentScreenState extends State<AddNewStudentScreen> {
                                     fatherNameController.clear();
                                     contactNumberController.clear();
                                     addressController.clear();
-                                    srNoController.clear();
+                                    registrationNumberController.clear();
                                     rollNoController.clear();
                                     _studentRegisterCubit.initValues();
                               }else if(_studentRegisterCubit.updateStudentModel!=null){

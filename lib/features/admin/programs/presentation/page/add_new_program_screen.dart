@@ -7,6 +7,7 @@ import 'package:college_management/core/helper/show_message.dart';
 import 'package:college_management/features/admin/programs/models/program_model.dart';
 import 'package:college_management/features/admin/programs/models/program_request_model.dart';
 import 'package:college_management/features/admin/programs/presentation/controller/cubit.dart';
+import 'package:college_management/features/admin/university_profile/models/affiliation_model.dart';
 import 'package:college_management/features/admin/university_profile/presentation/controller/cubit.dart';
 import 'package:college_management/widgets/drop_down_field_widget.dart';
 import 'package:college_management/widgets/more_vert_pop_menu_button.dart';
@@ -45,7 +46,6 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
   final midsController = TextEditingController();
   final sessionalController = TextEditingController();
   final finalController = TextEditingController();
-  final totalTheoryController = TextEditingController();
   final theoryPassController = TextEditingController();
 
   final practicalMarksController = TextEditingController();
@@ -63,15 +63,21 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
         midsController.text=widget.programModel?.mids.toString()??"";
         sessionalController.text=widget.programModel?.sessional.toString()??"";
         finalController.text=widget.programModel?.finalMarks.toString()??"";
-        totalTheoryController.text=widget.programModel?.totalTheory.toString()??"";
         theoryPassController.text=widget.programModel?.theoryPassPercentage.toString()??"";
         practicalMarksController.text=widget.programModel?.practicalMax.toString()??"";
         practicalPassController.text=widget.programModel?.practicalPassPercentage.toString()??"";
-        // _programCubit.getDepartment(department: widget.programModel?.department??"", affiliation: widget.programModel?.affiliationName??"", status:widget.programModel!.status);
+        _programCubit.getDepartment(department: widget.programModel!.department, affiliation: AffiliationModel(id: widget.programModel?.affiliationId??"",name: widget.programModel?.affiliationName??""), status:widget.programModel!.status);
       }else{
         _programCubit.getDepartment(department: null, affiliation: null, status: null);
+        midsController.text="30";
+        sessionalController.text="10";
+        finalController.text="60";
+        theoryPassController.text="40";
+        practicalMarksController.text="100";
+        practicalPassController.text="40";
 
       }
+      await _departmentCubit.getDepartments();
     },);
     // TODO: implement initState
     super.initState();
@@ -389,22 +395,14 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
                               inputFormatters: [
                                 FilteringTextInputFormatter.digitsOnly
                               ],
-                              controller: totalTheoryController,
-                              subTitle: "Total Theory",
+                              controller: theoryPassController,
+                              subTitle: "Theory Pass %",
                             ),
                           ),
                         ],
                       ),
 
-                      SizedBox(height: 10),
-                      CustomTextFormField(
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly
-                        ],
-                        controller: theoryPassController,
-                        subTitle: "Theory Pass %",
-                      ),
+
                       SizedBox(height: 10),
 
                       /// 🔹 PRACTICAL
@@ -467,6 +465,10 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
                               showMessage("Please fill all fields",isError: true);
                               return;
                             }
+                            int midN=int.parse(midsController.text);
+                            int sessionalN=int.parse(sessionalController.text);
+                            int finalN=int.parse(finalController.text);
+                            int totalTheor=midN+sessionalN+finalN;
 
                             ProgramRequestModel
                             programRequestModel = ProgramRequestModel(
@@ -490,7 +492,7 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
                               theoryPassPercentage: int.parse(
                                 theoryPassController.text,
                               ),
-                              totalTheory: int.parse(totalTheoryController.text),
+                              totalTheory: totalTheor,
                               status:
                                   _programCubit.statusEnum?.name ?? "InActive",
                               id: widget.programModel==null?null:widget.programModel!.id,
@@ -502,6 +504,7 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
                          await _programCubit.updateProgram(programRequestModel);
                          if(response){
                            context.pop();
+                           await _programCubit.getPrograms();
                          }
                           },
                           text:widget.programModel==null? "Create Program":"Update Program",

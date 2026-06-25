@@ -37,7 +37,7 @@ CourseMappingModel model;
                       children: [
                         Expanded(
                           child: AppText(
-                            text: model.program??"",
+                            text: model.programName??"",
                             fontWeight: FontWeight.w600,
                             fontSize: 14,
                           ),
@@ -50,11 +50,17 @@ CourseMappingModel model;
                             }else if(val==1){
                               var courseMapping=DiContainer().sl<CourseMappingCubit>();
                               model=model.copyWith(status:model.status=="Active"?"Inactive":"Active" );
-                             await courseMapping.update(model);
+                             bool val= await courseMapping.update(model);
+                             if(val){
+                               await courseMapping.getMappingData();
+                             }
                             }
                             else{
                               var courseMapping=DiContainer().sl<CourseMappingCubit>();
-                              await courseMapping.delete(model);
+                           var resp=   await courseMapping.delete(model);
+                           if(resp){
+                             await courseMapping.getMappingData();
+                           }
                             }
                           },
                         )
@@ -65,7 +71,7 @@ CourseMappingModel model;
 
                     /// SUBTITLE
                     AppText(
-                      text: "Faculty of ${model.department??""}",
+                      text: "Faculty of ${model.departmentName??""}",
                       fontSize: 11,
                       color: AppColor.grey,
                     ),
@@ -146,7 +152,7 @@ CourseMappingModel model;
           Container(
             margin: EdgeInsets.only(top: 3,bottom: 3),
             child: AppText(
-              text: model.affiliation??"",
+              text: model.affiliationName??"",
               fontSize: 11,
               color: AppColor.grey,
             ),

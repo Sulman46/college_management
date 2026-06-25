@@ -96,20 +96,12 @@ class _AdminDashboardDrawarState extends State<AdminDashboardDrawar> {
         SubDrawerButtonModel(title: "Teachers Attendance", icon: Icons.edit_calendar,onTap: () {
           Navigator.push(context, MaterialPageRoute(builder: (context) => TeacherAttendanceAdminScreen(),));
           },),
+
+        SubDrawerButtonModel(title: "Faculty Workload", icon: Icons.work_history_outlined,onTap: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context) => FacultyWorkloadScreen(),));
+
+        }),
       ]),
-      AdminDrawerButtonModel(title: "HOD Assignment", icon: Icons.assignment_ind,onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => HodAssignmentScreen(),));
-
-      }),
-      AdminDrawerButtonModel(title: "Coordinator Management", icon: Icons.manage_accounts_rounded,onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => CoordinatorManagementScreen(),));
-
-      }),
-      AdminDrawerButtonModel(title: "Faculty Workload", icon: Icons.work_history_outlined,onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => FacultyWorkloadScreen(),));
-
-      }),
-
       AdminDrawerButtonModel(title: "Students", icon: Icons.boy,onTap: (){},
           subList: [
 
@@ -121,6 +113,21 @@ class _AdminDashboardDrawarState extends State<AdminDashboardDrawar> {
               Navigator.push(context, MaterialPageRoute(builder: (context) => StudentEnrollmentScreen(),));
             },),
           ]),
+      AdminDrawerButtonModel(title: "HOD & Coordinator", icon: Icons.manage_accounts_rounded,
+      subList: [
+        SubDrawerButtonModel(title: "HOD Assignment", icon: Icons.assignment_ind,
+            onTap: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => HodAssignmentScreen(),));
+
+            }),
+        SubDrawerButtonModel(title: "Coordinator Management", icon: Icons.manage_accounts_rounded,onTap: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context) => CoordinatorManagementScreen(),));
+
+        }),
+      ]
+      ),
+
+
       AdminDrawerButtonModel(title: "Payroll & Salary Management", icon: Icons.payment,onTap: (){
         Navigator.push(context, MaterialPageRoute(builder: (context) => PayrollAndSalaryManagementScreen(),));
 

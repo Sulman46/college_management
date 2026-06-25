@@ -3,6 +3,7 @@ import 'package:college_management/core/constants/constant_data.dart';
 import 'package:college_management/core/helper/app_date_picker.dart';
 import 'package:college_management/core/helper/show_message.dart';
 import 'package:college_management/features/admin/course_catalog/presentation/widgets/catalog_depart_widget.dart';
+import 'package:college_management/features/admin/departments/data/model/department_model.dart';
 import 'package:college_management/features/admin/departments/presentation/controller/cubit.dart';
 import 'package:college_management/features/admin/teacher_records/models/teacher_model.dart';
 import 'package:college_management/features/admin/teacher_records/presentation/controller/cubit.dart';
@@ -18,7 +19,6 @@ import '../../../../../core/constants/media_query.dart';
 import '../../../../../core/theme/AppColor.dart';
 import '../../../../../widgets/app_text.dart';
 import '../../../../../widgets/custom_button.dart';
-import '../../../../../widgets/custom_description_text_field.dart';
 import '../../../../../widgets/custom_text_form.dart';
 import '../../../../../widgets/drop_down_field_widget.dart';
 import '../../../../../widgets/more_vert_pop_menu_button.dart';
@@ -41,8 +41,8 @@ class _AddTeacherRecordScreenState extends State<AddTeacherRecordScreen> {
   final TextEditingController weeklyWorkLoad = TextEditingController();
   final TextEditingController joiningDateController = TextEditingController();
 
-  var _teacherRecordCubit=DiContainer().sl<TeacherRecordsCubit>();
-  var _departmentCubit=DiContainer().sl<AdminDepartmentCubit>();
+  final _teacherRecordCubit=DiContainer().sl<TeacherRecordsCubit>();
+  final _departmentCubit=DiContainer().sl<AdminDepartmentCubit>();
 
   @override
   void initState() {
@@ -146,11 +146,13 @@ class _AddTeacherRecordScreenState extends State<AddTeacherRecordScreen> {
                               bloc: _departmentCubit,
                               builder: (context,statesbkl) {
                                 return _departmentCubit.activeDepartmentList.isNotEmpty? CustomPopMenuButton(
-                                  menus: _departmentCubit.activeDepartmentList.map((e) => e.name,).toSet().toList(),
+                                  menus: _departmentCubit.activeDepartmentList.map((e) => "${e.name} (${e.code})",).toSet().toList(),
                                     title: "Department",
                                 onSelected: (p0) {
-                                  String val=_departmentCubit.activeDepartmentList.map((e) => e.name,).toSet().toList()[p0];
-                                  List<String> departmentList=_teacherRecordCubit.teacherModel.department??[];
+                                  String temp=_departmentCubit.activeDepartmentList.map((e) =>"${e.name} (${e.code})",).toSet().toList()[p0];
+                                  int index=_departmentCubit.activeDepartmentList.indexWhere((e) => "${e.name} (${e.code})"==temp,);
+                                  var val=_departmentCubit.activeDepartmentList[index];
+                                  List<DepartmentModel> departmentList=_teacherRecordCubit.teacherModel.department??[];
                                   departmentList.add(val);
                                   _teacherRecordCubit.getTeacherModel(_teacherRecordCubit.teacherModel.copyWith(department: departmentList));
                                 },
@@ -167,9 +169,9 @@ class _AddTeacherRecordScreenState extends State<AddTeacherRecordScreen> {
                             ),
                             if(_teacherRecordCubit.teacherModel.department!=null && _teacherRecordCubit.teacherModel.department!.isNotEmpty)
                               Wrap(
-                                children: List.generate(_teacherRecordCubit.teacherModel.department?.length??0, (index) => CatalogDepartWidget(text: _teacherRecordCubit.teacherModel.department![index], onTap: () {
-                                  List<String> list=List.from(_teacherRecordCubit.teacherModel.department??[]);
-                                  list.removeWhere((element) => element==_teacherRecordCubit.teacherModel.department![index],);
+                                children: List.generate(_teacherRecordCubit.teacherModel.department?.length??0, (index) => CatalogDepartWidget(text: _teacherRecordCubit.teacherModel.department![index].name, onTap: () {
+                                  List<DepartmentModel> list=List.from(_teacherRecordCubit.teacherModel.department??[]);
+                                  list.removeWhere((element) => element.id ==_teacherRecordCubit.teacherModel.department![index].id,);
                                   _teacherRecordCubit.getTeacherModel(_teacherRecordCubit.teacherModel.copyWith(department: list));
 
                                 },),),
@@ -194,7 +196,7 @@ class _AddTeacherRecordScreenState extends State<AddTeacherRecordScreen> {
                         SizedBox(height: 5,),
                             Row(
                               children: [
-                                Expanded(child: CustomPopMenuButton(menus: ["Permanent", "Visiting"],
+                                Expanded(child: CustomPopMenuButton(menus:["Permanent", "Visiting"],
                                   onSelected: (p0) {
                                     _teacherRecordCubit.getTeacherModel(_teacherRecordCubit.teacherModel.copyWith(teacherType: ["Permanent", "Visiting"][p0]));
 
@@ -249,10 +251,19 @@ class _AddTeacherRecordScreenState extends State<AddTeacherRecordScreen> {
                               isHintText: true,
                               controller: accountNumberController, subTitle: "PK00XXXXX...",title: "Account No/IBAN",),
                             SizedBox(height: 10,),
+                            CustomPopMenuButton(menus: ['Active','Inactive'],
+                              onSelected: (p0) {
+
+                                _teacherRecordCubit.getTeacherModel(_teacherRecordCubit.teacherModel.copyWith(status:['Active','Inactive'][p0] ));
+                              },
+                              widget: DropDownFieldWidget(text:_teacherRecordCubit.teacherModel.status?? "Select..", isFilled: _teacherRecordCubit.teacherModel.gender!=null),title: "Status",),
+                            SizedBox(height: 10,),
                             Center(
                               child: CustomElevatedButton(onPressed: () async {
 
-                                if(emailController.text.isEmpty || teacherNameController.text.isEmpty ||phoneController.text.isEmpty||specialization.text.isEmpty
+                                if(
+                                _teacherRecordCubit.teacherModel.status==null||
+                                emailController.text.isEmpty || teacherNameController.text.isEmpty ||phoneController.text.isEmpty||specialization.text.isEmpty
                                 || joiningDateController.text.isEmpty || rateLecture.text.isEmpty ||weeklyWorkLoad.text.isEmpty || bankNameController.text.isEmpty
                                 || accountNumberController.text.isEmpty || _teacherRecordCubit.teacherModel.teacherType==null || _teacherRecordCubit.teacherModel.designation==null
                                 || _teacherRecordCubit.teacherModel.department == null||_teacherRecordCubit.teacherModel.gender == null|| _teacherRecordCubit.teacherModel.qualification == null || _teacherRecordCubit.teacherModel.department!.isEmpty){
@@ -261,16 +272,18 @@ class _AddTeacherRecordScreenState extends State<AddTeacherRecordScreen> {
 
                                 var val=_teacherRecordCubit.teacherModel;
 
-                                TeacherModel model=TeacherModel(id: val.id,status: val.status,department:val.department,email: emailController.text,accountNo: accountNumberController.text,allocationType: val.allocationType,
+                                TeacherModel model=TeacherModel(
+
+                                    id: val.id,status: val.status,department:val.department,email: emailController.text,accountNo: accountNumberController.text,allocationType: val.allocationType,
                                 bankName: bankNameController.text,designation: val.designation,gender: val.gender,joiningDate: joiningDateController.text,phone: phoneController.text,qualification: val.qualification,ratePerLecture: double.parse(rateLecture.text)
                                 ,specialization: specialization.text,targetWorkload: double.parse(weeklyWorkLoad.text),teacherName: teacherNameController.text,teacherType: val.teacherType);
-
                                  var response=
                                  widget.teacherModel!=null?
                                  await _teacherRecordCubit.update(model):
                                  await _teacherRecordCubit.addTeacher(model);
                                 if(response){
                                   context.pop();
+                                  await _teacherRecordCubit.getTeachers();
                                 }
                               }, text: "Submit",width: mdWidth(context)*.6,),
                             ),

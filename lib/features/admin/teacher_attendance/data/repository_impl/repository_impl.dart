@@ -10,17 +10,17 @@ class TeacherAttendanceRepositoryImpl extends TeacherAttendanceRepository{
 
 
   @override
-  Future<Either<String,TeacherAttendanceModel>> post({required TeacherAttendanceModel value})async{
+  Future<Either<String,String>> post({required TeacherAttendanceModel value})async{
     return dataSource.post(value: value);
   }
 
   @override
-  Future<Either<String,TeacherAttendanceModel>> update({required TeacherAttendanceModel value}){
+  Future<Either<String,String>> update({required TeacherAttendanceModel value}){
     return dataSource.update(value: value);
   }
 
   @override
-  Future<Either<String,bool>> delete({required TeacherAttendanceModel value}){
+  Future<Either<String,String>> delete({required TeacherAttendanceModel value}){
     return dataSource.delete(value: value);
   }
 

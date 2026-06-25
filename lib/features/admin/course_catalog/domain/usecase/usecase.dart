@@ -11,16 +11,16 @@ class CourseCatalogAdminUseCase{
     return repository.getCourseCatalog();
   }
 
-  Future<Either<String, CourseCatalogModel>> addCourseCatalog({required CourseCatalogModel model}) {
+  Future<Either<String, String>> addCourseCatalog({required CourseCatalogModel model}) {
     return repository.addCourseCatalog(model: model);
   }
 
 
-  Future<Either<String, CourseCatalogModel>> updateCatalog({required CourseCatalogModel model}) {
+  Future<Either<String, String>> updateCatalog({required CourseCatalogModel model}) {
     return repository.updateCatalog(model: model);
   }
 
-  Future<Either<String, bool>> deleteCourseCatalog({required CourseCatalogModel model}) {
+  Future<Either<String, String>> deleteCourseCatalog({required CourseCatalogModel model}) {
     return repository.deleteCourseCatalog(model: model);
   }
 

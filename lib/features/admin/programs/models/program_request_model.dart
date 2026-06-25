@@ -48,26 +48,19 @@ class ProgramRequestModel {
   Map<String, dynamic> toMap() {
 
     return {
-
       "name": name,
       "code": code,
-
       "department": department.id,
       "affiliation": affiliation.id,
-
       "degree": degree,
       "session": session,
       "section": section,
-
       "status": status,
-
       "mids": mids,
       "sessional": sessional,
       "final": finalMarks,
-
       "totalTheory": totalTheory,
       "theoryPassPercentage": theoryPassPercentage,
-
       "practicalMax": practicalMax,
       "practicalPassPercentage":
       practicalPassPercentage,

@@ -6,10 +6,11 @@ import 'package:image_picker/image_picker.dart';
 
 class StudentModel {
   final String? id;
-  final String? srNo;
+  final String? registrationNumber;
   final String? rollNo;
   final String? name;
   final String? fatherName;
+  final String? semesterId;
   final String? image;
   final XFile? userImage;
   final String? gender;
@@ -27,11 +28,12 @@ class StudentModel {
 
   StudentModel({
     this.id,
-    this.srNo,
+    this.registrationNumber,
     this.rollNo,
     this.name,
     this.fatherName,
     this.image,
+    this.semesterId,
     this.userImage,
     this.gender,
     this.affiliation,
@@ -50,11 +52,12 @@ class StudentModel {
   factory StudentModel.fromMap(Map<String, dynamic> map) {
     return StudentModel(
       id: map['_id'] ?? "",
-      srNo: map['srNo'] ?? "",
+      registrationNumber: map['registrationNumber'] ?? "",
       rollNo: map['rollNo'] ?? "",
       name: map['name'] ?? "",
       fatherName: map['fatherName'] ?? "",
       image: map['image'] ?? "",
+      semesterId: map['semesterId'] ?? "",
       gender: map['gender'] ?? "Male",
       affiliation: map['affiliation'] ?? "",
       contact: map['contact'] ?? "",
@@ -73,29 +76,30 @@ class StudentModel {
   Map<String, dynamic> toMap() {
     return {
       if (id != null && id!.isNotEmpty) '_id': id,
-      if (srNo != null) 'srNo': srNo,
+      if (registrationNumber != null) 'registrationNumber': registrationNumber,
       if (rollNo != null) 'rollNo': rollNo,
       if (name != null) 'name': name,
       if (fatherName != null) 'fatherName': fatherName,
       if (image != null) 'image': image,
       if (gender != null) 'gender': gender,
-      if (affiliation != null) 'affiliation': affiliation,
+      // if (affiliation != null) 'affiliation': affiliation,
       if (contact != null) 'contact': contact,
       if (email != null) 'email': email,
       if (address != null) 'address': address,
-      if (department != null) 'department': department,
-      if (programName != null) 'programName': programName,
-      if (session != null) 'session': session,
-      if (section != null) 'section': section,
-      if (degree != null) 'degree': degree,
-      if (semester != null) 'semester': semester,
+      // if (department != null) 'department': department,
+      // if (programName != null) 'programName': programName,
+      // if (session != null) 'session': session,
+      // if (section != null) 'section': section,
+      // if (degree != null) 'degree': degree,
+      // if (semester != null) 'semester': semester,
+      if (semesterId != null) 'semesterId': semesterId,
       if (status != null) 'status': status,
     };
   }
 
   StudentModel copyWith({
     String? id,
-    String? srNo,
+    String? registrationNumber,
     String? rollNo,
     String? name,
     String? fatherName,
@@ -107,6 +111,7 @@ class StudentModel {
     String? email,
     String? address,
     String? department,
+    String? semesterId,
     String? programName,
     String? session,
     String? section,
@@ -116,11 +121,12 @@ class StudentModel {
   }) {
     return StudentModel(
       id: id ?? this.id,
-      srNo: srNo ?? this.srNo,
+      registrationNumber: registrationNumber ?? this.registrationNumber,
       rollNo: rollNo ?? this.rollNo,
       name: name ?? this.name,
       fatherName: fatherName ?? this.fatherName,
       image: image ?? this.image,
+      semesterId: semesterId ?? this.semesterId,
       userImage: userImage ?? this.userImage,
       gender: gender ?? this.gender,
       affiliation: affiliation ?? this.affiliation,
@@ -141,21 +147,15 @@ class StudentModel {
   Future<FormData> toFormData() async {
     final map = <String, dynamic>{
       if (id != null && id!.isNotEmpty) '_id': id,
-      if (srNo != null) 'srNo': srNo,
+      if (registrationNumber != null) 'registrationNumber': registrationNumber,
       if (rollNo != null) 'rollNo': rollNo,
       if (name != null) 'name': name,
       if (fatherName != null) 'fatherName': fatherName,
       if (gender != null) 'gender': gender,
-      if (affiliation != null) 'affiliation': affiliation,
+      if (semesterId != null) 'semesterId': semesterId,
       if (contact != null) 'contact': contact,
       if (email != null) 'email': email,
       if (address != null) 'address': address,
-      if (department != null) 'department': department,
-      if (programName != null) 'programName': programName,
-      if (session != null) 'session': session,
-      if (section != null) 'section': section,
-      if (degree != null) 'degree': degree,
-      if (semester != null) 'semester': semester,
       if (status != null) 'status': status,
     };
 
@@ -179,7 +179,7 @@ class StudentModel {
   }
 
   bool get hasNullFields =>
-      srNo == null ||
+      registrationNumber == null ||
           rollNo == null ||
           name == null ||
           fatherName == null ||

@@ -39,17 +39,28 @@ class TeacherAllocationItem extends StatelessWidget {
                           child: AppText(
                             text: model.teacherName??"",
                             fontWeight: FontWeight.w600,
-                            fontSize: 14,
+                            fontSize: 12,
                           ),
                         ),
                         CustomPopMenuButton(
-                          menus: ["Edit", "Delete"],
+                          menus: ["Edit",model.status=="Active"?"Inactive":"Active", "Delete"],
                           onSelected: (val) async {
                             if(val==0){
                               context.push("/Admin-add-teacher-allocation",extra: model);
-                            }else{
+                            }else if(val==1){
                               var allocationCubit=DiContainer().sl<TeacherAllocationCubit>();
-                             await allocationCubit.delete(model);
+                              var newModel=model.copyWith(status:model.status=="Active"?"Inactive":"Active");
+                              var respos=await allocationCubit.update(newModel);
+                              if(respos){
+                                await allocationCubit.get();
+                              }
+                            }
+                            else{
+                              var allocationCubit=DiContainer().sl<TeacherAllocationCubit>();
+                             var respos= await allocationCubit.delete(model);
+                              if(respos){
+                                await allocationCubit.get();
+                              }
                             }
                           },
                         )
@@ -65,13 +76,19 @@ class TeacherAllocationItem extends StatelessWidget {
 
           SizedBox(height: 5),
 
-          AppText(text: "Course Details: ",fontSize: 9,color: AppColor.white.withOpacity(.6),),
+          Row(
+            children: [
+              AppText(text: "Course Details: ",fontSize: 9,color: AppColor.white.withOpacity(.6),),
+             Spacer(),
+              ActiveInactiveStatusWidget(isActive: model.status=="Active"),
+            ],
+          ),
           /// ✅ 🔥 NEW SECTION (COURSE DETAILS)
           SizedBox(height: 5),
           AppText(
             text: "Name: ${model.courseName}",
             fontWeight: FontWeight.w600,
-            color: AppColor.greyLight,
+            color: AppColor.white,
             fontSize: 11,
           ),
           SizedBox(height: 3),
@@ -100,12 +117,12 @@ class TeacherAllocationItem extends StatelessWidget {
                 color: AppColor.grey,
                 fontSize: 10,
               ),
-              AppText(
-                text: " | Type: ${model.allocationType}",
-                fontWeight: FontWeight.w600,
-                color: AppColor.grey,
-                fontSize: 10,
-              ),
+              // AppText(
+              //   text: " | Type: ${model.allocationType}",
+              //   fontWeight: FontWeight.w600,
+              //   color: AppColor.grey,
+              //   fontSize: 10,
+              // ),
             ],
           ),
           SizedBox(height: 5),
@@ -122,13 +139,13 @@ class TeacherAllocationItem extends StatelessWidget {
                     ...List.generate(model.combinedPrograms?.length??0, (index) => AppText(
                       text: model.combinedPrograms![index],
                       fontWeight: FontWeight.w600,
-                      fontSize: 13,
+                      fontSize: 12,
                     ),)
                   ],
                 ): AppText(
     text: model.programName??"",
       fontWeight: FontWeight.w600,
-      fontSize: 13,
+      fontSize: 12,
     ),
 
                 SizedBox(height: 1),

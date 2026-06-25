@@ -50,33 +50,29 @@ class HODAssignmentCubit extends Cubit<HODAssignmentState> {
     emit(HODAssignmentLoading());
     var response=await _useCase.post(value: value);
     if(response.isLeft()){
-      showMessage(response.asLeft());
+      showMessage(response.asLeft(),isError: true);
       emit(HODAssignmentLoaded());
       closeLoadingDialog();
       return false;
     }else{
-      searchController.clear();
-      var data=response.asRight();
-      // _dataList.add(data);
-      // _filterList=List.from(dataList);
-      // _filterList.toSet();
-
-      _dataList=[];
-      _filterList=[];
 
       emit(HODAssignmentLoaded());
       closeLoadingDialog();
+      var data=response.asRight();
+      showMessage(data);
       return true;
     }
   }
 
   Future<void> get()async{
     showLoadingDialog();
+    _dataList=[];
+    _filterList=[];
     emit(HODAssignmentLoading());
     searchController.clear();
     var response=await _useCase.get();
     if(response.isLeft()){
-      showMessage(response.asLeft());
+      showMessage(response.asLeft(),isError: true);
       emit(HODAssignmentLoaded());
       closeLoadingDialog();
     }else{
@@ -93,16 +89,15 @@ class HODAssignmentCubit extends Cubit<HODAssignmentState> {
     emit(HODAssignmentLoading());
     var response=await _useCase.delete(value: value);
     if(response.isLeft()){
-      showMessage(response.asLeft());
+      showMessage(response.asLeft(),isError: true);
       emit(HODAssignmentLoaded());
       closeLoadingDialog();
       return false;
     }else{
-      searchController.clear();
-      _dataList.removeWhere((element) => element.id==value.id,);
-      _filterList=List.from(dataList);
       emit(HODAssignmentLoaded());
       closeLoadingDialog();
+      var data=response.asRight();
+      showMessage(data);
       return true;
     }
   }
@@ -114,18 +109,15 @@ class HODAssignmentCubit extends Cubit<HODAssignmentState> {
     emit(HODAssignmentLoading());
     var response=await _useCase.update(value: value);
     if(response.isLeft()){
-      showMessage(response.asLeft());
+      showMessage(response.asLeft(),isError: true);
       emit(HODAssignmentLoaded());
       closeLoadingDialog();
       return false;
     }else{
-      var data=response.asRight();
-      int index= dataList.indexWhere((element) => element.id==value.id,);
-      searchController.clear();
-      _dataList[index]=value;
-      _filterList=List.from(dataList);
       emit(HODAssignmentLoaded());
       closeLoadingDialog();
+      var data=response.asRight();
+      showMessage(data);
       return true;
     }
   }
@@ -136,7 +128,7 @@ class HODAssignmentCubit extends Cubit<HODAssignmentState> {
     emit(HODAssignmentLoading());
     List<HodAssignModel> temp=[];
     for(var i in dataList){
-      if(i.teacherName!.toLowerCase().toString().contains(val) || i.departmentName!.toLowerCase().toString().contains(val) || i.status!.toLowerCase().toString().contains(val) ){
+      if(i.teacher!.teacherName!.toLowerCase().toString().contains(val) || i.department!.name!.toLowerCase().toString().contains(val) || i.status!.toLowerCase().toString().contains(val) ){
         temp.add(i);
       }
     }

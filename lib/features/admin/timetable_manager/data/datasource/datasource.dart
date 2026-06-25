@@ -8,9 +8,9 @@ import '../../../../../core/controllers/dio_helper.dart';
 import '../../models/time_table_manger_model.dart';
 
 abstract class TimetableManagerDataSource{
-  Future<Either<String,TimeTableManagerModel>> post({required TimeTableManagerModel value});
-  Future<Either<String,TimeTableManagerModel>> update({required TimeTableManagerModel value});
-  Future<Either<String,bool>> delete({required TimeTableManagerModel value});
+  Future<Either<String,String>> post({required TimeTableManagerModel value});
+  Future<Either<String,String>> update({required TimeTableManagerModel value});
+  Future<Either<String,String>> delete({required TimeTableManagerModel value});
   Future<Either<String,List<TimeTableManagerModel>>> get();
 }
 
@@ -20,54 +20,44 @@ class FunctionClassTimetableManager extends TimetableManagerDataSource{
   final DioHelper _dioHelper=DioHelper();
 
   @override
-  Future<Either<String,TimeTableManagerModel>> post({required TimeTableManagerModel value})async{
+  Future<Either<String,String>> post({required TimeTableManagerModel value})async{
     try{
       var response=await _dioHelper.post(AppApis.timeTableManager,data: value.toMap());
+      var data=response.data;
       if(response.statusCode! >= 200 && response.statusCode! <=300){
         log("3223423: ${response.data}");
-        var data=response.data;
-        TimeTableManagerModel model=TimeTableManagerModel.fromMap(data);
 
-        return Right(model);
+        return Right(data["message"]??data["error"]??"Data added");
       }
-      var data=response.data;
-      return Left(data['message'] ?? "Failed",
-      );
+      return Left(data["message"]??data["error"]??"Failed");
     }catch(e){
       return Left(e.toString());
     }
   }
 
   @override
-  Future<Either<String,TimeTableManagerModel>> update({required TimeTableManagerModel value})async{
+  Future<Either<String,String>> update({required TimeTableManagerModel value})async{
     try{
       var response=await _dioHelper.put("${AppApis.timeTableManager}/${value.id}",data: value.toMap());
-      log("3223423: ${response.data}");
-      if(response.statusCode! >= 200 && response.statusCode! <=300){
-        log("3223423: ${response.data}");
-        var data=response.data;
-        TimeTableManagerModel model=TimeTableManagerModel.fromMap(data['data']);
-        return Right(model);
-      }
       var data=response.data;
-      return Left(data['message'] ?? "Failed",
-      );
+      if(response.statusCode! >= 200 && response.statusCode! <=300){
+        return Right(data["message"]??data["error"]??"Data updated");
+      }
+      return Left(data["message"]??data["error"]??"Failed");
     }catch(e){
       return Left(e.toString());
     }
   }
 
   @override
-  Future<Either<String,bool>> delete({required TimeTableManagerModel value})async{
+  Future<Either<String,String>> delete({required TimeTableManagerModel value})async{
     try{
       var response=await _dioHelper.delete("${AppApis.timeTableManager}/${value.id}");
-      if(response.statusCode! >= 200 && response.statusCode! <=300){
-        log("3223423: ${response.data}");
-        return Right(true);
-      }
       var data=response.data;
-      return Left(data['message'] ?? "Failed",
-      );
+      if(response.statusCode! >= 200 && response.statusCode! <=300){
+        return Right(data["message"]??data["error"]??"Data updated");
+      }
+      return Left(data["message"]??data["error"]??"Failed");
     }catch(e){
       return Left(e.toString());
     }
@@ -84,12 +74,12 @@ class FunctionClassTimetableManager extends TimetableManagerDataSource{
           List<TimeTableManagerModel> model=data.map((e)=>TimeTableManagerModel.fromMap(e)).toList();
           return Right(model);
         }else{
-          return Left(data['message'] ?? "Failed",
+          return Left(data['message'] ??data['error'] ?? "Failed",
           );
         }
       }
       var data=response.data;
-      return Left(data['message'] ?? "Failed",
+      return Left(data['message'] ??data['error'] ?? "Failed",
       );
     }catch(e){
       return Left(e.toString());

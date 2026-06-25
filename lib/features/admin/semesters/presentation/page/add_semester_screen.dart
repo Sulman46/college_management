@@ -35,7 +35,12 @@ class _AddSemesterScreenState extends State<AddSemesterScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      _semesterCubit.getSemesterLevel(widget.semesterLevelsModel??SemesterLevelsModel());
+      if(widget.semesterLevelsModel!=null){
+        AddSemesterModel semesterModel=AddSemesterModel(id:widget.semesterLevelsModel!.id,semesterName: widget.semesterLevelsModel!.semesterName,endDate: widget.semesterLevelsModel!.endDate,startDate: widget.semesterLevelsModel!.startDate,programId: widget.semesterLevelsModel!.programId,status: widget.semesterLevelsModel!.status,section: widget.semesterLevelsModel!.programModel!.section,session: widget.semesterLevelsModel!.programModel!.session,degree: widget.semesterLevelsModel!.programModel!.degree,affiliation: widget.semesterLevelsModel!.programModel!.affiliationName,programName: widget.semesterLevelsModel!.programModel!.name,department: widget.semesterLevelsModel!.programModel!.departmentName );
+        _semesterCubit.getSemesterLevel(semesterModel);
+      }else{
+        _semesterCubit.getSemesterLevel(AddSemesterModel());
+      }
       await _programCubit.getPrograms();
     },);
     // TODO: implement initState
@@ -92,9 +97,9 @@ class _AddSemesterScreenState extends State<AddSemesterScreen> {
                               child:
                               _programCubit.activePrograms.isNotEmpty?
                               CustomPopMenuButton(
-                                menus:_programCubit.activePrograms.map((e) => "${e.department.name} (${e.department.code})",).toSet().toList(),
+                                menus:_programCubit.activePrograms.map((e) => e.department!.name,).toSet().toList(),
                                 onSelected: (p0) {
-                                  String val=_programCubit.activePrograms.map((e) => "${e.department.name} (${e.department.code})",).toSet().toList()[p0];
+                                  String val=_programCubit.activePrograms.map((e) => e.department!.name,).toSet().toList()[p0];
                                   AddSemesterModel pickedModel=_semesterCubit.pickSemesterLevel;
                                   AddSemesterModel model=AddSemesterModel(department: val,status: pickedModel.status,semesterName: pickedModel.semesterName,endDate: pickedModel.endDate,startDate: pickedModel.startDate);
                                   _semesterCubit.getSemesterLevel(model);
@@ -134,10 +139,10 @@ class _AddSemesterScreenState extends State<AddSemesterScreen> {
                               child:
                               _programCubit.activePrograms.isNotEmpty && _semesterCubit.pickSemesterLevel.department!=null?
                               CustomPopMenuButton(
-                                menus: _programCubit.activePrograms.where((element) => element.department==_semesterCubit.pickSemesterLevel.department,).map((e) => e.name,).toSet().toList(),
+                                menus: _programCubit.activePrograms.where((element) => element.department!.name==_semesterCubit.pickSemesterLevel.department,).map((e) => e.name!,).toSet().toList(),
                                 onSelected: (p0) {
-                                  String val=_programCubit.activePrograms.where((element) => element.department==_semesterCubit.pickSemesterLevel.department,).map((e) => e.name,).toSet().toList()[p0];
-                                  String programId=_programCubit.activePrograms.where((element) => element.department==_semesterCubit.pickSemesterLevel.department,).map((e) => e.id,).toSet().toList()[p0];
+                                  String val=_programCubit.activePrograms.where((element) => element.department!.name==_semesterCubit.pickSemesterLevel.department,).map((e) => e.name!,).toSet().toList()[p0];
+                                  String programId=_programCubit.activePrograms.where((element) => element.department!.name==_semesterCubit.pickSemesterLevel.department,).map((e) => e.id!,).toSet().toList()[p0];
                                   AddSemesterModel pickedModel=_semesterCubit.pickSemesterLevel;
                                   AddSemesterModel model=AddSemesterModel(programName: val,programId: programId,department: pickedModel.department,status: pickedModel.status,semesterName: pickedModel.semesterName,endDate: pickedModel.endDate,startDate: pickedModel.startDate);
                                   _semesterCubit.getSemesterLevel(model);
@@ -180,9 +185,9 @@ class _AddSemesterScreenState extends State<AddSemesterScreen> {
                               child:
                               _programCubit.activePrograms.isNotEmpty && _semesterCubit.pickSemesterLevel.department!=null?
                               CustomPopMenuButton(
-                                menus: _programCubit.activePrograms.where((element) => element.department==_semesterCubit.pickSemesterLevel.department && element.id==_semesterCubit.pickSemesterLevel.programId,).map((e) => e.affiliation.name,).toSet().toList(),
+                                menus: _programCubit.activePrograms.where((element) => element.department!.name==_semesterCubit.pickSemesterLevel.department && element.id==_semesterCubit.pickSemesterLevel.programId,).map((e) => e.affiliationName!,).toSet().toList(),
                                 onSelected: (p0) {
-                                  String val=_programCubit.activePrograms.where((element) => element.department==_semesterCubit.pickSemesterLevel.department && element.id==_semesterCubit.pickSemesterLevel.programId,).map((e) => e.affiliation.name,).toSet().toList()[p0];
+                                  String val=_programCubit.activePrograms.where((element) => element.department!.name==_semesterCubit.pickSemesterLevel.department && element.id==_semesterCubit.pickSemesterLevel.programId,).map((e) => e.affiliationName!,).toSet().toList()[p0];
                                   AddSemesterModel pickedModel=_semesterCubit.pickSemesterLevel;
                                   AddSemesterModel model=AddSemesterModel(affiliation: val,programName: pickedModel.programName,programId: pickedModel.programId,department: pickedModel.department,status: pickedModel.status,semesterName: pickedModel.semesterName,endDate: pickedModel.endDate,startDate: pickedModel.startDate);
                                   _semesterCubit.getSemesterLevel(model);
@@ -224,9 +229,9 @@ class _AddSemesterScreenState extends State<AddSemesterScreen> {
                               width: mdWidth(context),
                               child:_programCubit.activePrograms.isNotEmpty &&  _semesterCubit.pickSemesterLevel.affiliation!=null?
                               CustomPopMenuButton(
-                                menus: _programCubit.activePrograms.where((element) => element.department==_semesterCubit.pickSemesterLevel.department && element.id==_semesterCubit.pickSemesterLevel.programId && element.affiliation.name==_semesterCubit.pickSemesterLevel.affiliation).map((e) => e.degree,).toSet().toList(),
+                                menus: _programCubit.activePrograms.where((element) => element.department!.name==_semesterCubit.pickSemesterLevel.department && element.id==_semesterCubit.pickSemesterLevel.programId && element.affiliationName==_semesterCubit.pickSemesterLevel.affiliation).map((e) => e.degree!,).toSet().toList(),
                                 onSelected: (p0) {
-                                  String val=_programCubit.activePrograms.where((element) => element.department==_semesterCubit.pickSemesterLevel.department && element.id==_semesterCubit.pickSemesterLevel.programId && element.affiliation.name==_semesterCubit.pickSemesterLevel.affiliation).map((e) => e.degree,).toSet().toList()[p0];
+                                  String val=_programCubit.activePrograms.where((element) => element.department!.name==_semesterCubit.pickSemesterLevel.department && element.id==_semesterCubit.pickSemesterLevel.programId && element.affiliationName==_semesterCubit.pickSemesterLevel.affiliation).map((e) => e.degree!,).toSet().toList()[p0];
                                   AddSemesterModel pickedModel=_semesterCubit.pickSemesterLevel;
                                   AddSemesterModel model=AddSemesterModel(degree: val,affiliation: pickedModel.affiliation,programName: pickedModel.programName,programId: pickedModel.programId,department: pickedModel.department,status: pickedModel.status,semesterName: pickedModel.semesterName,endDate: pickedModel.endDate,startDate: pickedModel.startDate);
 
@@ -268,9 +273,9 @@ class _AddSemesterScreenState extends State<AddSemesterScreen> {
                             child:  SizedBox(
                               width: mdWidth(context),
                               child:_programCubit.activePrograms.isNotEmpty &&_semesterCubit.pickSemesterLevel.degree!=null? CustomPopMenuButton(
-                                menus: _programCubit.activePrograms.where((element) => element.department==_semesterCubit.pickSemesterLevel.department && element.id==_semesterCubit.pickSemesterLevel.programId && element.affiliation.name==_semesterCubit.pickSemesterLevel.affiliation && element.degree==_semesterCubit.pickSemesterLevel.degree).map((e) => e.session,).toSet().toList(),
+                                menus: _programCubit.activePrograms.where((element) => element.department!.name==_semesterCubit.pickSemesterLevel.department && element.id==_semesterCubit.pickSemesterLevel.programId && element.affiliationName==_semesterCubit.pickSemesterLevel.affiliation && element.degree==_semesterCubit.pickSemesterLevel.degree).map((e) => e.session!,).toSet().toList(),
                                 onSelected: (p0) {
-                                  String val=_programCubit.activePrograms.where((element) => element.department==_semesterCubit.pickSemesterLevel.department && element.id==_semesterCubit.pickSemesterLevel.programId && element.affiliation.name==_semesterCubit.pickSemesterLevel.affiliation && element.degree==_semesterCubit.pickSemesterLevel.degree).map((e) => e.session,).toSet().toList()[p0];
+                                  String val=_programCubit.activePrograms.where((element) => element.department!.name==_semesterCubit.pickSemesterLevel.department && element.id==_semesterCubit.pickSemesterLevel.programId && element.affiliationName==_semesterCubit.pickSemesterLevel.affiliation && element.degree==_semesterCubit.pickSemesterLevel.degree).map((e) => e.session!,).toSet().toList()[p0];
                                   AddSemesterModel pickedModel=_semesterCubit.pickSemesterLevel;
                                   AddSemesterModel model=AddSemesterModel(session: val,degree: pickedModel.degree,affiliation: pickedModel.affiliation,programName: pickedModel.programName,programId: pickedModel.programId,department: pickedModel.department,status: pickedModel.status,semesterName: pickedModel.semesterName,endDate: pickedModel.endDate,startDate: pickedModel.startDate);
                                   _semesterCubit.getSemesterLevel(model);
@@ -315,9 +320,9 @@ class _AddSemesterScreenState extends State<AddSemesterScreen> {
                               child:
                               _programCubit.activePrograms.isNotEmpty && _semesterCubit.pickSemesterLevel.session!=null?
                               CustomPopMenuButton(
-                                menus: _programCubit.activePrograms.where((element) => element.department.id==_semesterCubit.pickSemesterLevel.department && element.id==_semesterCubit.pickSemesterLevel.programId && element.affiliation.name==_semesterCubit.pickSemesterLevel.affiliation && element.degree==_semesterCubit.pickSemesterLevel.degree&& element.session==_semesterCubit.pickSemesterLevel.session).map((e) => e.section,).toSet().toList(),
+                                menus: _programCubit.activePrograms.where((element) => element.department!.name==_semesterCubit.pickSemesterLevel.department && element.id==_semesterCubit.pickSemesterLevel.programId && element.affiliationName==_semesterCubit.pickSemesterLevel.affiliation && element.degree==_semesterCubit.pickSemesterLevel.degree&& element.session==_semesterCubit.pickSemesterLevel.session).map((e) => e.section!,).toSet().toList(),
                                 onSelected: (p0) {
-                                  String val=_programCubit.activePrograms.where((element) => element.department==_semesterCubit.pickSemesterLevel.department && element.id==_semesterCubit.pickSemesterLevel.programId && element.affiliation.name==_semesterCubit.pickSemesterLevel.affiliation && element.degree==_semesterCubit.pickSemesterLevel.degree&& element.session==_semesterCubit.pickSemesterLevel.session).map((e) => e.section,).toSet().toList()[p0];
+                                  String val=_programCubit.activePrograms.where((element) => element.department!.name==_semesterCubit.pickSemesterLevel.department && element.id==_semesterCubit.pickSemesterLevel.programId && element.affiliationName==_semesterCubit.pickSemesterLevel.affiliation && element.degree==_semesterCubit.pickSemesterLevel.degree&& element.session==_semesterCubit.pickSemesterLevel.session).map((e) => e.section!,).toSet().toList()[p0];
                                   AddSemesterModel pickedModel=_semesterCubit.pickSemesterLevel;
                                   AddSemesterModel model=AddSemesterModel(section: val,session: pickedModel.session,degree: pickedModel.degree,affiliation: pickedModel.affiliation,programName: pickedModel.programName,programId: pickedModel.programId,department: pickedModel.department,status: pickedModel.status,semesterName: pickedModel.semesterName,endDate: pickedModel.endDate,startDate: pickedModel.startDate);
                                   _semesterCubit.getSemesterLevel(model);
@@ -472,11 +477,19 @@ class _AddSemesterScreenState extends State<AddSemesterScreen> {
                             if(widget.semesterLevelsModel!=null){
                               model=model.copyWith(id: widget.semesterLevelsModel?.id??"");
                             }
+
+                            int index=_programCubit.programsList.indexWhere((element) => element.name==model.programName && element.department!.name==model.department && element.affiliationName==model.affiliation && element.degree==model.degree && element.session==model.session && element.section==model.section);
+
+                            var programModel=_programCubit.programsList[index];
+
+                            SemesterLevelsModel semesterLevelModel=SemesterLevelsModel(status: model.status, programId:programModel.id,startDate: model.startDate,endDate: model.endDate,semesterName: model.semesterName,id: model.id,);
+
                          bool val=widget.semesterLevelsModel!=null?
-                              await _semesterCubit.editSemester(model)
-                             : await _semesterCubit.addSemester(model);
+                              await _semesterCubit.editSemester(semesterLevelModel)
+                             : await _semesterCubit.addSemester(semesterLevelModel);
                             if(val){
                               context.pop();
+                              await _semesterCubit.getSemesterList();
                             }
                           },
                           text:widget.semesterLevelsModel!=null? "Update Semester": "Create Semester",

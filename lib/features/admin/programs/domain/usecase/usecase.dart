@@ -14,13 +14,13 @@ class AdminProgramsUseCase{
   }
 
   
-  Future<Either<String,ProgramModel>> addProgram({required ProgramRequestModel programRequestModel}) async{
+  Future<Either<String,String>> addProgram({required ProgramRequestModel programRequestModel}) async{
     return repository.addProgram(programRequestModel: programRequestModel);
   }
 
 
 
-  Future<Either<String,ProgramModel>> updateProgram({required ProgramRequestModel programRequestModel}) async{
+  Future<Either<String,String>> updateProgram({required ProgramRequestModel programRequestModel}) async{
     return repository.updateProgram(programRequestModel: programRequestModel);
   }
 

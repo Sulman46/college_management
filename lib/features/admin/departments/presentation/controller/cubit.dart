@@ -21,7 +21,7 @@ class AdminDepartmentCubit extends Cubit<AdminDepartmentState> {
 
 
   List<DepartmentModel> departmentList=[];
-  List<DepartmentModel> activeDepartmentList=[];
+  List<DepartmentModel> get activeDepartmentList=>departmentList.where((element) => element.status==DepartmentStatus.Active,).toList();
   List<DepartmentModel> filterDepartmentList=[];
   double top=mdHeight(navigatorKey.currentContext!)*.9;
   double right=30;
@@ -41,7 +41,6 @@ class AdminDepartmentCubit extends Cubit<AdminDepartmentState> {
    if(response.isRight()){
      departmentList.add(response.asRight());
      filterDepartmentList=List.from(departmentList);
-     activeDepartmentList=List.from(departmentList.where((element) => element.status==DepartmentStatus.Active,));
      showMessage("New Department Added");
      closeLoadingDialog();
      emit(AdminDepartmentLoaded());
@@ -62,7 +61,6 @@ class AdminDepartmentCubit extends Cubit<AdminDepartmentState> {
   departmentList[replaceModel]=response.asRight();
   int filterReplaceModel=   filterDepartmentList.indexWhere((element) => element.id==model.id,);
   filterDepartmentList[filterReplaceModel]=response.asRight();
-  activeDepartmentList=List.from(departmentList.where((element) => element.status==DepartmentStatus.Active,));
 
      showMessage("Department Updated");
      closeLoadingDialog();
@@ -76,13 +74,14 @@ class AdminDepartmentCubit extends Cubit<AdminDepartmentState> {
   }
 
   Future<void> getDepartments()async{
+    departmentList=[];
+    filterDepartmentList=[];
     showLoadingDialog();
     emit(AdminDepartmentLoading());
    var response = await  _useCase.getDepartments();
    if(response.isRight()){
      departmentList=response.asRight();
      filterDepartmentList=response.asRight();
-     activeDepartmentList=List.from(departmentList.where((element) => element.status==DepartmentStatus.Active,));
      closeLoadingDialog();
    }else{
      showMessage(response.asLeft(),isError: true);
@@ -97,12 +96,9 @@ class AdminDepartmentCubit extends Cubit<AdminDepartmentState> {
     emit(AdminDepartmentLoading());
    var response = await  _useCase.deleteDepartment(id);
    if(response.isRight()){
-     departmentList.removeWhere((element) => element.id==id,);
-     filterDepartmentList.removeWhere((element) => element.id==id,);
-     activeDepartmentList=List.from(departmentList.where((element) => element.status==DepartmentStatus.Active,));
-
      emit(AdminDepartmentLoaded());
      closeLoadingDialog();
+     showMessage(response.asRight());
      return true;
    }else{
      showMessage(response.asLeft(),isError: true);

@@ -7,8 +7,6 @@ import 'package:college_management/widgets/custom_text_form.dart';
 import 'package:college_management/widgets/custom_top_bar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../../core/app/myapp.dart';
-import '../../../../../core/constants/media_query.dart';
 import '../../../../../widgets/custom_button.dart';
 import '../widgets/teacher_allocation_item.dart';
 
@@ -22,7 +20,7 @@ class TeacherAllocationScreen extends StatefulWidget {
 }
 
 class _TeacherAllocationScreenState extends State<TeacherAllocationScreen> {
-var _allocationCubit=DiContainer().sl<TeacherAllocationCubit>();
+final _allocationCubit=DiContainer().sl<TeacherAllocationCubit>();
 
   @override
   void initState() {

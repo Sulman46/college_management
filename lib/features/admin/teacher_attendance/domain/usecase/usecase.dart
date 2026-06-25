@@ -8,15 +8,15 @@ class TeacherAttendanceUseCase{
   TeacherAttendanceUseCase({required this.repository});
 
 
-  Future<Either<String,TeacherAttendanceModel>> post({required TeacherAttendanceModel value})async{
+  Future<Either<String,String>> post({required TeacherAttendanceModel value})async{
     return repository.post(value: value);
   }
 
-  Future<Either<String,TeacherAttendanceModel>> update({required TeacherAttendanceModel value}){
+  Future<Either<String,String>> update({required TeacherAttendanceModel value}){
     return repository.update(value: value);
   }
 
-  Future<Either<String,bool>> delete({required TeacherAttendanceModel value}){
+  Future<Either<String,String>> delete({required TeacherAttendanceModel value}){
     return repository.delete(value: value);
   }
 

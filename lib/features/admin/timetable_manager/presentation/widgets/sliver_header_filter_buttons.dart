@@ -46,23 +46,23 @@ class SliverHeaderFilterButtons extends SliverPersistentHeaderDelegate {
                     SizedBox(width: 10,),
                     Expanded(child: CustomPopMenuButton(
                       onSelected: (p0) {
-                        timetableManagerCubit.getFilterModel(model: timetableManagerCubit.filterModel.copyWith(department: timetableManagerCubit.dataList.map((e) => e.department??"",).toSet().toList()[p0]));
+                        timetableManagerCubit.getFilterModel(model: timetableManagerCubit.filterModel.copyWith(department: timetableManagerCubit.dataList.map((e) => e.programModel?.department?.name??"",).toSet().toList()[p0]));
                       },
-                      menus: timetableManagerCubit.dataList.map((e) => e.department??"",).toSet().toList(),
+                      menus: timetableManagerCubit.dataList.map((e) => e.programModel?.department?.name??"",).toSet().toList(),
                       widget: DropDownFieldWidget(
                           text:timetableManagerCubit.filterModel.department?? "Dept..",
                           isFilled: timetableManagerCubit.filterModel.department!=null),)),
                     SizedBox(width: 10,),
                     Expanded(child: CustomPopMenuButton(
                       onSelected: (p0) {
-                        timetableManagerCubit.getFilterModel(model: timetableManagerCubit.filterModel.copyWith(program: timetableManagerCubit.dataList.map((e) => e.programName??"",).toSet().toList()[p0]));
+                        timetableManagerCubit.getFilterModel(model: timetableManagerCubit.filterModel.copyWith(program: timetableManagerCubit.dataList.map((e) => e.programModel?.name??"",).toSet().toList()[p0]));
 
                       },
-                      menus: timetableManagerCubit.dataList.map((e) => e.programName??"",).toSet().toList(),widget: DropDownFieldWidget(text:timetableManagerCubit.filterModel.program??"Program..", isFilled: timetableManagerCubit.filterModel.program!=null),)),
+                      menus: timetableManagerCubit.dataList.map((e) => e.programModel?.name??"",).toSet().toList(),widget: DropDownFieldWidget(text:timetableManagerCubit.filterModel.program??"Program..", isFilled: timetableManagerCubit.filterModel.program!=null),)),
                     SizedBox(width: 10,),
-                    Expanded(child: CustomPopMenuButton(menus: timetableManagerCubit.dataList.map((e) => e.session??"",).toSet().toList(),
+                    Expanded(child: CustomPopMenuButton(menus: timetableManagerCubit.dataList.map((e) => e.programModel?.session??"",).toSet().toList(),
                       onSelected: (p0) {
-                        timetableManagerCubit.getFilterModel(model: timetableManagerCubit.filterModel.copyWith(session: timetableManagerCubit.dataList.map((e) => e.session??"",).toSet().toList()[p0]));
+                        timetableManagerCubit.getFilterModel(model: timetableManagerCubit.filterModel.copyWith(session: timetableManagerCubit.dataList.map((e) => e.programModel?.session??"",).toSet().toList()[p0]));
 
                       },widget: DropDownFieldWidget(text:timetableManagerCubit.filterModel.session??"Session..", isFilled: timetableManagerCubit.filterModel.session !=null),)),
                   ],

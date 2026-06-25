@@ -41,6 +41,9 @@ class AdminProgramsCubit extends Cubit<AdminProgramsState> {
   }
 
   Future<void> getPrograms()async{
+    _programsList=[];
+    filterProgramsList=[];
+    searchController.clear();
     emit(AdminProgramsLoading());
     showLoadingDialog();
    var response=await _useCase.getPrograms();
@@ -49,7 +52,7 @@ class AdminProgramsCubit extends Cubit<AdminProgramsState> {
      filterProgramsList=response.asRight();
      searchController.clear();
    }else{
-     showMessage(response.asLeft());
+     showMessage(response.asLeft(),isError: true);
    }
     emit(AdminProgramsLoaded());
    closeLoadingDialog();
@@ -59,16 +62,12 @@ class AdminProgramsCubit extends Cubit<AdminProgramsState> {
     showLoadingDialog();
    var response=await _useCase.addProgram(programRequestModel: model);
    if(response.isRight()){
-     ProgramModel programModel=response.asRight();
-     _programsList.add(programModel);
-     filterProgramsList=[...programsList];
-     searchController.clear();
-
+     showMessage(response.asRight());
      emit(AdminProgramsLoaded());
      closeLoadingDialog();
      return true;
    }else{
-     showMessage(response.asLeft());
+     showMessage(response.asLeft(),isError: true);
      emit(AdminProgramsLoaded());
      closeLoadingDialog();
      return false;
@@ -80,16 +79,14 @@ class AdminProgramsCubit extends Cubit<AdminProgramsState> {
     showLoadingDialog();
    var response=await _useCase.updateProgram(programRequestModel: model);
    if(response.isRight()){
-     ProgramModel programModel=response.asRight();
-     int index=programsList.indexWhere((element) => element.id==model.id,);
-     _programsList[index]=programModel;
-     filterProgramsList=[...programsList];
-     searchController.clear();
+
      emit(AdminProgramsLoaded());
      closeLoadingDialog();
+     showMessage(response.asRight());
+     await getPrograms();
      return true;
    }else{
-     showMessage(response.asLeft());
+     showMessage(response.asLeft(),isError: true);
      emit(AdminProgramsLoaded());
      closeLoadingDialog();
      return false;
@@ -97,18 +94,19 @@ class AdminProgramsCubit extends Cubit<AdminProgramsState> {
   }
 
   Future<bool> deletePrograms(ProgramModel model)async{
+    emit(AdminProgramsLoading());
     showLoadingDialog();
-   var response=await _useCase.deleteProgram(id: model.id);
+   var response=await _useCase.deleteProgram(id: model.id??"");
    if(response.isRight()){
-     _programsList.removeWhere((element) => element.id==model.id);
-     emit(AdminProgramsLoading());
-     filterProgramsList=[...programsList];
      emit(AdminProgramsLoaded());
 
      closeLoadingDialog();
+     showMessage(response.asRight());
+     await getPrograms();
+
      return true;
    }else{
-     showMessage(response.asLeft());
+     showMessage(response.asLeft(),isError: true);
      emit(AdminProgramsLoaded());
      closeLoadingDialog();
      return false;
@@ -119,7 +117,7 @@ class AdminProgramsCubit extends Cubit<AdminProgramsState> {
     emit(AdminProgramsLoading());
     List<ProgramModel> newList=[];
     for(var i in programsList){
-      if(i.department.name.toString().toLowerCase().contains(val.toString().toLowerCase()) || i.code.toString().toLowerCase().contains(val.toString().toLowerCase()) || i.name.toString().toLowerCase().contains(val.toString().toLowerCase()) || i.affiliation.name.toString().toLowerCase().contains(val.toString().toLowerCase())){
+      if(i.department!.name.toString().toLowerCase().contains(val.toString().toLowerCase()) || i.code.toString().toLowerCase().contains(val.toString().toLowerCase()) || i.name.toString().toLowerCase().contains(val.toString().toLowerCase()) || i.affiliationName.toString().toLowerCase().contains(val.toString().toLowerCase())){
         newList.add(i);
       }
     }

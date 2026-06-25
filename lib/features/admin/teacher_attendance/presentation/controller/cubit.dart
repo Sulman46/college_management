@@ -65,33 +65,32 @@ class TeacherAttendanceCubit extends Cubit<TeacherAttendanceState> {
     emit(TeacherAttendanceLoading());
     var response=await _useCase.post(value: value);
     if(response.isLeft()){
-      showMessage(response.asLeft());
+      showMessage(response.asLeft(),isError: true);
       emit(TeacherAttendanceLoaded());
       closeLoadingDialog();
       return false;
     }else{
-      var data=response.asRight();
-      _dataList.add(data);
-      _filterList=List.from(dataList);
-      _filterList.toSet();
       emit(TeacherAttendanceLoaded());
       closeLoadingDialog();
+      showMessage(response.asRight());
       return true;
     }
   }
 
   Future<void> get()async{
+    _dataList=[];
+    _filterList=[];
     showLoadingDialog();
     emit(TeacherAttendanceLoading());
     var response=await _useCase.get();
     if(response.isLeft()){
-      showMessage(response.asLeft());
+      showMessage(response.asLeft(),isError: true);
       emit(TeacherAttendanceLoaded());
       closeLoadingDialog();
     }else{
       var data=response.asRight();
       _dataList=data;
-      _filterList=List.from(_dataList);
+      _filterList=List.from(dataList);
       emit(TeacherAttendanceLoaded());
       closeLoadingDialog();
     }
@@ -102,16 +101,14 @@ class TeacherAttendanceCubit extends Cubit<TeacherAttendanceState> {
     emit(TeacherAttendanceLoading());
     var response=await _useCase.delete(value: value);
     if(response.isLeft()){
-      showMessage(response.asLeft());
+      showMessage(response.asLeft(),isError: true);
       emit(TeacherAttendanceLoaded());
       closeLoadingDialog();
       return false;
     }else{
-      
-      _dataList.removeWhere((element) => element.id==value.id,);
-      _filterList=List.from(dataList);
       emit(TeacherAttendanceLoaded());
       closeLoadingDialog();
+      showMessage(response.asRight());
       return true;
     }
   }
@@ -123,18 +120,15 @@ class TeacherAttendanceCubit extends Cubit<TeacherAttendanceState> {
     emit(TeacherAttendanceLoading());
     var response=await _useCase.update(value: value);
     if(response.isLeft()){
-      showMessage(response.asLeft());
+      showMessage(response.asLeft(),isError: true);
       emit(TeacherAttendanceLoaded());
       closeLoadingDialog();
       return false;
     }else{
-      var data=response.asRight();
-      int index= dataList.indexWhere((element) => element.id==value.id,);
-      
-      _dataList[index]=value;
-      _filterList=List.from(dataList);
+
       emit(TeacherAttendanceLoaded());
       closeLoadingDialog();
+      showMessage(response.asRight());
       return true;
     }
   }

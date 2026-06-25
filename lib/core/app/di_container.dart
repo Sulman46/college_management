@@ -20,6 +20,11 @@ import '../../features/admin/announcements/data/repository_impl/repository_impl.
 import '../../features/admin/announcements/domain/repository/repository.dart';
 import '../../features/admin/announcements/domain/usecase/usecase.dart';
 import '../../features/admin/announcements/presentation/controller/cubit.dart';
+import '../../features/admin/coordinator_management/data/datasource/datasource.dart';
+import '../../features/admin/coordinator_management/data/repository_impl/repository_impl.dart';
+import '../../features/admin/coordinator_management/domain/repository/repository.dart';
+import '../../features/admin/coordinator_management/domain/usecase/usecase.dart';
+import '../../features/admin/coordinator_management/presentation/controller/cubit.dart';
 import '../../features/admin/course_catalog/data/repository_impl/repository_impl.dart';
 import '../../features/admin/course_catalog/domain/repository/repository.dart';
 import '../../features/admin/course_catalog/domain/usecase/usecase.dart';
@@ -32,6 +37,11 @@ import '../../features/admin/departments/data/datasource/datasource.dart';
 import '../../features/admin/departments/data/repository_impl/repository_impl.dart';
 import '../../features/admin/departments/domain/repository/repository.dart';
 import '../../features/admin/departments/domain/usecase/usecase.dart';
+import '../../features/admin/faculty_workload/data/datasource/datasource.dart';
+import '../../features/admin/faculty_workload/data/repository_impl/repository_impl.dart';
+import '../../features/admin/faculty_workload/domain/repository/repository.dart';
+import '../../features/admin/faculty_workload/domain/usecase/usecase.dart';
+import '../../features/admin/faculty_workload/presentation/controller/cubit.dart';
 import '../../features/admin/hod_assignment/data/datasource/datasource.dart';
 import '../../features/admin/hod_assignment/data/repository_impl/repository_impl.dart';
 import '../../features/admin/hod_assignment/domain/repository/repository.dart';
@@ -201,6 +211,17 @@ class DiContainer{
     sl.registerLazySingleton<StudentEnrollmentRepository>(() => StudentEnrollmentRepositoryImpl(dataSource: sl()),);
     sl.registerLazySingleton(() => StudentEnrollmentUseCase(repository: sl()),);
 
+    // coordinator management
+    sl.registerLazySingleton<CoordinatorManagementDataSource>(() => FunctionClassCoordinatorManagement(),);
+    sl.registerLazySingleton<CoordinatorManagementRepository>(() => CoordinatorManagementRepositoryImpl(dataSource: sl()),);
+    sl.registerLazySingleton(() => CoordinatorManagementUseCase(repository: sl()),);
+
+
+    // coordinator management
+    sl.registerLazySingleton<FacultyWorkLoadDataSource>(() => FunctionClassFacultyWorkLoad(),);
+    sl.registerLazySingleton<FacultyWorkLoadRepository>(() => FacultyWorkLoadRepositoryImpl(dataSource: sl()),);
+    sl.registerLazySingleton(() => FacultyWorkLoadUseCase(repository: sl()),);
+
 
     ConnectivityController().init();
     await sl.allReady();
@@ -224,6 +245,8 @@ class DiContainer{
     sl.registerLazySingleton(() => TeacherAttendanceCubit(sl()),);
     sl.registerLazySingleton(() => StudentRegistrationCubit(sl()),);
     sl.registerLazySingleton(() => StudentEnrollmentCubit(sl()),);
+    sl.registerLazySingleton(() => CoordinatorManagementCubit(sl()),);
+    sl.registerLazySingleton(() => FacultyWorkLoadCubit(sl()),);
 
     sl.registerLazySingleton(() => ScreenResizeCubit(),);
   }

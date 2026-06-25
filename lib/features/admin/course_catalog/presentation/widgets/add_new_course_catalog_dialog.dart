@@ -1,5 +1,4 @@
-import 'package:college_management/core/constants/app_text_style.dart';
-import 'package:college_management/core/constants/app_widgets_size.dart';
+
 import 'package:college_management/core/constants/media_query.dart';
 import 'package:college_management/core/helper/show_message.dart';
 import 'package:college_management/features/admin/course_catalog/models/course_catalog_model.dart';
@@ -33,8 +32,8 @@ class _AddNewCourseCatalogDialogState extends State<AddNewCourseCatalogDialog> {
   final TextEditingController codeController = TextEditingController();
   final TextEditingController titleController = TextEditingController();
   final TextEditingController creditHour = TextEditingController();
-  var _departmentCubit = DiContainer().sl<AdminDepartmentCubit>();
-  var _courseCatalogCubit = DiContainer().sl<CourseCatalogAdminCubit>();
+  final _departmentCubit = DiContainer().sl<AdminDepartmentCubit>();
+  final _courseCatalogCubit = DiContainer().sl<CourseCatalogAdminCubit>();
 
   @override
   void initState() {
@@ -106,10 +105,17 @@ class _AddNewCourseCatalogDialogState extends State<AddNewCourseCatalogDialog> {
                   ): CustomPopMenuButton(
                     onSelected: (p0) {
                       var list=_courseCatalogCubit.department;
-                      list.add(_departmentCubit
+                      var val=_departmentCubit
                           .activeDepartmentList
-                          .map((e) => e.name)
-                          .toSet().toList()[p0]);
+                          .map((e) => "${e.name} (${e.code})")
+                          .toSet().toList()[p0];
+                      var model=_departmentCubit.activeDepartmentList.where((e) => "${e.name} (${e.code})"==val,).first;
+
+                      var selectedModel=CourseCatalogDepartmentModel(id: model.id,name: model.name);
+                      if(list.where((element) => element.id==selectedModel.id,).toList().isNotEmpty){
+                        list.removeWhere((element) => element.id==selectedModel.id,);
+                      }
+                      list.add(CourseCatalogDepartmentModel(id: model.id,name: model.name));
                       list=list.toSet().toList();
                       _courseCatalogCubit.getDepartment(
                         depart:list ,
@@ -119,7 +125,7 @@ class _AddNewCourseCatalogDialogState extends State<AddNewCourseCatalogDialog> {
                       );
                     },
                     menus: _departmentCubit.activeDepartmentList
-                        .map((e) => e.name)
+                        .map((e) => "${e.name} (${e.code})")
                         .toSet().toList(),offset: Offset(0, 30),widget: SizedBox(
                       width: mdWidth(context),
                       child: DropDownFieldWidget(
@@ -131,7 +137,7 @@ class _AddNewCourseCatalogDialogState extends State<AddNewCourseCatalogDialog> {
 
             if(_courseCatalogCubit.department.isNotEmpty)
               Wrap(
-                  children: _courseCatalogCubit.department.map((e) => CatalogDepartWidget(text: e, onTap: () {
+                  children: _courseCatalogCubit.department.map((e) => CatalogDepartWidget(text: e.name??"", onTap: () {
                     _courseCatalogCubit.removeDepartment(e);
                   },),).toSet().toList() ),
             SizedBox(height: 15),
@@ -257,7 +263,8 @@ class _AddNewCourseCatalogDialogState extends State<AddNewCourseCatalogDialog> {
                       await _courseCatalogCubit.updateCatalog(val: model)
                           :await _courseCatalogCubit.addCourseCatalog(val: model);
                       if(respo){
-                        context.pop();
+                        Navigator.pop(context);
+                        await _courseCatalogCubit.getCourseCatalogList();
                       }
                       // TODO: Submit logic
                     },

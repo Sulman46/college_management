@@ -5,9 +5,15 @@ import 'package:college_management/core/constants/media_query.dart';
 import 'package:college_management/core/helper/app_date_picker.dart';
 import 'package:college_management/core/helper/date_to_string_helper.dart';
 import 'package:college_management/core/helper/show_message.dart';
+import 'package:college_management/core/helper/text_input_formator_helper.dart';
+import 'package:college_management/features/admin/coordinator_management/presentation/controller/cubit.dart';
+import 'package:college_management/features/admin/coordinator_management/presentation/models/coordinator_register_model.dart';
+import 'package:college_management/features/admin/course_catalog/presentation/widgets/catalog_depart_widget.dart';
 import 'package:college_management/features/admin/departments/presentation/controller/cubit.dart';
 import 'package:college_management/features/admin/hod_assignment/models/hod_assign_model.dart';
 import 'package:college_management/features/admin/hod_assignment/presentation/controller/cubit.dart';
+import 'package:college_management/features/admin/programs/models/program_model.dart';
+import 'package:college_management/features/admin/programs/presentation/controller/cubit.dart';
 import 'package:college_management/features/admin/teacher_records/presentation/controller/cubit.dart';
 import 'package:college_management/widgets/drop_down_field_widget.dart';
 import 'package:college_management/widgets/more_vert_pop_menu_button.dart';
@@ -23,8 +29,8 @@ import '../../../../../widgets/custom_button.dart';
 import '../../../../../widgets/custom_text_form.dart';
 
 class CoordinatorRegisterDialog extends StatefulWidget {
-  const CoordinatorRegisterDialog({super.key, this.hodAssignModel});
-  final HodAssignModel? hodAssignModel;
+  const CoordinatorRegisterDialog({super.key, this.coordinatorRegisterModel});
+  final CoordinatorRegisterModel? coordinatorRegisterModel;
   @override
   State<CoordinatorRegisterDialog> createState() =>
       _CoordinatorRegisterDialogState();
@@ -33,186 +39,207 @@ class CoordinatorRegisterDialog extends StatefulWidget {
 class _CoordinatorRegisterDialogState extends State<CoordinatorRegisterDialog> {
 
 
-  final _departmentCubit=DiContainer().sl<AdminDepartmentCubit>();
-  final _teacherCubit=DiContainer().sl<TeacherRecordsCubit>();
-  final _hodAssignCubit=DiContainer().sl<HODAssignmentCubit>();
+  final _coordinatorCubit=DiContainer().sl<CoordinatorManagementCubit>();
+  final _programCubit=DiContainer().sl<AdminProgramsCubit>();
+  TextEditingController coordinatorName=TextEditingController();
+  TextEditingController email=TextEditingController();
+  TextEditingController phone=TextEditingController();
+  TextEditingController cnic=TextEditingController();
   @override
   void initState() {
-    if(widget.hodAssignModel==null){
-      _hodAssignCubit.getHodAssignModel(HodAssignModel());
-    }else{
-      _hodAssignCubit.getHodAssignModel(widget.hodAssignModel!);
-    }
+WidgetsBinding.instance.addPostFrameCallback((timeStamp)async {
+if(widget.coordinatorRegisterModel!=null){
+  coordinatorName.text=widget.coordinatorRegisterModel?.coordinatorName??"";
+  email.text=widget.coordinatorRegisterModel?.email??"";
+  phone.text=widget.coordinatorRegisterModel?.phone??"";
+  cnic.text=widget.coordinatorRegisterModel?.cnic??"";
+}
+  _coordinatorCubit.getCoordinatorModel(widget.coordinatorRegisterModel?? CoordinatorRegisterModel());
+ await _programCubit.getPrograms();
+},);
     // TODO: implement initState
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      insetPadding: EdgeInsets.symmetric(horizontal: screenPaddingHori - 3),
-      backgroundColor: AppColor.bgPrimary,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-        decoration: AppColor.decorationDialog,
-        child: BlocBuilder(
-            bloc: _hodAssignCubit,
-            builder: (context,statebkal) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  /// 🔹 HEADER
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      AppText(
-                        text: "Assign Dept HOD",
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      InkWell(
-                        onTap: () => Navigator.pop(context),
-                        child: Icon(Icons.close, color: AppColor.grey),
-                      ),
-                    ],
-                  ),
+    return SingleChildScrollView(
+      child: BlocBuilder(
+          bloc: _coordinatorCubit,
+          builder: (context,statebkal) {
+            var coordinatorModel=_coordinatorCubit.coordinatorRegisterModel;
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
 
-                  SizedBox(height: 10),
-                  BlocBuilder(
-                      bloc: _teacherCubit,
-                      builder: (context,staebkjk) {
-                        return _teacherCubit.teacherList.isNotEmpty? CustomPopMenuButton(
-                          menus: _teacherCubit.teacherList.map((e) => e.teacherName??"",).toList(),
-                          offset: Offset(0, 30),
-                          onSelected: (p0) {
-                            _hodAssignCubit.getHodAssignModel(_hodAssignCubit.addHodAssignModel.copyWith(teacherName:  _teacherCubit.teacherList.map((e) => e.teacherName??"",).toList()[p0],teacherId: _teacherCubit.teacherList.map((e) => e.id??"",).toList()[p0] ));
-                          },
-                          widget: DropDownFieldWidget(
-                            text: _hodAssignCubit.addHodAssignModel.teacherName??"Select..",
-                            maxLine: 1,
-                            isFilled: false,
-                          ),
-                          title: "Faculty Teacher",
-                        ):InkWell(
-                          onTap: () async{
-                            await _teacherCubit.getTeachers();
-                          },
-                          child: DropDownFieldWidget(
-                            title: "Faculty Teacher",
-                            text: _hodAssignCubit.addHodAssignModel.teacherName?? "Select..",
-                            maxLine: 1,
-                            isFilled: false,
-                          ),
-                        );
-                      }
-                  ),
+              children: [
+                /// 🔹 HEADER
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    AppText(
+                      text:widget.coordinatorRegisterModel!=null? "Update Coordinator":"Register Coordinator",
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    InkWell(
+                      onTap: () => Navigator.pop(context),
+                      child: Icon(Icons.close, color: AppColor.grey),
+                    ),
+                  ],
+                ),
 
-                  SizedBox(height: 10),
-                  BlocBuilder(
-                      bloc: _departmentCubit,
-                      builder: (context,statesbk) {
-                        return _departmentCubit.departmentList.isNotEmpty? CustomPopMenuButton(
-                          menus: _departmentCubit.departmentList.map((e) => e.name,).toList(),
-                          onSelected: (p0) {
-                            _hodAssignCubit.getHodAssignModel(_hodAssignCubit.addHodAssignModel.copyWith(departmentName:  _departmentCubit.departmentList.map((e) => e.name,).toList()[p0],departmentId: _departmentCubit.departmentList.map((e) => e.id,).toList()[p0]));
-                          },
-                          offset: Offset(0, 30),
-                          widget: DropDownFieldWidget(
-                            text:_hodAssignCubit.addHodAssignModel.departmentName?? "Select..",
-                            maxLine: 1,
-                            isFilled: false,
-                          ),
-                          title: "Assign to Department",
-                        ):InkWell(
-                          onTap: () async{
-                            await _departmentCubit.getDepartments();
-                          },
-                          child: DropDownFieldWidget(
-                            title: "Assign to Department",
-                            text:_hodAssignCubit.addHodAssignModel.departmentName?? "Select..",
-                            maxLine: 1,
-                            isFilled: false,
-                          ),
-                        );
-                      }
-                  ),
+                SizedBox(height: 10),
 
-                  SizedBox(height: 10),
-                  InkWell(
-                    onTap: () async {
-                      DateTime? val = await AppDatePicker.pickCustomDate(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        lastDate: DateTime(3000),
-                        firstDate: DateTime(2000),
+                CustomTextFormField(controller: coordinatorName, subTitle: "e.g. M Ali",title: "Name",isHintText: true,),
+                SizedBox(height: 10),
+
+                CustomTextFormField(controller: email, subTitle: "coordinator@gmail.com",title: "Email",isHintText: true,),
+                SizedBox(height: 10),
+
+                CustomTextFormField(controller: phone,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+
+                  ],
+                  subTitle: "03XXXX",title: "Name",isHintText: true,),
+                SizedBox(height: 10),
+
+                CustomTextFormField(controller: cnic,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    CnicInputFormatter(),
+                  ],
+                  subTitle: "XXXXX-XXXXXXX-X",title: "CNIC",isHintText: true,),
+                SizedBox(height: 10),
+                BlocBuilder(
+                    bloc: _programCubit,
+                    builder: (context,statevhja) {
+                      return _programCubit.activePrograms.isNotEmpty? CustomPopMenuButton(
+                        menus: _programCubit.activePrograms.map((e) => "${e.name}, ${e.code}, ${e.degree}, ${e.section}, ${e.session}, ${e.department?.name??""}, ${e.affiliationName}",).toList(),
+                        offset: Offset(0, 30),
+                        onSelected: (p0) {
+                          String programName=_programCubit.activePrograms.map((e) => "${e.name}, ${e.code}, ${e.degree}, ${e.section}, ${e.session}, ${e.department?.name??""}, ${e.affiliationName}",).toList()[p0];
+                          ProgramModel model=_programCubit.activePrograms.where((e) =>programName== "${e.name}, ${e.code}, ${e.degree}, ${e.section}, ${e.session}, ${e.department?.name??""}, ${e.affiliationName}",).toList().first;
+                          CoordinatorProgramModel coorProgram=CoordinatorProgramModel(id: model.id,name: model.name,degree: model.degree,session: model.session,section: model.section,code: model.code,department: CoordinatorDepartmentModel(id: model.department?.id??"",name: model.department?.name??"",code: model.department?.code??"",));
+                          List<CoordinatorProgramModel> list=coordinatorModel.programs??[];
+                          if(list.where((element) => element.id==coorProgram.id,).toList().isEmpty){
+                            list.add(coorProgram);
+                          }
+                          _coordinatorCubit.getCoordinatorModel(coordinatorModel.copyWith(programs: list));
+                        },
+                        widget: DropDownFieldWidget(
+                          text: "Select..",
+                          maxLine: 1,
+                          isFilled: false,
+                          title: "Program",
+                        ),
+                      ):InkWell(
+                        splashColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        onTap: () async {
+                          await _programCubit.getPrograms();
+                        },
+                        child: DropDownFieldWidget(
+                          text: "Select..",
+                          maxLine: 1,
+                          isFilled:  coordinatorModel.programs!=null? coordinatorModel.programs!.isNotEmpty:false,
+                          title: "Program",
+                        ),
                       );
-                      if (val != null) {
-                        _hodAssignCubit.getHodAssignModel(_hodAssignCubit.addHodAssignModel.copyWith(assignedDate: val));
-                      }
-                    },
-                    child: DropDownFieldWidget(
-                      text:_hodAssignCubit.addHodAssignModel.assignedDate!=null? DateToStringHelper.dateMonthYearConvert(_hodAssignCubit.addHodAssignModel.assignedDate!):"Select",
-                      maxLine: 1,
-                      isFilled: false,
-                      title: "Date of Assignment",
-                    ),
+                    }
+                ),
+                if(coordinatorModel.programs!=null && coordinatorModel.programs!.isNotEmpty)
+                  ...[
+                    SizedBox(height: 6,),
+                    Wrap(
+                      children: [
+                        ...List.generate(coordinatorModel.programs!.length, (index) => CatalogDepartWidget(text: "${coordinatorModel.programs![index].name}, ${coordinatorModel.programs![index].code}, ${coordinatorModel.programs![index].degree}, ${coordinatorModel.programs![index].section}, ${coordinatorModel.programs![index].session}, ${coordinatorModel.programs![index].department?.name??""}", onTap: (){
+                          var list=coordinatorModel.programs;
+                          list!.removeWhere((element) => element.id==coordinatorModel.programs![index].id,);
+
+                          _coordinatorCubit.getCoordinatorModel(coordinatorModel.copyWith(programs: list));
+
+                        }),)
+                      ],
+                    )
+                  ],
+
+                SizedBox(height: 10),
+
+                CustomPopMenuButton(
+                  menus: ConstantData.coordinatorDesignation,
+                  offset: Offset(0, 30),
+                  onSelected: (p0) {
+                    _coordinatorCubit.getCoordinatorModel(coordinatorModel.copyWith(designation: ConstantData.coordinatorDesignation[p0]));
+                  },
+                  widget: DropDownFieldWidget(
+                    text:coordinatorModel.designation?? "Select..",
+                    maxLine: 1,
+                    isFilled: coordinatorModel.designation!=null,
+                    title: "Designation",
                   ),
-                  SizedBox(height: 10),
-                  CustomPopMenuButton(
-                    menus: ConstantData.hodAssignStatus,
-                    offset: Offset(0, 30),
-                    onSelected: (p0) {
-                      _hodAssignCubit.getHodAssignModel(_hodAssignCubit.addHodAssignModel.copyWith(status: ConstantData.hodAssignStatus[p0]));
-                    },
-                    widget: DropDownFieldWidget(
-                      text:_hodAssignCubit.addHodAssignModel.status?? "Select..",
-                      maxLine: 1,
-                      isFilled: false,
-                    ),
+                ),
+
+                SizedBox(height: 10),
+
+                CustomPopMenuButton(
+                  menus: ["Active","Inactive"],
+                  offset: Offset(0, 30),
+                  onSelected: (p0) {
+                    _coordinatorCubit.getCoordinatorModel(coordinatorModel.copyWith(status: ["Active","Inactive"][p0]));
+                  },
+                  widget: DropDownFieldWidget(
+                    text:coordinatorModel.status?? "Select..",
+                    maxLine: 1,
+                    isFilled:  coordinatorModel.status!=null,
                     title: "Status",
                   ),
+                ),
 
-                  SizedBox(height: 25),
+                SizedBox(height: 25),
 
-                  /// 🔹 BUTTONS
-                  Row(
-                    children: [
-                      Expanded(
-                        child: CustomElevatedButton(
-                          onPressed: () => Navigator.pop(context),
-                          text: "Discard",
-                          bgColor: AppColor.white,
-                          textColor: AppColor.red,
-                          borderColor: AppColor.red,
-                        ),
+                /// 🔹 BUTTONS
+                Row(
+                  children: [
+                    Expanded(
+                      child: CustomElevatedButton(
+                        onPressed: () => Navigator.pop(context),
+                        text: "Discard",
+                        bgColor: AppColor.white,
+                        textColor: AppColor.red,
+                        borderColor: AppColor.red,
                       ),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: CustomElevatedButton(
-                          onPressed: () async {
-                            if(_hodAssignCubit.addHodAssignModel.teacherName==null || _hodAssignCubit.addHodAssignModel.departmentName==null || _hodAssignCubit.addHodAssignModel.assignedDate==null|| _hodAssignCubit.addHodAssignModel.status==null){
-                              showMessage("Please fill all fields",isError: true);
-                              return;
-                            }
-                            var response=
-                            widget.hodAssignModel!=null?
-                            await _hodAssignCubit.update(_hodAssignCubit.addHodAssignModel):
-                            await _hodAssignCubit.post(_hodAssignCubit.addHodAssignModel);
-                            if(response){
-                              context.pop();
-                            }
-                            await _hodAssignCubit.get();
-                          },
-                          text: "Save",
-                        ),
+                    ),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: CustomElevatedButton(
+                        onPressed: () async {
+                          if(
+                          coordinatorName.text.isEmpty || phone.text.isEmpty || email.text.isEmpty|| cnic.text.isEmpty||
+                              _coordinatorCubit.coordinatorRegisterModel.programs!.isEmpty || _coordinatorCubit.coordinatorRegisterModel.designation==null|| _coordinatorCubit.coordinatorRegisterModel.status==null){
+                            showMessage("Please fill all fields",isError: true);
+                            return;
+                          }
+                          var model=_coordinatorCubit.coordinatorRegisterModel;
+                          model=model.copyWith(id: widget.coordinatorRegisterModel?.id,email: email.text,phone: phone.text,cnic: cnic.text,coordinatorName:coordinatorName.text,);
+                          var response=
+                          widget.coordinatorRegisterModel!=null?
+                          await _coordinatorCubit.update(model):
+                          await _coordinatorCubit.post(model);
+                          if(response){
+                            context.pop();
+                            await _coordinatorCubit.get();
+                          }
+                        },
+                        text:widget.coordinatorRegisterModel!=null? "Update":"Save",
                       ),
-                    ],
-                  ),
-                ],
-              );
-            }
-        ),
+                    ),
+                  ],
+                ),
+              ],
+            );
+          }
       ),
     );
   }

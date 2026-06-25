@@ -16,12 +16,12 @@ class AdminProgramsRepositoryImpl extends AdminProgramsRepository{
   }
 
   @override
-  Future<Either<String,ProgramModel>> addProgram({required ProgramRequestModel programRequestModel}) async{
+  Future<Either<String,String>> addProgram({required ProgramRequestModel programRequestModel}) async{
     return dataSource.addProgram(programRequestModel: programRequestModel);
   }
 
   @override
-  Future<Either<String,ProgramModel>> updateProgram({required ProgramRequestModel programRequestModel}) async{
+  Future<Either<String,String>> updateProgram({required ProgramRequestModel programRequestModel}) async{
     return dataSource.updateProgram(programRequestModel: programRequestModel);
   }
 

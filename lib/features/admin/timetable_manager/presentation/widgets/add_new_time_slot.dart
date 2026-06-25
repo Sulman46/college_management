@@ -135,6 +135,7 @@ class _AddNewTimeSlotState extends State<AddNewTimeSlot> {
                      var response= await _timeTableCubit.update(timeTableModel);
                      if(response){
                        Navigator.pop(context);
+                       await _timeTableCubit.get();
                      }
 
                     },

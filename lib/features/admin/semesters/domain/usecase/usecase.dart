@@ -7,11 +7,11 @@ class SemesterAdminUseCase{
   final SemesterAdminRepository repository;
   SemesterAdminUseCase({required this.repository});
 
-  Future<Either<String,SemesterLevelsModel>> addSemester({required SemesterLevelsModel semesterModel})async {
+  Future<Either<String,String>> addSemester({required SemesterLevelsModel semesterModel})async {
     return repository.addSemester(semesterModel: semesterModel);
   }
 
-  Future<Either<String,SemesterLevelsModel>> updateSemester({required SemesterLevelsModel semesterModel})async {
+  Future<Either<String,String>> updateSemester({required SemesterLevelsModel semesterModel})async {
     return repository.updateSemester(semesterModel: semesterModel);
   }
 
@@ -19,7 +19,7 @@ class SemesterAdminUseCase{
     return repository.getSemester();
   }
 
-  Future<Either<String,bool>> deleteSemester({required SemesterLevelsModel semesterModel})async {
+  Future<Either<String,String>> deleteSemester({required SemesterLevelsModel semesterModel})async {
     return repository.deleteSemester(semesterModel: semesterModel);
   }
 

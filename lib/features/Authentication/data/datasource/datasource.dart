@@ -44,7 +44,7 @@ class FunctionClassAuthentication extends AuthenticationDataSource {
       }
       // ERROR RESPONSE FROM SERVER
       return Left(
-        data==null? "Login failed":  data['message'] ??
+        data==null? "Login failed":  data['message'] ??data['error'] ??
             "Login failed",
       );
 

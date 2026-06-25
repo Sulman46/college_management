@@ -1,11 +1,9 @@
-import 'dart:developer';
 
 class CourseCatalogModel {
   final String? id;
   final String? courseCode;
   final String? courseTitle;
-  final List<String>? departments;
-  final String? department;
+  final List<CourseCatalogDepartmentModel>? departments;
   final double? creditHours;
   final String? category;
   final String? type;
@@ -16,7 +14,6 @@ class CourseCatalogModel {
     this.courseCode,
     this.courseTitle,
     this.departments,
-    this.department,
     this.creditHours,
     this.category,
     this.type,
@@ -32,24 +29,23 @@ class CourseCatalogModel {
    departments:map['departments'] == null
        ? []
        : (map['departments'] as List)
-       .map((e) => e.toString())
+       .map((e) =>CourseCatalogDepartmentModel.fromMap(e))
        .toList(),
    creditHours: double.parse(map['creditHours']!=null?"${map['creditHours']}":"0"),
    category: map['category']??"",
    type: map['type']??"",
    status: map['status']??"",
-   department: null
  );
     return data;
   }
 
   Map<String, dynamic> toMap() {
     return {
+      if(id!=null)
+        "_id":id,
       'courseCode': courseCode,
       'courseTitle': courseTitle,
-
-      'departments': departments,
-
+      'departments': departments!.map((e) => e.toMap(),).toList(),
       'creditHours': creditHours,
       'category': category,
       'type': type,
@@ -63,7 +59,7 @@ class CourseCatalogModel {
     String? id,
     String? courseCode,
     String? courseTitle,
-    List<String>? departments,
+    List<CourseCatalogDepartmentModel>? departments,
     String? department,
     double? creditHours,
     String? category,
@@ -75,11 +71,51 @@ class CourseCatalogModel {
       courseCode: courseCode ?? this.courseCode,
       courseTitle: courseTitle ?? this.courseTitle,
       departments: departments ?? this.departments,
-      department: department ?? this.department,
       creditHours: creditHours ?? this.creditHours,
       category: category ?? this.category,
       type: type ?? this.type,
       status: status ?? this.status,
     );
+  }
+}
+
+
+
+class CourseCatalogDepartmentModel {
+  final String? id;
+  final String? name;
+
+  CourseCatalogDepartmentModel({
+     this.id,
+     this.name,
+  });
+
+  CourseCatalogDepartmentModel copyWith({
+    String? id,
+    String? name,
+  }) {
+    return CourseCatalogDepartmentModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      '_id': id,
+      'name': name,
+    };
+  }
+
+  factory CourseCatalogDepartmentModel.fromMap(Map<String, dynamic> map) {
+    return CourseCatalogDepartmentModel(
+      id: map['departmentId']?.toString() ?? '',
+      name: map['name']?.toString() ?? '',
+    );
+  }
+
+  @override
+  String toString() {
+    return 'CourseCatalogDepartmentModel(id: $id, name: $name)';
   }
 }

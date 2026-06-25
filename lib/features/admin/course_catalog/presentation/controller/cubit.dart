@@ -1,14 +1,11 @@
-import 'dart:developer';
 
 import 'package:college_management/core/extensions/dart_extensions.dart';
 import 'package:college_management/core/helper/show_message.dart';
 import 'package:college_management/widgets/loader_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../../core/app/di_container.dart';
 import '../../../../../core/app/myapp.dart';
 import '../../../../../core/constants/media_query.dart';
-import '../../../../../core/controllers/screen_resizing/screen_resize_cubit.dart';
 import '../../domain/usecase/usecase.dart';
 import '../../models/course_catalog_model.dart';
 import 'state.dart';
@@ -19,7 +16,7 @@ class CourseCatalogAdminCubit extends Cubit<CourseCatalogAdminState> {
 
 String courseType="";
 String courseCategory="";
-List<String> department=[];
+List<CourseCatalogDepartmentModel> department=[];
 
   List<CourseCatalogModel> _courseCatalogList=[];
   List<CourseCatalogModel> get courseCatalogList=>_courseCatalogList;
@@ -40,7 +37,7 @@ List<String> department=[];
     emit(CourseCatalogAdminLoaded());
   }
 
-  void getDepartment({required List<String> depart, required String type,required String category}){
+  void getDepartment({required List<CourseCatalogDepartmentModel> depart, required String type,required String category}){
     emit(CourseCatalogAdminLoading());
     department=depart;
     courseType=type;
@@ -48,7 +45,7 @@ List<String> department=[];
     emit(CourseCatalogAdminLoaded());
   }
 
-  void removeDepartment(String val){
+  void removeDepartment(CourseCatalogDepartmentModel val){
     emit(CourseCatalogAdminLoading());
     department.removeWhere((element) => element==val,);
     emit(CourseCatalogAdminLoaded());
@@ -56,6 +53,8 @@ List<String> department=[];
 
   Future<void> getCourseCatalogList()async{
     searchController.clear();
+    _courseCatalogList=[];
+    filterCourseCatalogList=[];
     emit(CourseCatalogAdminLoading());
     showLoadingDialog();
     var response=await _useCase.getCourseCatalog();
@@ -65,7 +64,7 @@ List<String> department=[];
       _courseCatalogList=List.from(data);
       filterCourseCatalogList=courseCatalogList;
     }else{
-      showMessage(response.asLeft());
+      showMessage(response.asLeft(),isError: true);
     }
     emit(CourseCatalogAdminLoaded());
     closeLoadingDialog();
@@ -76,14 +75,12 @@ List<String> department=[];
     showLoadingDialog();
     var response=await _useCase.addCourseCatalog(model: val);
     if(response.isRight()){
-      searchController.clear();
-      _courseCatalogList.add(response.asRight());
-      closeLoadingDialog();
-      filterCourseCatalogList=courseCatalogList;
+      showMessage(response.asRight());
       emit(CourseCatalogAdminLoaded());
+      closeLoadingDialog();
       return true;
     }else{
-      showMessage(response.asLeft());
+      showMessage(response.asLeft(),isError: true);
       emit(CourseCatalogAdminLoaded());
       closeLoadingDialog();
       return false;
@@ -97,14 +94,12 @@ List<String> department=[];
     showLoadingDialog();
     var response=await _useCase.updateCatalog(model: val);
     if(response.isRight()){
-     int index=  courseCatalogList.indexWhere((element) => element.id==val.id,);
-      _courseCatalogList[index]=response.asRight();
       closeLoadingDialog();
-      filterCourseCatalogList=courseCatalogList;
+      showMessage(response.asRight());
       emit(CourseCatalogAdminLoaded());
       return true;
     }else{
-      showMessage(response.asLeft());
+      showMessage(response.asLeft(),isError: true);
       emit(CourseCatalogAdminLoaded());
       closeLoadingDialog();
       return false;
@@ -116,15 +111,12 @@ List<String> department=[];
     showLoadingDialog();
     var response=await _useCase.deleteCourseCatalog(model: val);
     if(response.isRight()){
-      searchController.clear();
-
-      _courseCatalogList.removeWhere((element) => element.id==val.id,);
       closeLoadingDialog();
-      filterCourseCatalogList=courseCatalogList;
       emit(CourseCatalogAdminLoaded());
+      showMessage(response.asRight());
       return true;
     }else{
-      showMessage(response.asLeft());
+      showMessage(response.asLeft(),isError: true);
       emit(CourseCatalogAdminLoaded());
       closeLoadingDialog();
       return false;
@@ -134,7 +126,7 @@ List<String> department=[];
   void filterData(String val){
     emit(CourseCatalogAdminLoading());
     List<CourseCatalogModel> temp=[];
-    if(courseCatalogList.isNotEmpty!=null){
+    if(courseCatalogList.isNotEmpty){
       for(var i in courseCatalogList){
         if(i.courseTitle!.toLowerCase().toString().contains(val)|| i.courseCode!.toLowerCase().toString().contains(val)){
           temp.add(i);
@@ -148,5 +140,4 @@ List<String> department=[];
 
 }
 
-var _resizeCubit=DiContainer().sl<ScreenResizeCubit>();
 

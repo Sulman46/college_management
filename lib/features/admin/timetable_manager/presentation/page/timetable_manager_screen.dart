@@ -98,33 +98,33 @@ class _TimetableManagerScreenState extends State<TimetableManagerScreen> {
                     SizedBox(height: 10),
                     if ( _timeTableCubit.filterList.where(
                             (element) =>
-                        (_timeTableCubit.filterModel.department!=null? element.department ==
+                        (_timeTableCubit.filterModel.department!=null? element.programModel!.department!.name ==
                             _timeTableCubit.filterModel.department:true) &&
-                            (_timeTableCubit.filterModel.program!=null? element.programName ==
+                            (_timeTableCubit.filterModel.program!=null? element.programModel!.name ==
                                 _timeTableCubit.filterModel.program:true) &&
-                            (_timeTableCubit.filterModel.session!=null? element.session ==
+                            (_timeTableCubit.filterModel.session!=null? element.programModel!.session ==
                                 _timeTableCubit.filterModel.session:true)
                     ).toList().isNotEmpty)
                       ...List.generate(
                         _timeTableCubit.filterList
                             .where(
                               (element) =>
-                              (_timeTableCubit.filterModel.department!=null? element.department ==
+                              (_timeTableCubit.filterModel.department!=null? element.programModel!.department!.name ==
                                   _timeTableCubit.filterModel.department:true) &&
-                              (_timeTableCubit.filterModel.program!=null? element.programName ==
+                              (_timeTableCubit.filterModel.program!=null? element.programModel!.name ==
                                   _timeTableCubit.filterModel.program:true) &&
-                              (_timeTableCubit.filterModel.session!=null? element.session ==
+                              (_timeTableCubit.filterModel.session!=null? element.programModel!.session ==
                                   _timeTableCubit.filterModel.session:true)
                             ).toList()
                             .length,
                         (index) => TimeTableSheetWidget(
                           model: _timeTableCubit.filterList.where(
                                   (element) =>
-                              (_timeTableCubit.filterModel.department!=null? element.department ==
+                              (_timeTableCubit.filterModel.department!=null? element.programModel!.department!.name ==
                                   _timeTableCubit.filterModel.department:true) &&
-                                  (_timeTableCubit.filterModel.program!=null? element.programName ==
+                                  (_timeTableCubit.filterModel.program!=null? element.programModel!.name ==
                                       _timeTableCubit.filterModel.program:true) &&
-                                  (_timeTableCubit.filterModel.session!=null? element.session ==
+                                  (_timeTableCubit.filterModel.session!=null? element.programModel!.session ==
                                       _timeTableCubit.filterModel.session:true)
                           ).toList()[index],
                         ),
