@@ -17,35 +17,33 @@ double? radius;
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(radius??500),
-      child: Container(
-        child: CachedNetworkImage(
-          height: height??80,
-          width: width??80,
-          fit: BoxFit.cover,
-          imageUrl:url,placeholder: (context, url) => ClipRRect(
-          borderRadius: BorderRadius.circular(radius??500),
-          child: Shimmer.fromColors(
-            baseColor: AppColor.darkContainerShade.withOpacity(.5),
-            highlightColor: AppColor.white,
-            child: Container(
-              height: height??80,
-              width: width??80,
-              color: AppColor.white, // You must give a background color
-            ),
+      child: CachedNetworkImage(
+        height: height??80,
+        width: width??80,
+        fit: BoxFit.cover,
+        imageUrl:url,placeholder: (context, url) => ClipRRect(
+        borderRadius: BorderRadius.circular(radius??500),
+        child: Shimmer.fromColors(
+          baseColor: AppColor.darkContainerShade.withOpacity(.5),
+          highlightColor: AppColor.white,
+          child: Container(
+            height: height??80,
+            width: width??80,
+            color: AppColor.white, // You must give a background color
           ),
-        ),errorWidget: (context, url, error) => ClipRRect(
-          borderRadius: BorderRadius.circular(radius??500),
-          child: Shimmer.fromColors(
-            baseColor: AppColor.darkContainerShade.withOpacity(.5),
-            highlightColor: AppColor.white,
-            child: Container(
-              height: height??80,
-              width: width??80,
-              color: AppColor.white, // You must give a background color
-            ),
+        ),
+      ),errorWidget: (context, url, error) => ClipRRect(
+        borderRadius: BorderRadius.circular(radius??500),
+        child: Shimmer.fromColors(
+          baseColor: AppColor.darkContainerShade.withOpacity(.5),
+          highlightColor: AppColor.white,
+          child: Container(
+            height: height??80,
+            width: width??80,
+            color: AppColor.white, // You must give a background color
           ),
-        ),),
-      ),
+        ),
+      ),),
     );
   }
 }

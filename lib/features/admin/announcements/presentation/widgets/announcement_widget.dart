@@ -7,6 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../../core/app/di_container.dart';
+import '../../../../../core/helper/downloader_helper.dart';
+import '../../../../../widgets/confirmation_dialog.dart';
+import '../../../../../widgets/custom_animated_dialog.dart';
 import '../../../../../widgets/more_vert_pop_menu_button.dart';
 import '../../../course_mapping/presentation/widgets/course_mapping_widget.dart';
 import '../controller/cubit.dart';
@@ -26,13 +29,7 @@ class _AnnouncementWidgetState extends State<AnnouncementWidget> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 5,vertical:10),
       margin: EdgeInsets.only(top: 10),
-      decoration: BoxDecoration(
-        border: Border.symmetric(
-          vertical: BorderSide(color: AppColor.primary,width: 1.5),
-        ),
-        color: AppColor.white,
-        borderRadius: BorderRadius.circular(8),
-      ),
+      decoration: AppColor.containerNeon,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -52,9 +49,21 @@ class _AnnouncementWidgetState extends State<AnnouncementWidget> {
                     }else{
                       val=val.copyWith(isArchived: true);
                     }
-                     await _announcementCubit.update(val);
+                 var response=    await _announcementCubit.update(val);
+                    if(response){
+                      await _announcementCubit.get();
+                    }
                   } else if(val==2){
-                  await _announcementCubit.delete(widget.model);
+                     showDialog(context: context, builder: (context) => CustomAnimatedDialog(
+                       child: ConfirmationDialog(title: "Are you sure?", subText: 'This Announcement will be deleted permanently.',onSubmit: () async {
+                         var response=   await _announcementCubit.delete(widget.model);
+                         if(response){
+                           Navigator.pop(context);
+                           await _announcementCubit.get();
+                         }
+                       },),
+                     ));
+
                   }
                 },
               )
@@ -92,7 +101,32 @@ class _AnnouncementWidgetState extends State<AnnouncementWidget> {
                 ],
               )
             ],
-          )
+          ),
+
+          if(widget.model.attachment!=null && widget.model.attachment!="")
+            Container(
+              margin: EdgeInsets.only(top: 5),
+              child: InkWell(
+                splashColor: Colors.transparent,
+                hoverColor: Colors.transparent,
+                onTap: () async {
+                  await FileDownloader.download(
+                    url: widget.model.attachment??"",
+                    fileName: widget.model.title??"",
+                    onProgress: (progress) {
+                      debugPrint("${(progress * 100).toStringAsFixed(0)}%");
+                    },
+                  );
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    AppText(text: "Attachment",fontSize: 12,color: AppColor.blueLight,fontWeight: FontWeight.w600,),
+                    Icon(Icons.download_rounded,color: AppColor.blueLight,size: 20,),
+                  ],
+                ),
+              ),
+            ),
         ],
       ),
     );

@@ -9,18 +9,22 @@ class AnnouncementsRepositoryImpl extends AnnouncementsRepository{
   AnnouncementsRepositoryImpl({required this.dataSource});
 
 
-  Future<Either<String,AnnouncementModel>> post({required AnnouncementModel value})async{
+  @override
+  Future<Either<String,String>> post({required AnnouncementModel value})async{
     return dataSource.post(value: value);
   }
 
-  Future<Either<String,AnnouncementModel>> update({required AnnouncementModel value}){
+  @override
+  Future<Either<String,String>> update({required AnnouncementModel value}){
     return dataSource.update(value: value);
   }
 
-  Future<Either<String,bool>> delete({required AnnouncementModel value}){
+  @override
+  Future<Either<String,String>> delete({required AnnouncementModel value}){
     return dataSource.delete(value: value);
   }
 
+  @override
   Future<Either<String,List<AnnouncementModel>>> get(){
     return dataSource.get();
   }

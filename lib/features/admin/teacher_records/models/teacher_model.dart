@@ -3,6 +3,8 @@ import 'package:college_management/features/admin/departments/data/model/departm
 class TeacherModel {
   final String? id;
   final String? teacherName;
+  final String? userName;
+  final bool? isAccountGenerated;
   final String? email;
   final String? phone;
   final String? gender;
@@ -22,6 +24,8 @@ class TeacherModel {
   TeacherModel({
     this.id,
     this.teacherName,
+    this.userName,
+    this.isAccountGenerated,
     this.email,
     this.phone,
     this.gender,
@@ -43,6 +47,8 @@ class TeacherModel {
     return TeacherModel(
       id: map['_id'] ?? "",
       teacherName: map['teacherName'] ?? "",
+      isAccountGenerated: map['isAccountGenerated'] ?? false,
+      userName: map['userName'] ?? "-",
       email: map['email'] ?? "",
       phone: map['phone'] ?? "",
       gender: map['gender'] ?? "Male",

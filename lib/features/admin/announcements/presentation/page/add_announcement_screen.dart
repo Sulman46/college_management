@@ -1,8 +1,13 @@
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:college_management/core/app/di_container.dart';
 import 'package:college_management/core/constants/app_widgets_size.dart';
 import 'package:college_management/core/constants/constant_data.dart';
+import 'package:college_management/core/helper/image_picker_class.dart';
 import 'package:college_management/core/helper/show_message.dart';
 import 'package:college_management/core/theme/AppColor.dart';
+import 'package:college_management/features/Authentication/presentation/controller/cubit.dart';
 import 'package:college_management/features/admin/announcements/models/announcement_model.dart';
 import 'package:college_management/features/admin/announcements/presentation/controller/cubit.dart';
 import 'package:college_management/features/admin/semesters/presentation/page/add_semester_screen.dart';
@@ -28,22 +33,23 @@ class AddAnnouncementScreen extends StatefulWidget {
 }
 
 class _AddAnnouncementScreenState extends State<AddAnnouncementScreen> {
-  var _announcementCubit = DiContainer().sl<AnnouncementsCubit>();
+  final _announcementCubit = DiContainer().sl<AnnouncementsCubit>();
+  final _authCubit = DiContainer().sl<AuthenticationCubit>();
 
   @override
-  initState(){
+  initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if(widget.announcementModel!=null){
-        titleController.text=widget.announcementModel?.title??"";
-        postedByController.text=widget.announcementModel?.postedBy??"";
-        descriptionController.text=widget.announcementModel?.content??"";
-        feeInfoController.text=widget.announcementModel?.feeInfo??"";
+      if (widget.announcementModel != null) {
+        titleController.text = widget.announcementModel?.title ?? "";
+        postedByController.text = widget.announcementModel?.postedBy ?? "";
+        descriptionController.text = widget.announcementModel?.content ?? "";
+        feeInfoController.text = widget.announcementModel?.feeInfo ?? "";
         _announcementCubit.getAnnouncementModel(widget.announcementModel!);
-      }else{
+      } else {
+        postedByController.text = _authCubit.userModel?.name ?? "";
         _announcementCubit.getAnnouncementModel(AnnouncementModel());
-
       }
-    },);
+    });
     super.initState();
   }
 
@@ -62,7 +68,7 @@ class _AddAnnouncementScreenState extends State<AddAnnouncementScreen> {
           return Column(
             children: [
               /// 🔹 TOP BAR
-              CustomTopBar(text:"Announcement"),
+              CustomTopBar(text: "Announcement"),
 
               Expanded(
                 child: SingleChildScrollView(
@@ -79,20 +85,14 @@ class _AddAnnouncementScreenState extends State<AddAnnouncementScreen> {
                             horizontal: 10,
                             vertical: 15,
                           ),
-                          decoration: BoxDecoration(
-                            color: AppColor.white,
-                            border: Border.all(
-                              width: 1,
-                              color: AppColor.grey.withOpacity(.6),
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                            boxShadow: AppColor.shadowBlack,
-                          ),
+                          decoration: AppColor.containerNeon,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               AppText(
-                                text:widget.announcementModel!=null? "Update Announcement":"Create Announcement",
+                                text: widget.announcementModel != null
+                                    ? "Update Announcement"
+                                    : "Create Announcement",
                                 fontSize: 16,
                                 color: AppColor.primary,
                                 fontWeight: FontWeight.w600,
@@ -100,7 +100,7 @@ class _AddAnnouncementScreenState extends State<AddAnnouncementScreen> {
                               SizedBox(height: 5),
                               AppText(
                                 text:
-                                    "${widget.announcementModel!=null?"Update":"Add a new"}  announcement to notify students and staff with important updates",
+                                    "${widget.announcementModel != null ? "Update" : "Add a new"}  announcement to notify students and staff with important updates",
                                 textAlign: TextAlign.center,
                                 fontSize: 12,
                                 color: AppColor.grey,
@@ -126,8 +126,16 @@ class _AddAnnouncementScreenState extends State<AddAnnouncementScreen> {
                                   );
                                 },
                                 widget: DropDownFieldWidget(
-                                  text:_announcementCubit.addAnnouncementModel.category?? "Select..",
-                                  isFilled: false,
+                                  text:
+                                      _announcementCubit
+                                          .addAnnouncementModel
+                                          .category ??
+                                      "Select..",
+                                  isFilled:
+                                      _announcementCubit
+                                          .addAnnouncementModel
+                                          .category !=
+                                      null,
                                 ),
                                 title: "Category",
                               ),
@@ -144,8 +152,16 @@ class _AddAnnouncementScreenState extends State<AddAnnouncementScreen> {
                                   );
                                 },
                                 widget: DropDownFieldWidget(
-                                  text:_announcementCubit.addAnnouncementModel.priority?? "Select..",
-                                  isFilled: false,
+                                  text:
+                                      _announcementCubit
+                                          .addAnnouncementModel
+                                          .priority ??
+                                      "Select..",
+                                  isFilled:
+                                      _announcementCubit
+                                          .addAnnouncementModel
+                                          .priority !=
+                                      null,
                                 ),
                                 title: "Priority",
                               ),
@@ -174,26 +190,63 @@ class _AddAnnouncementScreenState extends State<AddAnnouncementScreen> {
                               CustomTextFormField(
                                 controller: postedByController,
                                 isHintText: true,
+                                readOnly: true,
                                 subTitle: "Posted By..",
                                 title: "Posted By",
                               ),
                               SizedBox(height: 10),
+                              InkWell(
+                                onTap: () async {
+                                  var resp = await ImagePickerClass.pickFile();
+                                  if (resp != null) {
+                                    _announcementCubit.getAnnouncementModel(
+                                      _announcementCubit.addAnnouncementModel
+                                          .copyWith(attFile:resp),
+                                    );
+                                  }
+                                },
+                                child: DropDownFieldWidget(
+                                  text:
+                                      _announcementCubit
+                                              .addAnnouncementModel
+                                              .attFile !=
+                                          null
+                                      ? "File Picked"
+                                      :_announcementCubit
+                                          .addAnnouncementModel.attachment!=null && _announcementCubit
+                                          .addAnnouncementModel.attachment!=""? _announcementCubit
+                                          .addAnnouncementModel.attachment!.split("/").last:"Select",
+                                  isFilled: _announcementCubit
+                                      .addAnnouncementModel
+                                      .attFile !=
+                                      null || (_announcementCubit
+                                      .addAnnouncementModel.attachment!=null && _announcementCubit
+                                      .addAnnouncementModel.attachment!=""),
+                                  title: "Attach File",
+                                ),
+                              ),
+                              SizedBox(height: 10),
                               CustomElevatedButton(
                                 onPressed: () async {
-                                  if(_announcementCubit
-                                      .addAnnouncementModel
-                                      .priority==null ||  _announcementCubit
-                                      .addAnnouncementModel
-                                      .category==null || titleController.text.isEmpty ||
-                                      descriptionController.text.isEmpty||
-                                      postedByController.text.isEmpty){
-                                    showMessage("Please fill all required fields");
+                                  if (_announcementCubit
+                                              .addAnnouncementModel
+                                              .priority ==
+                                          null ||
+                                      _announcementCubit
+                                              .addAnnouncementModel
+                                              .category ==
+                                          null ||
+                                      titleController.text.isEmpty ||
+                                      descriptionController.text.isEmpty ||
+                                      postedByController.text.isEmpty) {
+                                    showMessage(
+                                      "Please fill all required fields",
+                                    );
                                     return;
                                   }
 
-                                  if(widget.announcementModel!=null){
+                                  if (widget.announcementModel != null) {
                                     AnnouncementModel value = AnnouncementModel(
-
                                       priority: _announcementCubit
                                           .addAnnouncementModel
                                           .priority,
@@ -205,19 +258,22 @@ class _AddAnnouncementScreenState extends State<AddAnnouncementScreen> {
                                       feeInfo: feeInfoController.text,
                                       postedBy: postedByController.text,
                                       isArchived: false,
-                                      id: widget.announcementModel?.id ??"",
-                                      attachment: widget.announcementModel?.attachment ??"",
-                                      date: widget.announcementModel?.date ??"",
+                                      id: widget.announcementModel?.id ?? "",
+                                      attachment:
+                                          widget
+                                              .announcementModel
+                                              ?.attachment ??
+                                          "",
+                                      attFile: _announcementCubit.addAnnouncementModel.attFile,
+                                      date:
+                                          widget.announcementModel?.date ?? "",
                                     );
-                                    var response = await _announcementCubit.update(
-                                      value,
-                                    );
+                                    var response = await _announcementCubit
+                                        .update(value);
                                     if (response) {
                                       context.pop();
                                     }
-                                  }else{
-
-
+                                  } else {
                                     AnnouncementModel value = AnnouncementModel(
                                       priority: _announcementCubit
                                           .addAnnouncementModel
@@ -228,13 +284,17 @@ class _AddAnnouncementScreenState extends State<AddAnnouncementScreen> {
                                       title: titleController.text,
                                       content: descriptionController.text,
                                       feeInfo: feeInfoController.text,
+                                      attFile: _announcementCubit.addAnnouncementModel.attFile,
                                       postedBy: postedByController.text,
                                       isArchived: false,
                                     );
-                                    var response = await _announcementCubit.post(
-                                      value,
-                                    );
+                                    var res=await value.toMultipart();
+                                    log("#@#@ ${res.fields}");
+                                    // return ;
+                                    var response = await _announcementCubit
+                                        .post(value);
                                     if (response) {
+                                      await _announcementCubit.get();
                                       context.pop();
                                     }
                                   }

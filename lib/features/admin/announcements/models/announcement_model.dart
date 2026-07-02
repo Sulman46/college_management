@@ -1,3 +1,9 @@
+import 'dart:developer';
+
+import 'package:cross_file/cross_file.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+
 class AnnouncementModel {
   final String? id;
   final String? title;
@@ -9,6 +15,7 @@ class AnnouncementModel {
   final bool? isArchived;
   final String? date;
   final String? attachment;
+  final XFile? attFile;
 
   AnnouncementModel({
     this.id,
@@ -21,6 +28,7 @@ class AnnouncementModel {
     this.isArchived,
     this.date,
     this.attachment,
+    this.attFile,
   });
 
   factory AnnouncementModel.fromMap(Map<String, dynamic> map) {
@@ -38,8 +46,8 @@ class AnnouncementModel {
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return {
+  Future<FormData> toMultipart() async {
+    final Map<String, dynamic> data = {
       if (id != null && id!.isNotEmpty) '_id': id,
       if (title != null && title!.isNotEmpty) 'title': title,
       if (content != null && content!.isNotEmpty) 'content': content,
@@ -47,15 +55,27 @@ class AnnouncementModel {
       if (priority != null && priority!.isNotEmpty) 'priority': priority,
       if (feeInfo != null && feeInfo!.isNotEmpty) 'feeInfo': feeInfo,
       if (postedBy != null && postedBy!.isNotEmpty) 'postedBy': postedBy,
-
       if (isArchived != null) 'isArchived': isArchived,
-
-      if(date!=null)
-      'date': date??"",
-
-      if (attachment != null && attachment!.isNotEmpty)
-        'attachment': attachment,
+      if (date != null && date!.isNotEmpty) 'date': date,
     };
+
+    if (attFile != null) {
+      if (kIsWeb) {
+        data['attachment'] = MultipartFile.fromBytes(
+          await attFile!.readAsBytes(),
+          filename: "${attFile!.name}-${DateTime.now()}-${DateTime.now().hour}-${DateTime.now().minute}-${DateTime.now().second}-${DateTime.now().millisecond}",
+        );
+      } else {
+        data['attachment'] = await MultipartFile.fromFile(
+          attFile!.path,
+          filename: "${attFile!.name}-${DateTime.now()}-${DateTime.now().hour}-${DateTime.now().minute}-${DateTime.now().second}-${DateTime.now().millisecond}",
+        );
+      }
+    } else if (attachment != null && attachment!.isNotEmpty) {
+      data['attachment'] = attachment;
+    }
+
+    return FormData.fromMap(data);
   }
 
   AnnouncementModel copyWith({
@@ -69,6 +89,7 @@ class AnnouncementModel {
     bool? isArchived,
     String? date,
     String? attachment,
+    XFile? attFile,
   }) {
     return AnnouncementModel(
       id: id ?? this.id,
@@ -81,6 +102,7 @@ class AnnouncementModel {
       isArchived: isArchived ?? this.isArchived,
       date: date ?? this.date,
       attachment: attachment ?? this.attachment,
+      attFile: attFile ?? this.attFile,
     );
   }
 }

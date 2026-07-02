@@ -3,6 +3,8 @@ class CoordinatorRegisterModel {
   final String? coordinatorName;
   final List<CoordinatorProgramModel>? programs;
   final String? email;
+  final String? userName;
+  final bool? isAccountGenerated;
   final String? phone;
   final String? cnic;
   final String? designation;
@@ -11,6 +13,8 @@ class CoordinatorRegisterModel {
   const CoordinatorRegisterModel({
     this.id,
     this.coordinatorName,
+    this.isAccountGenerated,
+    this.userName,
     this.programs,
     this.email,
     this.phone,
@@ -22,6 +26,8 @@ class CoordinatorRegisterModel {
   factory CoordinatorRegisterModel.fromMap(Map<String, dynamic> map) {
     return CoordinatorRegisterModel(
       id: map['_id']?.toString(),
+      userName: map['userName']??"-",
+      isAccountGenerated: map['isAccountGenerated']??false,
       coordinatorName: map['coordinatorName']?.toString(),
       programs: map['programs'] == null
           ? []
@@ -54,6 +60,8 @@ class CoordinatorRegisterModel {
   CoordinatorRegisterModel copyWith({
     String? id,
     String? coordinatorName,
+    bool? isAccountGenerated,
+    String? userName,
     List<CoordinatorProgramModel>? programs,
     String? email,
     String? phone,
@@ -64,6 +72,8 @@ class CoordinatorRegisterModel {
     return CoordinatorRegisterModel(
       id: id ?? this.id,
       coordinatorName: coordinatorName ?? this.coordinatorName,
+      userName: userName ?? this.userName,
+      isAccountGenerated: isAccountGenerated ?? this.isAccountGenerated,
       programs: programs ?? this.programs,
       email: email ?? this.email,
       phone: phone ?? this.phone,

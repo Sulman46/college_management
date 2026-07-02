@@ -1,23 +1,20 @@
 import 'package:college_management/core/app/di_container.dart';
 import 'package:college_management/core/constants/app_widgets_size.dart';
-import 'package:college_management/core/constants/constant_data.dart';
 import 'package:college_management/core/enums/user_enums.dart';
-import 'package:college_management/core/helper/show_message.dart';
 import 'package:college_management/core/theme/AppColor.dart';
-import 'package:college_management/features/admin/neural_generator/models/neural_generate_model.dart';
 import 'package:college_management/features/admin/neural_generator/presentation/controller/cubit.dart';
-import 'package:college_management/features/admin/semesters/presentation/page/add_semester_screen.dart';
+import 'package:college_management/features/admin/neural_generator/presentation/widgets/coordinator_neural_list.dart';
+import 'package:college_management/features/admin/neural_generator/presentation/widgets/hod_neural_list.dart';
+import 'package:college_management/features/admin/neural_generator/presentation/widgets/neural_tabs_section.dart';
+import 'package:college_management/features/admin/neural_generator/presentation/widgets/teacher_neural_list.dart';
 import 'package:college_management/widgets/app_text.dart';
-import 'package:college_management/widgets/drop_down_field_widget.dart';
-import 'package:college_management/widgets/more_vert_pop_menu_button.dart';
+import 'package:college_management/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
-import 'package:college_management/widgets/custom_text_form.dart';
 import 'package:college_management/widgets/custom_top_bar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../core/app/myapp.dart';
-import '../../../../../core/constants/media_query.dart';
-import '../../../../../widgets/custom_button.dart';
+import '../../models/neural_widget_model.dart';
+
 
 class NeuralGeneratorScreen extends StatefulWidget {
   const NeuralGeneratorScreen({super.key});
@@ -29,12 +26,18 @@ class NeuralGeneratorScreen extends StatefulWidget {
 
 class _NeuralGeneratorScreenState
     extends State<NeuralGeneratorScreen> {
-TextEditingController fullNameController=TextEditingController();
-TextEditingController userNameController=TextEditingController();
-TextEditingController emailController=TextEditingController();
-TextEditingController password=TextEditingController();
 
-var _neuralGeneratorCubit=DiContainer().sl<NeuralGeneratorCubit>();
+final _neuralGeneratorCubit=DiContainer().sl<NeuralGeneratorCubit>();
+
+@override
+  void initState() {
+  WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+    _neuralGeneratorCubit.getUserRole(UserRole.teacher);
+    await _neuralGeneratorCubit.getTeachers();
+  },);
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,57 +57,58 @@ var _neuralGeneratorCubit=DiContainer().sl<NeuralGeneratorCubit>();
                     padding: EdgeInsets.symmetric(horizontal:screenPaddingHori),
                     child: Column(
                       children: [
-                        SizedBox(height: 20,),
-
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 10,vertical: 15),
-                          decoration: BoxDecoration(
-                            color: AppColor.white,
-                            border: Border.all(width: 1,color: AppColor.grey.withOpacity(.6)),
-                            borderRadius: BorderRadius.circular(10),
-                            boxShadow: AppColor.shadowBlack,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                            AppText(text: "Vortex Access Generator",fontSize: 16,color: AppColor.primary,fontWeight: FontWeight.w600,),
-                            SizedBox(height: 5,),
-                            AppText(text: "Provision new identity nodes with automated email dispatch",textAlign: TextAlign.center,fontSize: 12,color: AppColor.grey,fontWeight: FontWeight.w600,),
-                            SizedBox(height: 10,),
-                            CustomTextFormField(controller: fullNameController, subTitle: "Name..",title: "Full Name",isHintText: true,),
-                            SizedBox(height: 10,),
-                            CustomTextFormField(controller: userNameController, subTitle: "username..",title: "User Name",isHintText: true,),
-                            SizedBox(height: 10,),
-                            CustomTextFormField(controller: emailController, subTitle: "Email..",title: "Official Email",isHintText: true,),
-                            SizedBox(height: 10,),
-                            CustomTextFormField(controller: password, subTitle: "password..",title: "Password",isHintText: true,),
-                            SizedBox(height: 10,),
-                            CustomPopMenuButton(menus:
-                            ConstantData.userRoles.map((e) => e.toJson(),).toList(),
-                              onSelected: (p0) {
-                                _neuralGeneratorCubit.getUserRole(ConstantData.userRoles.toList()[p0]);
+                        NeuralTabsSection(),
+                        SizedBox(height: 10,),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            _neuralGeneratorCubit.userIds.isEmpty? SizedBox():CustomElevatedButton(
+                              onPressed: () async {
+                                /// todo
+                               var res= await _neuralGeneratorCubit.post();
+                               if(res){
+                                 if(_neuralGeneratorCubit.userRole==UserRole.teacher){
+                                   await _neuralGeneratorCubit.getTeachers();
+                                 }else if(_neuralGeneratorCubit.userRole==UserRole.coordinator){
+                                   await _neuralGeneratorCubit.getCoordinator();
+                                 }else if(_neuralGeneratorCubit.userRole==UserRole.hod){
+                                   await _neuralGeneratorCubit.getHod();
+                                 }
+                               }
+                              }, text: "Generate",height: 25,width: 80,borderColor: AppColor.primary,showBorder: true,fontSize: 11,fontWeight: FontWeight.w500,bgColor: AppColor.primary.withOpacity(.6),),
+                            InkWell(
+                              onTap: () {
+                                if(_neuralGeneratorCubit.userIds.isNotEmpty){
+                                  _neuralGeneratorCubit.getIds([]);
+                                }else{
+                                  if(_neuralGeneratorCubit.userRole==UserRole.hod &&  _neuralGeneratorCubit.hodList.isNotEmpty){
+                                    List<NeuralWidgetModel> hodIds=List.from(_neuralGeneratorCubit.hodFilterList.where((element) => element.teacher!.isAccountGenerated==false,).map((hod) => NeuralWidgetModel(id: hod.id??"",name: hod.teacher?.teacherName??'-', status: hod.status??"-", email: hod.teacher?.email??"-", department:[hod.department?.name??""], role: UserRole.hod, canSelect:hod.teacher?.isAccountGenerated??false, userName: hod.teacher?.userName??"-"),));
+                                    _neuralGeneratorCubit.getIds(hodIds);
+                                  }else if(_neuralGeneratorCubit.userRole==UserRole.coordinator && _neuralGeneratorCubit.coordinatorList.isNotEmpty){
+                                    List<NeuralWidgetModel> coordinator=List.from(_neuralGeneratorCubit.coordinatorFilterList.where((element) => element.isAccountGenerated==false,).map((coordinator) => NeuralWidgetModel(id: coordinator.id??"",name: coordinator.coordinatorName??'-', status: coordinator.status??"-", email: coordinator.email??"-", department:[...coordinator.programs!.map((element) => element.department?.name??"")], role: UserRole.coordinator, canSelect:coordinator.isAccountGenerated??false, userName: coordinator.userName??"-"),));
+                                    _neuralGeneratorCubit.getIds(coordinator);
+                                  }else if(_neuralGeneratorCubit.userRole==UserRole.teacher && _neuralGeneratorCubit.teachersList.isNotEmpty){
+                                    List<NeuralWidgetModel> teacherList=List.from(_neuralGeneratorCubit.teachersFilterList.where((element) => element.isAccountGenerated==false,).map((teacher) => NeuralWidgetModel(id: teacher.id??"",name: teacher.teacherName??'-', status: teacher.status??"-", email: teacher.email??"-", department: teacher.department?.map((e) => e.name,).toList()??[], role: UserRole.teacher, canSelect:teacher.isAccountGenerated??false, userName: teacher.userName??"-"),));
+                                    _neuralGeneratorCubit.getIds(teacherList);
+                                  }
+                                }
                               },
-                              widget: DropDownFieldWidget(text:_neuralGeneratorCubit.userRole !=null?_neuralGeneratorCubit.userRole!.toJson(): "Select..", isFilled: false),title: "Role",),
-                            SizedBox(height: 10,),
-                            CustomElevatedButton(onPressed: ()async{
-                              if(fullNameController.text.isEmpty || userNameController.text.isEmpty || emailController.text.isEmpty ||password.text.isEmpty || _neuralGeneratorCubit.userRole==null){
-                                showMessage("Please full all fields");
-                                return;
-                              }
-
-                              NeuralGenerateModel model=NeuralGenerateModel(email: emailController.text,password: password.text,name: fullNameController.text,userName: userNameController.text,role: _neuralGeneratorCubit.userRole?.toJson()??"");
-                              var response=await _neuralGeneratorCubit.post(model);
-
-                              if(response){
-                                userNameController.clear();
-                                fullNameController.clear();
-                                emailController.clear();
-                                password.clear();
-                                _neuralGeneratorCubit.getUserRole(null);
-                              }
-                            }, text: "Submit",width: mdWidth(context)*.6,),
-                          ],),
+                              child: AppText(
+                                text:_neuralGeneratorCubit.userIds.isNotEmpty? "Uncheck All":"Check All",
+                                fontSize: 12,
+                                color: AppColor.white,
+                              ),
+                            ),
+                          ],
                         ),
+                        SizedBox(height: 10,),
+
+                        if(_neuralGeneratorCubit.userRole==UserRole.teacher)
+                        TeacherNeuralList()
+                        else if(_neuralGeneratorCubit.userRole==UserRole.hod)
+                        HodNeuralList()
+                        else if(_neuralGeneratorCubit.userRole==UserRole.coordinator)
+                        CoordinatorNeuralList(),
                         SafeArea(
                             top: false,
                             child: SizedBox(height: 30,)),

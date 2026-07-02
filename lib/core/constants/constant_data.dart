@@ -39,25 +39,7 @@ class ConstantData{
 
 
   static List<String> announcementCategoryList = [
-    'Academic',
-    'Examination',
-    'Admissions',
-    'Fee & Finance',
-    'Scholarship',
-    'Registration',
-    'Timetable',
-    'Events',
-    'Workshops & Seminars',
-    'Internships',
-    'Placements',
-    'Library',
-    'Hostel',
-    'Sports',
-    'Student Affairs',
-    'Faculty',
-    'Holiday',
-    'Emergency',
-    'General',
+    'Urgent','Academic','Sports','Technical'
   ];
 
   static List<String> announcementPriorityList = [
@@ -88,4 +70,7 @@ class ConstantData{
   ];
 
   static List<String> coordinatorDesignation=["Program Coordinator","Assistant Coordinator","Deputy Coordinator","Senior Coordinator"];
+
+  static List<String> courseTypes=['Theory', 'Lab', 'Theory + Lab'];
+
 }

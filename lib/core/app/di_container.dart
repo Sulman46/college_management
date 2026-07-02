@@ -42,11 +42,26 @@ import '../../features/admin/faculty_workload/data/repository_impl/repository_im
 import '../../features/admin/faculty_workload/domain/repository/repository.dart';
 import '../../features/admin/faculty_workload/domain/usecase/usecase.dart';
 import '../../features/admin/faculty_workload/presentation/controller/cubit.dart';
+import '../../features/admin/freez_unfreez_admin/data/datasource/datasource.dart';
+import '../../features/admin/freez_unfreez_admin/data/repository_impl/repository_impl.dart';
+import '../../features/admin/freez_unfreez_admin/domain/repository/repository.dart';
+import '../../features/admin/freez_unfreez_admin/domain/usecase/usecase.dart';
+import '../../features/admin/freez_unfreez_admin/presentation/controller/cubit.dart';
 import '../../features/admin/hod_assignment/data/datasource/datasource.dart';
 import '../../features/admin/hod_assignment/data/repository_impl/repository_impl.dart';
 import '../../features/admin/hod_assignment/domain/repository/repository.dart';
 import '../../features/admin/hod_assignment/domain/usecase/usecase.dart';
 import '../../features/admin/hod_assignment/presentation/controller/cubit.dart';
+import '../../features/admin/leave_request/data/datasource/datasource.dart';
+import '../../features/admin/leave_request/data/repository_impl/repository_impl.dart';
+import '../../features/admin/leave_request/domain/repository/repository.dart';
+import '../../features/admin/leave_request/domain/usecase/usecase.dart';
+import '../../features/admin/leave_request/presentation/controller/cubit.dart';
+import '../../features/admin/marking_student/data/datasource/datasource.dart';
+import '../../features/admin/marking_student/data/repository_impl/repository_impl.dart';
+import '../../features/admin/marking_student/domain/repository/repository.dart';
+import '../../features/admin/marking_student/domain/usecase/usecase.dart';
+import '../../features/admin/marking_student/presentation/controller/cubit.dart';
 import '../../features/admin/neural_generator/data/datasource/datasource.dart';
 import '../../features/admin/neural_generator/data/repository_impl/repository_impl.dart';
 import '../../features/admin/neural_generator/domain/repository/repository.dart';
@@ -223,6 +238,22 @@ class DiContainer{
     sl.registerLazySingleton(() => FacultyWorkLoadUseCase(repository: sl()),);
 
 
+    // leave request
+    sl.registerLazySingleton<LeaveRequestDataSource>(() => FunctionClassLeaveRequest(),);
+    sl.registerLazySingleton<LeaveRequestRepository>(() => LeaveRequestRepositoryImpl(dataSource: sl()),);
+    sl.registerLazySingleton(() => LeaveRequestUseCase(repository: sl()),);
+
+    // freeze
+    sl.registerLazySingleton<FreezUnFreezDataSource>(() => FunctionClassFreezUnFreez(),);
+    sl.registerLazySingleton<FreezUnFreezRepository>(() => FreezUnFreezRepositoryImpl(dataSource: sl()),);
+    sl.registerLazySingleton(() => FreezUnFreezUseCase(repository: sl()),);
+
+    // marking
+    sl.registerLazySingleton<MarkingStudentDataSource>(() => FunctionClassMarkingStudent(),);
+    sl.registerLazySingleton<MarkingStudentRepository>(() => MarkingStudentRepositoryImpl(dataSource: sl()),);
+    sl.registerLazySingleton(() => MarkingStudentUseCase(repository: sl()),);
+
+
     ConnectivityController().init();
     await sl.allReady();
   }
@@ -247,6 +278,9 @@ class DiContainer{
     sl.registerLazySingleton(() => StudentEnrollmentCubit(sl()),);
     sl.registerLazySingleton(() => CoordinatorManagementCubit(sl()),);
     sl.registerLazySingleton(() => FacultyWorkLoadCubit(sl()),);
+    sl.registerLazySingleton(() => LeaveRequestCubit(sl()),);
+    sl.registerLazySingleton(() => FreezUnFreezCubit(sl()),);
+    sl.registerLazySingleton(() => MarkingStudentCubit(sl()),);
 
     sl.registerLazySingleton(() => ScreenResizeCubit(),);
   }

@@ -41,7 +41,8 @@ class EnrolledStudentWidget extends StatelessWidget {
               children: [
                 canCheck? InkWell(
                     onTap: onTap,
-                    child: Icon(isChecked==true? Icons.check_box_rounded:Icons.check_box_outline_blank,size: 20,color:isChecked==true? AppColor.white.withOpacity(.8):AppColor.grey.withOpacity(.8),)):SizedBox(),
+                    child: Icon(isChecked==true? Icons.check_box_rounded:Icons.check_box_outline_blank,size: 20,color:isChecked==true? AppColor.white.withOpacity(.8):AppColor.grey.withOpacity(.8),)
+                ):SizedBox(),
                 ActiveInactiveStatusWidget(isActive: true),
 
               ],

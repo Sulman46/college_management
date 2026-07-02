@@ -1,4 +1,5 @@
 
+import 'package:college_management/core/constants/constant_data.dart';
 import 'package:college_management/core/constants/media_query.dart';
 import 'package:college_management/core/helper/show_message.dart';
 import 'package:college_management/features/admin/course_catalog/models/course_catalog_model.dart';
@@ -219,12 +220,12 @@ class _AddNewCourseCatalogDialogState extends State<AddNewCourseCatalogDialog> {
                         onSelected:  (p0) {
                           _courseCatalogCubit.getDepartment(
                             depart: _courseCatalogCubit.department,
-                            type: ['Theory', 'Lab', 'Theory + Lab'][p0],
+                            type: ConstantData.courseTypes[p0],
                             category: _courseCatalogCubit
                                 .courseCategory,
                           );
                         },
-                        menus:  ['Theory', 'Lab', 'Theory + Lab'],offset: Offset(0, 30),widget: SizedBox(
+                        menus:  ConstantData.courseTypes,offset: Offset(0, 30),widget: SizedBox(
                           width: mdWidth(context),
                           child: DropDownFieldWidget(text:_courseCatalogCubit.courseType!=""?_courseCatalogCubit.courseType: "Type..",maxLine: 1, isFilled: _courseCatalogCubit.courseType!="")),),
                     ],

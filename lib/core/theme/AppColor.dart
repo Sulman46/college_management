@@ -103,6 +103,16 @@ class AppColor{
     boxShadow: shadowBlack,
   );
 
+  static Decoration containerNeonGreen=BoxDecoration(
+    color: green.withOpacity(.1), // glass tint
+    borderRadius: BorderRadius.circular(15),
+    border: Border.all(
+      color: green.withOpacity(.8),
+      width: .5,
+    ),
+    boxShadow: shadowBlack,
+  );
+
   static Decoration containerDecoration=BoxDecoration(
     color: bgPrimary.withOpacity(.5), // glass tint
     borderRadius: BorderRadius.circular(15),

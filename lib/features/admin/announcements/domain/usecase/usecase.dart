@@ -7,15 +7,15 @@ class AnnouncementsUseCase{
   final AnnouncementsRepository repository;
   AnnouncementsUseCase({required this.repository});
 
-  Future<Either<String,AnnouncementModel>> post({required AnnouncementModel value})async{
+  Future<Either<String,String>> post({required AnnouncementModel value})async{
     return repository.post(value: value);
   }
 
-  Future<Either<String,AnnouncementModel>> update({required AnnouncementModel value}){
+  Future<Either<String,String>> update({required AnnouncementModel value}){
     return repository.update(value: value);
   }
 
-  Future<Either<String,bool>> delete({required AnnouncementModel value}){
+  Future<Either<String,String>> delete({required AnnouncementModel value}){
     return repository.delete(value: value);
   }
 

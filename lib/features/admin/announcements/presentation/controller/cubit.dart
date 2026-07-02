@@ -64,11 +64,7 @@ class AnnouncementsCubit extends Cubit<AnnouncementsState> {
       closeLoadingDialog();
       return false;
     }else{
-      searchController.clear();
-      var data=response.asRight();
-      _dataList.add(data);
-      _filterList=List.from(dataList);
-      _filterList.toSet();
+      showMessage(response.asRight());
       emit(AnnouncementsLoaded());
       closeLoadingDialog();
       return true;
@@ -76,9 +72,11 @@ class AnnouncementsCubit extends Cubit<AnnouncementsState> {
   }
 
   Future<void> get()async{
+    searchController.clear();
+    _dataList=[];
+    _filterList=[];
     showLoadingDialog();
     emit(AnnouncementsLoading());
-    searchController.clear();
     var response=await _useCase.get();
     if(response.isLeft()){
       showMessage(response.asLeft(),isError: true);
@@ -103,9 +101,7 @@ class AnnouncementsCubit extends Cubit<AnnouncementsState> {
       closeLoadingDialog();
       return false;
     }else{
-      searchController.clear();
-      _dataList.removeWhere((element) => element.id==value.id,);
-      _filterList=List.from(dataList);
+      showMessage(response.asRight());
       emit(AnnouncementsLoaded());
       closeLoadingDialog();
       return true;
@@ -124,11 +120,7 @@ class AnnouncementsCubit extends Cubit<AnnouncementsState> {
       closeLoadingDialog();
       return false;
     }else{
-      var data=response.asRight();
-      int index= dataList.indexWhere((element) => element.id==value.id,);
-      searchController.clear();
-      _dataList[index]=value;
-      _filterList=List.from(dataList);
+      showMessage(response.asRight());
       emit(AnnouncementsLoaded());
       closeLoadingDialog();
       return true;

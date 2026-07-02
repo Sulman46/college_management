@@ -15,6 +15,9 @@ import '../../../../../core/controllers/screen_resizing/screen_resize_cubit.dart
 import '../../../../../core/theme/AppColor.dart';
 import '../../../../../widgets/app_text.dart';
 import '../../../announcements/presentation/page/announcement_screen.dart';
+import '../../../freez_unfreez_admin/presentation/page/freeze_unfreeze_screen.dart';
+import '../../../marking_student/presentation/page/marking_student_screen.dart';
+import '../../../neural_generator/presentation/page/user_management_screen.dart';
 import '../../../university_profile/presentation/page/attendance_notification_admin_screen.dart';
 import '../../../course_catalog/presentation/page/course_catalog_admin_screen.dart';
 import '../../../course_mapping/presentation/page/course_mapping_screen.dart';
@@ -101,6 +104,11 @@ class _AdminDashboardDrawarState extends State<AdminDashboardDrawar> {
           Navigator.push(context, MaterialPageRoute(builder: (context) => FacultyWorkloadScreen(),));
 
         }),
+
+        SubDrawerButtonModel(title: "Leave Request", icon: Icons.calendar_month,onTap: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context) => AdminLeaveRequestScreen(),));
+
+        }),
       ]),
       AdminDrawerButtonModel(title: "Students", icon: Icons.boy,onTap: (){},
           subList: [
@@ -111,6 +119,12 @@ class _AdminDashboardDrawarState extends State<AdminDashboardDrawar> {
             }),
             SubDrawerButtonModel(title: "Student Enrollment", icon: Icons.workspaces,onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => StudentEnrollmentScreen(),));
+            },),
+            SubDrawerButtonModel(title: "Freeze/Withdrawal", icon: Icons.severe_cold,onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => FreezeUnfreezeScreen(),));
+            },),
+            SubDrawerButtonModel(title: "Marking Engine", icon: Icons.newspaper_outlined,onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => MarkingStudentScreen(),));
             },),
           ]),
       AdminDrawerButtonModel(title: "HOD & Coordinator", icon: Icons.manage_accounts_rounded,
@@ -132,19 +146,24 @@ class _AdminDashboardDrawarState extends State<AdminDashboardDrawar> {
         Navigator.push(context, MaterialPageRoute(builder: (context) => PayrollAndSalaryManagementScreen(),));
 
       }),
-      AdminDrawerButtonModel(title: "Leave Request", icon: Icons.calendar_month,onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => AdminLeaveRequestScreen(),));
 
-      }),
+      AdminDrawerButtonModel(title: "System", icon: Icons.manage_accounts_rounded,
+      subList: [
+        SubDrawerButtonModel(title: "Neural Generator", icon: Icons.flash_on_sharp,onTap: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context) => NeuralGeneratorScreen(),));
 
-      AdminDrawerButtonModel(title: "Neural Generator", icon: Icons.flash_on_sharp,onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => NeuralGeneratorScreen(),));
+        }),
+        SubDrawerButtonModel(title: "User Management", icon: Icons.supervised_user_circle_outlined,onTap: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context) => UserManagementScreen(),));
 
-      }),
-      AdminDrawerButtonModel(title: "Announcements", icon: Icons.announcement,onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => AnnouncementScreen(),));
+        }),
+        SubDrawerButtonModel(title: "Announcements", icon: Icons.announcement,onTap: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context) => AnnouncementScreen(),));
 
-      }),
+        }),
+      ]
+      ),
+
       AdminDrawerButtonModel(title: "Logout", icon: Icons.logout,onTap: ()async{
         var authCubit=DiContainer().sl<AuthenticationCubit>();
        await authCubit.logout();
@@ -225,7 +244,7 @@ class _AdminDashboardDrawarState extends State<AdminDashboardDrawar> {
                         children: List.generate(itemsList.length, (index) {
                           bool isLast = index == itemsList.length - 1;
                           return DrawerButtonWidget(
-                            title: index==0?"Main":index==13?"Misc":null,
+                            title: index==0?"Main":index==11?"Misc":null,
                             model: itemsList[index],
                           );
                         }),

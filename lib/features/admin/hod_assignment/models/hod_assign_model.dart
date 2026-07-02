@@ -1,4 +1,3 @@
-import 'package:college_management/features/admin/teacher_records/models/teacher_model.dart';
 
 class HodAssignModel {
   final String? id;
@@ -61,10 +60,12 @@ class HodAssignModel {
 class HodTeacherModel{
   final String? id;
   final String? teacherName;
+  final String? userName;
+  final bool? isAccountGenerated;
   final String? email;
   final String? phone;
   final String? status;
-  HodTeacherModel({this.teacherName,this.id,this.status,this.phone,this.email});
+  HodTeacherModel({this.teacherName,this.id,this.userName,this.isAccountGenerated,this.status,this.phone,this.email});
 
 
   factory HodTeacherModel.fromMap(Map<String, dynamic> map) {
@@ -72,6 +73,8 @@ class HodTeacherModel{
      id: map['_id'] ?? map['id'] ?? "",
      teacherName: map['teacherName'] ?? "",
      email:map['email'] ?? "",
+     isAccountGenerated:map['isAccountGenerated'] ?? false,
+     userName:map['userName'] ?? "",
      phone: map['phone'] ?? "",
      status: map['status'] ?? "Active",
 

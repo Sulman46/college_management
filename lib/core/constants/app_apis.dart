@@ -5,7 +5,7 @@ class AppApis {
   // static String baseUrl = "http://172.29.64.1:9500";
   // static String baseUrl = "http://192.168.0.100:9500";
   // static String baseUrl = "http://192.168.100.198:9500";
-  static String baseUrl = "http://10.20.70.161:9500";
+  static String baseUrl = "http://10.234.210.161:9500";
 
   static String login = "/api/auth/login";
 
@@ -73,6 +73,28 @@ class AppApis {
   static String studentEnrollments="/api/enrollments";
   static String studentEnrollmentsPromote="/api/enrollments/promote";
   static String studentEnrollmentsDemote="/api/enrollments/demote";
+
+  /// leave
+  static String leave="/api/leaves";
+
+
+  /// users lists
+  static String userList="/api/admin/users-list";
+  static String userListStatus="/api/admin/user-status";
+  static String userResetKey="/api/admin/user-reset-key";
+
+  /// freeze request
+  static String freezePendingRequest="/api/admin/pending-requests";
+  static String freezeFinalizedRequest="/api/admin/all-status-history";
+  static String updateFreezeStatus="/api/update-status-request";
+  static String deleteFreezeRequest="/api/admin/delete-request";
+
+  /// marking students
+  static String markingStudents="/api/marks";
+  static String markingCourseData="/api/marking-engine/course-data";
+  static String bulkSaveMarks="/api/bulk-save";
+  static String markingLock="/api/lock";
+
 
 
 

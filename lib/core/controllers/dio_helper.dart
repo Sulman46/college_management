@@ -122,6 +122,26 @@ class DioHelper {
     }
   }
 
+
+  // Put method with improved error handling
+  Future<Response> patch(String endpoint, {Map<String, dynamic>? data}) async {
+    try {
+      // Make POST request
+      Response response = await _dio.patch(endpoint, data: data);
+
+      // Check if response status is not 2xx (client or server error)
+      if (response.statusCode! < 200 || response.statusCode! >= 300) {
+        log("345678989 error: ${response.statusCode} ${response.statusMessage}");
+        return _handleApiError(response);
+      }
+
+      return response; // Return response if status is in 2xx range
+    } on DioError catch (e) {
+      // Handle DioError exceptions like timeouts, network issues, etc.
+      return _handleError(e);
+    }
+  }
+
   // Get method with improved error handling
   Future<Response> get(String endpoint, {Map<String, dynamic>? data,Map<String, dynamic>? queryParameters}) async {
     try {

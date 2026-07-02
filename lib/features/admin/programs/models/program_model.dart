@@ -57,10 +57,10 @@ class ProgramModel {
       degree: map['degree'] ?? '',
       session: map['session'] ?? '',
       section: map['section'] ?? '',
-      status: map['status']!=null? map['status']=="Active"?StatusEnum.Active:StatusEnum.Inactive:StatusEnum.Inactive,      mids: map['mids'] ?? 0,
+      status: map['status']!=null? map['status']=="Active"?StatusEnum.Active:StatusEnum.Inactive:StatusEnum.Inactive,
+      mids: map['mids'] ?? 0,
       sessional: map['sessional'] ?? 0,
       finalMarks: map['final'] ?? 0,
-
       totalTheory:
       map['totalTheory'] ?? 0,
 
