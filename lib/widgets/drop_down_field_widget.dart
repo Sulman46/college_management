@@ -7,13 +7,14 @@ import '../core/constants/app_text_style.dart';
 import '../core/theme/AppColor.dart';
 
 class DropDownFieldWidget extends StatelessWidget {
-   DropDownFieldWidget({super.key,this.borderColor,this.padding,required this.text, this.canTap=true,this.title,this.maxLine,required this.isFilled});
+   DropDownFieldWidget({super.key,this.borderColor,this.padding,this.icon,required this.text, this.canTap=true,this.title,this.maxLine,required this.isFilled});
 String text;
 bool isFilled;
    final String? title;
 int? maxLine;
 bool canTap;
 Color? borderColor;
+   IconData? icon;
    EdgeInsetsGeometry? padding;
   @override
   Widget build(BuildContext context) {
@@ -42,7 +43,7 @@ Color? borderColor;
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(child: AppText(text: text,maxLines: maxLine??1,style:isFilled? AppTextStyle.fieldTextStyle():AppTextStyle.hintTextStyle(),)),
-              Icon(Icons.navigate_next,size: 20,color: AppColor.grey.withOpacity(.7),),
+              Icon(icon??Icons.navigate_next,size: 20,color: AppColor.grey.withOpacity(.7),),
             ],
           ),
         ),

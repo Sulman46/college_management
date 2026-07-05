@@ -34,9 +34,9 @@ class _UniversityProfileImageState extends State<UniversityProfileImage> {
           border: Border.all(width: 1,color: AppColor.primary),
           color: AppColor.white,
           boxShadow: AppColor.shadowBlack,
-          image: universityProfileCubit.pickedUniversityImage != null
+          image: universityProfileCubit.universityModel?.universityProfileModel?.logo != null
               ? DecorationImage(
-            image: FileImage(File(universityProfileCubit.pickedUniversityImage!.path)),
+            image: NetworkImage(universityProfileCubit.universityModel?.universityProfileModel?.logo??""),
             fit: BoxFit.cover,
           )
               : null,

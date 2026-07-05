@@ -201,11 +201,12 @@ class UniversityProfileCubit extends Cubit<UniversityProfileState> {
       navigatorKey.currentContext!.push("/login");
       return;
     }
-    ProfileImageUpdateModel model=ProfileImageUpdateModel(userId: user.id, image: File(pickedUniversityImage!.path));
+    ProfileImageUpdateModel model=ProfileImageUpdateModel(userId: user.id, image: XFile(pickedUniversityImage!.path));
     var response=await _useCase.uploadProfile(profileModel: model);
     if(response.isRight()){
       UniversityProfileModel  tempModel=universityModel!.universityProfileModel!;
       universityModel=universityModel!.copyWith(universityProfileModel: tempModel.copyWith(logo: response.asRight()));
+      emit(UniversityProfileLoaded());
     }else{
       showMessage(response.asLeft(),isError: true);
       emit(UniversityProfileLoaded());

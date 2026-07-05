@@ -1,9 +1,10 @@
 enum UserRole {
-  admin,
-  hod,
+
   teacher,
+  student,
+  hod,
   coordinator,
-  student;
+  admin;
 
   // Convert String -> Enum
   static UserRole fromString(String role) {

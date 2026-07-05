@@ -28,7 +28,7 @@ class TheoryFrameworkCard extends StatelessWidget {
                 fontWeight: FontWeight.w600,
                 fontSize: 14,
               ),
-              BadgeWidget(text:"Pass: 50%", color:AppColor.primary),
+              BadgeWidget(text:"Pass: 50%", color:AppColor.white),
             ],
           ),
 

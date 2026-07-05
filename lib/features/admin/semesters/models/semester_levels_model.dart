@@ -1,3 +1,4 @@
+import 'package:college_management/core/helper/app_date_picker.dart';
 import 'package:college_management/features/admin/programs/models/program_model.dart';
 import 'package:college_management/features/admin/semesters/models/semester_program_model.dart';
 
@@ -46,10 +47,14 @@ class SemesterLevelsModel {
     return {
       if(id!=null)
         '_id':id,
+      if(semesterName!=null)
       'semesterName': semesterName,
+      if(programId!=null)
       'programId': programId,
-      'startDate': startDate?.toIso8601String(),
-      'endDate': endDate?.toIso8601String(),
+      if(startDate!=null)
+      'startDate': formatDate(startDate!),
+      if(endDate!=null)
+      'endDate': formatDate(endDate!),
       if (status != null) 'status': status,
     };
   }

@@ -1,4 +1,5 @@
 import 'package:college_management/core/app/di_container.dart';
+import 'package:college_management/core/constants/constant_data.dart';
 import 'package:college_management/core/helper/show_message.dart';
 import 'package:college_management/features/Authentication/models/login_request_model.dart';
 import 'package:college_management/features/Authentication/presentation/controller/cubit.dart';
@@ -31,7 +32,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   TextEditingController emailController=TextEditingController();
   TextEditingController passwordController=TextEditingController();
-List<String> roleList=['Admin', 'Student', 'Teacher'];
 
 @override
   void initState() {
@@ -89,30 +89,30 @@ List<String> roleList=['Admin', 'Student', 'Teacher'];
                         AppText(text: "Password",color: AppColor.greyLight,),
                         SizedBox(height: 5,),
                         CustomTextFormField(controller: passwordController, subTitle: "Password",isHintText: true,isObSecure: true,),
-                        // SizedBox(height: 10,),
-                        // CustomPopMenuButton(
-                        //   onSelected: (p0) {
-                        //     _authCubit.getUserRoleLoginScreen(roleList[p0]);
-                        //   },
-                        //   menus: roleList,
-                        //   offset: Offset(0, 30),
-                        //   widget: DropDownFieldWidget(
-                        //     text:_authCubit.selectedRole==null? "Select..":_authCubit.selectedRole??"",
-                        //     maxLine: 1,
-                        //     isFilled: false,
-                        //   ),
-                        //   title: "Role",
-                        // ),SizedBox(height: 10,),
+                        SizedBox(height: 10,),
+                        CustomPopMenuButton(
+                          onSelected: (p0) {
+                            _authCubit.getUserRoleLoginScreen(ConstantData.userRoles.map((e) => e.toJson(),).toList()[p0]);
+                          },
+                          menus: ConstantData.userRoles.map((e) => e.toJson(),).toList(),
+                          offset: Offset(0, 30),
+                          widget: DropDownFieldWidget(
+                            text:_authCubit.selectedRole==null? "Select..":_authCubit.selectedRole??"",
+                            maxLine: 1,
+                            isFilled: _authCubit.selectedRole!=null,
+                          ),
+                          title: "Role",
+                        ),
 
                         SizedBox(height: 10,),
                         Center(
                           child: CustomElevatedButton(onPressed: () async {
-                            if(emailController.text.isEmpty || passwordController.text.isEmpty){
+                            if(_authCubit.selectedRole==null||emailController.text.isEmpty || passwordController.text.isEmpty){
                               showMessage("Please fill all required fields.",isError: true);
                               return;
                             }
 
-                           await _authCubit.login(LoginRequestModel(username: emailController.text, password: passwordController.text,));
+                           await _authCubit.login(LoginRequestModel(role: _authCubit.selectedRole??"",username: emailController.text, password: passwordController.text,));
                           }, text: "Login",height: 30,
                             fontSize: 13,width: mdWidth(context)*.5,),
                         ),

@@ -160,7 +160,7 @@ class StudentRegistrationCubit extends Cubit<StudentRegistrationState> {
     emit(StudentRegistrationLoading());
     List<StudentModel> temp=[];
     for(var i in dataList){
-      if(i.name!.toLowerCase().toString().contains(val)){
+      if(i.name!.toLowerCase().toString().contains(val)||i.rollNo!.toLowerCase().toString().contains(val)||i.registrationNumber!.toLowerCase().toString().contains(val) ){
         temp.add(i);
       }
     }
@@ -175,6 +175,7 @@ class StudentRegistrationCubit extends Cubit<StudentRegistrationState> {
      userImage=null;
     gender=null;
     status=null;
+    updateStudentModel=null;
      studentModel=StudentModel();
      emit(StudentRegistrationLoaded());
 

@@ -1,5 +1,7 @@
 import 'package:college_management/features/admin/programs/models/program_model.dart';
 
+import '../../../../core/helper/app_date_picker.dart';
+
 class TimeTableManagerModel {
   final String? id;
   final ProgramModel? programModel;
@@ -57,7 +59,7 @@ class TimeTableManagerModel {
       if (shiftType != null) 'shiftType': shiftType,
       if (semesterModel != null) 'semesterId': semesterModel!.id,
       if (wefDate != null)
-        'wef': wefDate!.toIso8601String(),
+        'wef':formatDate(wefDate!),
       if (timeSlots != null) 'timeSlots': timeSlots,
       'days': ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
       if (data != null)
@@ -172,8 +174,8 @@ class TimeTableSemesterModel {
     return {
       if (id != null) '_id': id,
       'semesterName': semesterName,
-      'startDate': startDate!.toIso8601String(),
-      'endDate': endDate!.toIso8601String(),
+      'startDate':formatDate(startDate!) ,
+      'endDate':formatDate(endDate!),
       'status': status,
     };
   }

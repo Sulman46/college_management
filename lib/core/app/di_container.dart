@@ -37,6 +37,11 @@ import '../../features/admin/departments/data/datasource/datasource.dart';
 import '../../features/admin/departments/data/repository_impl/repository_impl.dart';
 import '../../features/admin/departments/domain/repository/repository.dart';
 import '../../features/admin/departments/domain/usecase/usecase.dart';
+import '../../features/admin/exam_schedule/data/datasource/datasource.dart';
+import '../../features/admin/exam_schedule/data/repository_impl/repository_impl.dart';
+import '../../features/admin/exam_schedule/domain/repository/repository.dart';
+import '../../features/admin/exam_schedule/domain/usecase/usecase.dart';
+import '../../features/admin/exam_schedule/presentation/controller/cubit.dart';
 import '../../features/admin/faculty_workload/data/datasource/datasource.dart';
 import '../../features/admin/faculty_workload/data/repository_impl/repository_impl.dart';
 import '../../features/admin/faculty_workload/domain/repository/repository.dart';
@@ -87,6 +92,11 @@ import '../../features/admin/student_registrations/data/repository_impl/reposito
 import '../../features/admin/student_registrations/domain/repository/repository.dart';
 import '../../features/admin/student_registrations/domain/usecase/usecase.dart';
 import '../../features/admin/student_registrations/presentation/controller/cubit.dart';
+import '../../features/admin/student_result/data/datasource/datasource.dart';
+import '../../features/admin/student_result/data/repository_impl/repository_impl.dart';
+import '../../features/admin/student_result/domain/repository/repository.dart';
+import '../../features/admin/student_result/domain/usecase/usecase.dart';
+import '../../features/admin/student_result/presentation/controller/cubit.dart';
 import '../../features/admin/teacher_allocation/data/datasource/datasource.dart';
 import '../../features/admin/teacher_allocation/data/repository_impl/repository_impl.dart';
 import '../../features/admin/teacher_allocation/domain/repository/repository.dart';
@@ -253,6 +263,17 @@ class DiContainer{
     sl.registerLazySingleton<MarkingStudentRepository>(() => MarkingStudentRepositoryImpl(dataSource: sl()),);
     sl.registerLazySingleton(() => MarkingStudentUseCase(repository: sl()),);
 
+    // result
+    sl.registerLazySingleton<StudentResultDataSource>(() => FunctionClassStudentResult(),);
+    sl.registerLazySingleton<StudentResultRepository>(() => StudentResultRepositoryImpl(dataSource: sl()),);
+    sl.registerLazySingleton(() => StudentResultUseCase(repository: sl()),);
+
+
+    // exam schedule
+    sl.registerLazySingleton<ExamScheduleDataSource>(() => FunctionClassExamSchedule(),);
+    sl.registerLazySingleton<ExamScheduleRepository>(() => ExamScheduleRepositoryImpl(dataSource: sl()),);
+    sl.registerLazySingleton(() => ExamScheduleUseCase(repository: sl()),);
+
 
     ConnectivityController().init();
     await sl.allReady();
@@ -281,6 +302,8 @@ class DiContainer{
     sl.registerLazySingleton(() => LeaveRequestCubit(sl()),);
     sl.registerLazySingleton(() => FreezUnFreezCubit(sl()),);
     sl.registerLazySingleton(() => MarkingStudentCubit(sl()),);
+    sl.registerLazySingleton(() => StudentResultCubit(sl()),);
+    sl.registerLazySingleton(() => ExamScheduleCubit(sl()),);
 
     sl.registerLazySingleton(() => ScreenResizeCubit(),);
   }

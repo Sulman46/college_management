@@ -1,12 +1,18 @@
+import 'dart:developer';
+
+import 'package:college_management/core/theme/AppColor.dart';
+import 'package:college_management/widgets/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class UrlMap extends StatefulWidget {
-  final String mapUrl;
+ double? latitude;
+ double? longitude;
 String title;
    UrlMap({
     super.key,
-    required this.mapUrl,
+    required this.latitude,
+    required this.longitude,
     required this.title,
   });
 
@@ -20,37 +26,26 @@ class _UrlMapState extends State<UrlMap> {
   @override
   void initState() {
     super.initState();
-    location = extractLatLng(widget.mapUrl);
+
+    location = LatLng(widget.latitude??0, widget.longitude??0);
+    log("#2423 ${location}");
   }
 
-  LatLng? extractLatLng(String url) {
-    final latMatch =
-    RegExp(r'!3d(-?\d+(?:\.\d+)?)').firstMatch(url);
-
-    final lngMatch =
-    RegExp(r'!4d(-?\d+(?:\.\d+)?)').firstMatch(url);
-
-    if (latMatch != null && lngMatch != null) {
-      return LatLng(
-        double.parse(latMatch.group(1)!),
-        double.parse(lngMatch.group(1)!),
-      );
-    }
-
-    return null;
-  }
 
   @override
   Widget build(BuildContext context) {
     if (location == null) {
-      return const Center(
-        child: Text("Location not found"),
+      return  Center(
+        child: AppText(text:"Location not found",color: AppColor.white,),
       );
     }
 
     return SizedBox(
       height: 250,
       child: GoogleMap(
+        mapType: MapType.normal,
+        myLocationEnabled: false,
+        zoomControlsEnabled: true,
         initialCameraPosition: CameraPosition(
           target: location!,
           zoom: 16,

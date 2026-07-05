@@ -73,7 +73,7 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
         sessionalController.text="10";
         finalController.text="60";
         theoryPassController.text="40";
-        practicalMarksController.text="100";
+        practicalMarksController.text="50";
         practicalPassController.text="40";
 
       }
@@ -224,12 +224,22 @@ class _CreateProgramScreenState extends State<CreateProgramScreen> {
                                       )
                                     : CustomPopMenuButton(
                                         onSelected: (p0) {
+
+                                          var model=_universityProfileCubit
+                                              .activeAffiliationList
+                                              .toList()[p0];
+                                          midsController.text="${model.theory?.mids??""}";
+                                          sessionalController.text="${model.theory?.sessional??""}";
+                                          finalController.text="${model.theory?.finalMarks??""}";
+                                          theoryPassController.text="${model.theory?.passPercentage??""}";
+                                          practicalMarksController.text="${model.practical?.maxMarks??""}";
+                                          practicalPassController.text="${model.practical?.passPercentage??""}";
+
+
                                           _programCubit.getDepartment(
                                             department: _programCubit
                                                 .selectedDepartment,
-                                            affiliation: _universityProfileCubit
-                                                .activeAffiliationList
-                                                .toList()[p0],
+                                            affiliation: model,
                                             status: _programCubit.statusEnum,
                                           );
                                           // affiliation=_departmentCubit.activeDepartmentList.map((e) => e.name,).toList()[p0];

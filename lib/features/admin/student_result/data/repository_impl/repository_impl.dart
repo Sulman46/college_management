@@ -1,6 +1,8 @@
 
 import 'package:dartz/dartz.dart';
 import '../../domain/repository/repository.dart';
+import '../../model/filter_result_model.dart';
+import '../../model/user_result_model.dart';
 import '../datasource/datasource.dart';
 
 class StudentResultRepositoryImpl extends StudentResultRepository{
@@ -9,8 +11,8 @@ class StudentResultRepositoryImpl extends StudentResultRepository{
 
 
   @override
-  Future<Either<String, bool>> function1() {
-    return dataSource.function1();
+  Future<Either<String,List<UserResultModel>>> get({required FilterResultModel model}) {
+    return dataSource.get(model: model);
   }
 
 }

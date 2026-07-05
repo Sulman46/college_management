@@ -112,7 +112,7 @@ class _FilterMarkingStudentDialogState extends State<FilterMarkingStudentDialog>
                               String value=list.map((e) => "${e.semesterName??""} (${e.status})",).toSet().toList()[p0];
                              String semId=list.where((e) => "${e.semesterName??""} (${e.status})"==value,).map((e) => e.id,).first??"";
                              String programId=list.where((e) => e.id==semId).map((e) => e.programId,).first??"";
-                            await  Clipboard.setData(ClipboardData(text: semId));
+                            // await  Clipboard.setData(ClipboardData(text: semId));
                               _markingCubit.getMarkingStudentFilter(_markingCubit.filterModel.copyWith(programId: programId,semester: value,semesterId:semId));
                             },
                             title: "Semester",offset: Offset(0, 30),widget: SizedBox(

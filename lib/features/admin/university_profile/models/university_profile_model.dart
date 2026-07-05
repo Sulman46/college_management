@@ -7,6 +7,8 @@ class UniversityProfileModel {
   String website;
   String address;
   String location;
+  String longitude;
+  String latitude;
 
   UniversityProfileModel({
     required this.name,
@@ -17,6 +19,8 @@ class UniversityProfileModel {
     required this.website,
     required this.address,
     required this.location,
+    required this.longitude,
+    required this.latitude,
   });
 
   factory UniversityProfileModel.fromMap(
@@ -30,6 +34,8 @@ class UniversityProfileModel {
       website: map['website'] ?? '',
       address: map['address'] ?? '',
       location: map['location'] ?? '',
+      longitude: map['longitude'] ?? '',
+      latitude: map['latitude'] ?? '',
     );
   }
 
@@ -43,6 +49,8 @@ class UniversityProfileModel {
       'website': website,
       'address': address,
       'location': location,
+      'longitude': longitude,
+      'latitude': latitude,
     };
   }
 
@@ -56,9 +64,13 @@ class UniversityProfileModel {
     String? website,
     String? address,
     String? location,
+    String? longitude,
+    String? latitude,
   }) {
     return UniversityProfileModel(
       name: name ?? this.name,
+      longitude: name ?? this.longitude,
+      latitude: name ?? this.latitude,
       logo: logo ?? this.logo,
       campusId: campusId ?? this.campusId,
       phone: phone ?? this.phone,

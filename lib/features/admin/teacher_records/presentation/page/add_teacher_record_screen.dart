@@ -73,7 +73,7 @@ class _AddTeacherRecordScreenState extends State<AddTeacherRecordScreen> {
         builder: (context,stateskloa) {
           return Column(
             children: [
-              CustomTopBar(text: "Add Teacher"),
+              CustomTopBar(text:widget.teacherModel!=null? "Update Teacher":"Add Teacher"),
               Expanded(
                 child: SingleChildScrollView(
                   padding: EdgeInsets.symmetric(horizontal: screenPaddingHori),
@@ -99,7 +99,8 @@ class _AddTeacherRecordScreenState extends State<AddTeacherRecordScreen> {
                             SizedBox(height: 10,),
                             CustomTextFormField(
                               isHintText: true,
-                              controller: emailController, subTitle: "Email..",title: "Email",),
+                              readOnly: widget.teacherModel!=null,
+                              controller: emailController, subTitle: "Email..",title:widget.teacherModel!=null? "Email (read only)":"Email",),
                             SizedBox(height: 10,),
                             CustomTextFormField(
                               isHintText: true,
@@ -153,7 +154,9 @@ class _AddTeacherRecordScreenState extends State<AddTeacherRecordScreen> {
                                   int index=_departmentCubit.activeDepartmentList.indexWhere((e) => "${e.name} (${e.code})"==temp,);
                                   var val=_departmentCubit.activeDepartmentList[index];
                                   List<DepartmentModel> departmentList=_teacherRecordCubit.teacherModel.department??[];
-                                  departmentList.add(val);
+                                  if(!departmentList.any((element) => element.id==val.id,)){
+                                    departmentList.add(val);
+                                  }
                                   _teacherRecordCubit.getTeacherModel(_teacherRecordCubit.teacherModel.copyWith(department: departmentList));
                                 },
                                   widget: DropDownFieldWidget(text: "Select", isFilled: false),)
@@ -205,13 +208,16 @@ class _AddTeacherRecordScreenState extends State<AddTeacherRecordScreen> {
                                 SizedBox(width: 10,),
                                 Expanded(child: CustomTextFormField(
                                   isHintText: true,
-                                  controller: joiningDateController,readOnly: true, subTitle: "Date",title: "Joining Date",onTap: () async {
+                                  controller: joiningDateController,readOnly: true,
+                                  subTitle: "Date",title: "Joining Date",
+                                  onTap: () async {
                                   DateTime? val = await AppDatePicker.pickCustomDate(
                                     context: context,
                                     initialDate: DateTime.now(),
                                     lastDate: DateTime.now().add(Duration(days: 365)),
                                     firstDate: DateTime(2000),
-                                  );                            if(val!=null){
+                                  );
+                                  if(val!=null){
                                   joiningDateController.text= intl.DateFormat('dd/MMM/yyyy').format(val);
                                 }
 

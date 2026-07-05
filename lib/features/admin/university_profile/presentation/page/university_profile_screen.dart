@@ -43,7 +43,9 @@ class _UniversityProfileScreenState extends State<UniversityProfileScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   TextEditingController website = TextEditingController();
-  TextEditingController geoController = TextEditingController();
+  TextEditingController longitude = TextEditingController();
+  TextEditingController location = TextEditingController();
+  TextEditingController latitude = TextEditingController();
 
   @override
   void initState() {
@@ -53,12 +55,14 @@ class _UniversityProfileScreenState extends State<UniversityProfileScreen> {
       if(response!=null){
         UniversityProfileModel model=response.universityProfileModel!;
         nameController.text=model.name;
+        location.text=model.location;
         campusIdController.text=model.campusId;
         contactController.text=model.phone;
         emailController.text=model.email;
         addressController.text=model.address;
         website.text=model.website;
-        geoController.text=model.location;
+        latitude.text=model.latitude;
+        longitude.text=model.longitude;
       }
     },);
     // TODO: implement initState
@@ -167,12 +171,13 @@ class _UniversityProfileScreenState extends State<UniversityProfileScreen> {
                                buildField("Email", emailController),
                                buildField("Website", website),
                                buildField("Address", addressController),
-                               buildField("Geo Location URL", geoController),
+                               buildField("Latitude", latitude),
+                               buildField("Longitude", longitude),
                                if(!universityProfileCubit.editUniversityProfile)
                                SizedBox(
                                    height: 250,
                                    width: mdWidth(context),
-                                   child: UrlMap(title: nameController.text,mapUrl: "https://www.google.com/maps/place/City+College+(Iqbal%2FUniversity+Campus)/@30.2293411,71.4796817,16z/data=!4m6!3m5!1s0x393b352581112dbb:0x4bb5d93c8ae5a0b8!8m2!3d30.2285181!4d71.4793487!16s%2Fg%2F11hnw7cgxk?entry=ttu&g_ep=EgoyMDI2MDYxMC4wIKXMDSoASAFQAw%3D%3D", )),
+                                   child: UrlMap(title: nameController.text,latitude: double.tryParse(universityProfileCubit.universityModel?.universityProfileModel?.latitude??"0") ,longitude: double.tryParse(universityProfileCubit.universityModel?.universityProfileModel?.longitude??"0") )),
 
                              ],
                            ),
@@ -182,15 +187,19 @@ class _UniversityProfileScreenState extends State<UniversityProfileScreen> {
 
                          /// 🔹 SAVE BUTTON
                          if (universityProfileCubit.editUniversityProfile)
-                           CustomElevatedButton(onPressed: () async {
-                             if(nameController.text.isEmpty || campusIdController.text.isEmpty || contactController.text.isEmpty|| emailController.text.isEmpty|| website.text.isEmpty|| addressController.text.isEmpty|| geoController.text.isEmpty){
+                           CustomElevatedButton(
+                             onPressed: () async {
+                             if(nameController.text.isEmpty || campusIdController.text.isEmpty || contactController.text.isEmpty|| emailController.text.isEmpty|| website.text.isEmpty|| addressController.text.isEmpty|| longitude.text.isEmpty|| latitude.text.isEmpty){
                                showMessage("Please fill empty fields");
                                return;
                              }
-                             UniversityProfileModel universityProfileModel=UniversityProfileModel(name: nameController.text, logo: universityProfileCubit.universityModel?.universityProfileModel?.logo??"", campusId: campusIdController.text, phone: contactController.text, email: emailController.text, website: website.text, address: addressController.text, location: geoController.text);
+                             UniversityProfileModel universityProfileModel=UniversityProfileModel(name: nameController.text, logo: universityProfileCubit.universityModel?.universityProfileModel?.logo??"", campusId: campusIdController.text, phone: contactController.text, email: emailController.text, website: website.text, address: addressController.text, location:location.text ,latitude: latitude.text,longitude: longitude.text);
                              await universityProfileCubit.addUniversitySetup(UniversityModel(universityProfileModel: universityProfileModel));
                              
-                             }, text: "Save",width: mdWidth(context)*.5,),
+                             },
+                             text: "Save",
+                             width: mdWidth(context)*.5,
+                           ),
                        ],
                      ),
                    ),

@@ -3,6 +3,7 @@ import 'package:college_management/core/constants/app_assets.dart';
 import 'package:college_management/core/models/admin_drawer_button_model.dart';
 import 'package:college_management/features/Authentication/presentation/controller/cubit.dart';
 import 'package:college_management/features/admin/coordinator_management/presentation/page/coordinator_management_screen.dart';
+import 'package:college_management/features/admin/exam_schedule/presentation/page/exam_schedule_screen.dart';
 import 'package:college_management/features/admin/university_profile/presentation/page/affiliation/affiliated_universities_screen.dart';
 import 'package:college_management/features/admin/programs/presentation/page/admin_program_screen.dart';
 import 'package:college_management/features/admin/teacher_allocation/presentation/page/teacher_allocation_screen.dart';
@@ -18,6 +19,7 @@ import '../../../announcements/presentation/page/announcement_screen.dart';
 import '../../../freez_unfreez_admin/presentation/page/freeze_unfreeze_screen.dart';
 import '../../../marking_student/presentation/page/marking_student_screen.dart';
 import '../../../neural_generator/presentation/page/user_management_screen.dart';
+import '../../../student_result/presentation/page/student_result_screen.dart';
 import '../../../university_profile/presentation/page/attendance_notification_admin_screen.dart';
 import '../../../course_catalog/presentation/page/course_catalog_admin_screen.dart';
 import '../../../course_mapping/presentation/page/course_mapping_screen.dart';
@@ -125,6 +127,12 @@ class _AdminDashboardDrawarState extends State<AdminDashboardDrawar> {
             },),
             SubDrawerButtonModel(title: "Marking Engine", icon: Icons.newspaper_outlined,onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => MarkingStudentScreen(),));
+            },),
+            SubDrawerButtonModel(title: "Result", icon: Icons.chrome_reader_mode_outlined,onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => StudentResultScreen(),));
+            },),
+            SubDrawerButtonModel(title: "Exam Schedule", icon: Icons.chrome_reader_mode_outlined,onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ExamScheduleScreen(),));
             },),
           ]),
       AdminDrawerButtonModel(title: "HOD & Coordinator", icon: Icons.manage_accounts_rounded,

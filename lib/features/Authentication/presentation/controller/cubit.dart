@@ -51,6 +51,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     userModel=model.user;
     token=model.token;
     closeLoadingDialog();
+    selectedRole=null;
     if(model.user.role==UserRole.admin){
       navigatorKey.currentContext!.pushReplacement('/Admin-dashboard');
 

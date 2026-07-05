@@ -7,6 +7,7 @@ import 'package:college_management/widgets/drop_down_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:uuid/uuid.dart';
 import '../../../../../../core/theme/AppColor.dart';
 import '../../../../../../widgets/app_text.dart';
 import '../../../../../../widgets/custom_button.dart';
@@ -163,7 +164,7 @@ class _AddAttendanceAlertDialogState extends State<AddAttendanceAlertDialog> {
                               showMessage("Please fill all fields",isError: true);
                               return;
                             }
-                              AttendancePolicyModel value=AttendancePolicyModel(id:widget.attendancePolicyModel!=null? widget.attendancePolicyModel?.id??0:int.parse("${DateTime.now().year}${DateTime.now().month}${DateTime.now().day}${DateTime.now().hour}${DateTime.now().minute}${DateTime.now().millisecond}"),
+                              AttendancePolicyModel value=AttendancePolicyModel(id:widget.attendancePolicyModel!=null? widget.attendancePolicyModel?.id??Uuid().v4():Uuid().v4(),
                                   type:_universitySetupCubit.severityValue?.toLowerCase()??"" , tag: tagLabel.text, title: title.text, val: triggerValue.text, action: action.text);
                               var attendanceList=_universitySetupCubit.universityModel?.attendancePolicyModel??[];
                               if(widget.attendancePolicyModel!=null){

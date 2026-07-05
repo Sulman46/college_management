@@ -2,11 +2,11 @@ import 'package:college_management/core/enums/user_enums.dart';
 
 class ConstantData{
   static List<UserRole> userRoles=[
-    UserRole.teacher,
     UserRole.student,
+    UserRole.teacher,
+    UserRole.hod,
     UserRole.coordinator,
     UserRole.admin,
-    UserRole.hod,
   ];
   static List<String> semesterList=['1', '2', '3', '4','5','6', '7', '8'];
   static List<String> qualificationList = [

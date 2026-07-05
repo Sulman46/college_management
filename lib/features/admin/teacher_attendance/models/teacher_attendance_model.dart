@@ -1,4 +1,6 @@
 
+import '../../../../core/helper/app_date_picker.dart';
+
 class TeacherAttendanceModel {
   final String? id;
   final String? department;
@@ -98,8 +100,8 @@ class TeacherAttendanceModel {
       if (status != null) 'status': status,
       if (minutes != null) 'minutes': minutes,
       if (attendanceType != null) 'attendanceType': attendanceType,
-      if (date != null) 'date': date!.toIso8601String(),
-      if (month != null) 'month': month!.toIso8601String(),
+      if (date != null) 'date':formatDate(date!),
+      if (month != null) 'month':formatDate(month!),
       if (markedBy != null) 'markedBy': markedBy,
       if (isCombinedClass != null) 'isCombinedClass': isCombinedClass,
       if (combinedPrograms != null) 'combinedPrograms': combinedPrograms,

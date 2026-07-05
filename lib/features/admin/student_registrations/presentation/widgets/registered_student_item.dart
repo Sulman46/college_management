@@ -157,7 +157,7 @@ class RegisteredStudentItem extends StatelessWidget {
                   if(val==0){
                     var studentRegisterCubit = DiContainer().sl<StudentRegistrationCubit>();
                     studentRegisterCubit.getStudentUpdateModel(studentModel);
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => AddNewStudentScreen(),));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => AddNewStudentScreen(studentModel: studentModel,),));
                   }else if (val==1){
                     var studentRegisterCubit = DiContainer().sl<StudentRegistrationCubit>();
                     await studentRegisterCubit.delete(studentModel);

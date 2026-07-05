@@ -92,10 +92,10 @@ class AppDatePicker{
     );
   }
 
-  static Future<TimeOfDay?> timePicker(BuildContext context) async {
+  static Future<TimeOfDay?> timePicker(BuildContext context,{TimeOfDay? initialTime}) async {
     TimeOfDay? pickedTime = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay.now(),
+      initialTime: initialTime??TimeOfDay.now(),
       builder: (context, child) {
         return BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 10,sigmaY: 10),
@@ -174,4 +174,14 @@ class AppDatePicker{
   }
 
 
+
+
+
+}
+
+
+String formatDate(DateTime date) {
+  return "${date.year.toString().padLeft(4, '0')}-"
+      "${date.month.toString().padLeft(2, '0')}-"
+      "${date.day.toString().padLeft(2, '0')}";
 }

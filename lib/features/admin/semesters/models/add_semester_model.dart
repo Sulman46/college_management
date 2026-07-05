@@ -1,3 +1,5 @@
+import '../../../../core/helper/app_date_picker.dart';
+
 class AddSemesterModel {
   final String? id;
   final String? semesterName;
@@ -65,8 +67,8 @@ class AddSemesterModel {
       'affiliation': affiliation,
       'section': section,
       'session': session,
-      'startDate': startDate?.toIso8601String(),
-      'endDate': endDate?.toIso8601String(),
+      'startDate':formatDate(startDate!),
+      'endDate':formatDate(endDate!),
       if (status != null) 'status': status,
     };
   }

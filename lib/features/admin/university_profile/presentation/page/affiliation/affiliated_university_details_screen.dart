@@ -81,7 +81,7 @@ class AffiliatedUniversityDetailsScreen extends StatelessWidget {
                               },
                               child: AppText(
                                 text: "Website",
-                                color: AppColor.primary,
+                                color: AppColor.white,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),

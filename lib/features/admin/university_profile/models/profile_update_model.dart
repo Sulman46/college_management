@@ -1,9 +1,11 @@
-import 'dart:io';
+
+import 'package:flutter/foundation.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ProfileImageUpdateModel {
 
   String userId;
-  File image;
+  XFile image;
 
   ProfileImageUpdateModel({
     required this.userId,
@@ -15,7 +17,9 @@ class ProfileImageUpdateModel {
 
     return ProfileImageUpdateModel(
       userId: map['userId'] ?? '',
-      image: File(map['image'] ?? ''),
+
+
+      image: XFile(map['image'] ?? ''),
     );
   }
 

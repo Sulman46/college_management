@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:college_management/core/app/di_container.dart';
 import 'package:college_management/core/constants/app_widgets_size.dart';
 import 'package:college_management/core/constants/media_query.dart';
@@ -493,13 +495,20 @@ class _NewAllocationScreenState extends State<NewAllocationScreen> {
                         child:  BlocBuilder(
                           bloc: _teacherRecordCubit,
                           builder: (context,statebkkl) {
+                            var list=_teacherRecordCubit.activeTeacherList.where((element) => element.department!.where((element) => element.name==_teacherAllocationCubit.teacherAllocationModel.department ,).isNotEmpty,).where((element) => !_teacherAllocationCubit.teacherAllocationList.any((aloc) => aloc.teacherId==element.id && aloc.courseMappingId==_teacherAllocationCubit.teacherAllocationModel.courseMappingId),).toList();
+                           if(widget.allocationModel!=null){
+                             if(!list.any((element) => element.id==widget.allocationModel!.teacherId,)){
+                               list.add(_teacherRecordCubit.teacherList.where((element) => element.id==widget.allocationModel!.teacherId,).first);
+                             }
+                           }
+
                             return SizedBox(
                               width: mdWidth(context),
                               child: _teacherRecordCubit.activeTeacherList.isNotEmpty && _teacherAllocationCubit.teacherAllocationModel.courseName!=null? CustomPopMenuButton(
                                 menus:
-                                _teacherRecordCubit.activeTeacherList.where((element) => element.department!.where((element) => element.name==_teacherAllocationCubit.teacherAllocationModel.department,).isNotEmpty,).map((e) => e.teacherName??"",).toList(),
+                                list.map((e) => e.teacherName??"",) .toList(),
                                 onSelected: (p0) {
-                                  var teacherModel=_teacherRecordCubit.activeTeacherList.where((element) => element.department!.where((element) => element.name==_teacherAllocationCubit.teacherAllocationModel.department,).isNotEmpty).toList()[p0];
+                                  var teacherModel=list.toList()[p0];
                                   var model = _teacherAllocationCubit.teacherAllocationModel;
                                   _teacherAllocationCubit.getTeacherAllocationModel(TeacherAllocationModel(affiliation: model.affiliation,department: model.department,programName:model.programName,combinedPrograms: model.combinedPrograms,combinedProgramsIds:model.combinedProgramsIds,batch: model.batch ,degree: model.degree,section: model.section,semester: model.semester,courseCode: model.courseCode,courseName: model.courseName,creditHours: model.creditHours,teacherName: teacherModel.teacherName??"",teacherId: teacherModel.id??"",courseMappingId: model.courseMappingId??"" ));
                                 },

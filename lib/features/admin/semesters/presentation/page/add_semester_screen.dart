@@ -360,7 +360,8 @@ class _AddSemesterScreenState extends State<AddSemesterScreen> {
                         child:  SizedBox(
                           width: mdWidth(context),
                           child: CustomPopMenuButton(
-                            menus: ConstantData.semesterList,
+                            // menus: ConstantData.semesterList,
+                            menus: ["1"],
                             onSelected: (p0) {
                               String val=ConstantData.semesterList[p0];
                               AddSemesterModel model=_semesterCubit.pickSemesterLevel;

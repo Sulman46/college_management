@@ -1,4 +1,6 @@
 
+import '../../../../core/helper/app_date_picker.dart';
+
 class HodAssignModel {
   final String? id;
   final HodTeacherModel? teacher;
@@ -6,9 +8,15 @@ class HodAssignModel {
   final DateTime? assignedDate;
   final String? status;
 
+  final String? userName;
+  final bool? isAccountGenerated;
+
+
   HodAssignModel({
     this.id,
     this.teacher,
+    this.userName,
+    this.isAccountGenerated,
     this.department,
     this.assignedDate,
     this.status,
@@ -23,6 +31,8 @@ class HodAssignModel {
           ? DateTime.tryParse(map['assignedDate'].toString())
           : null,
       status: map['status'] ?? "Active",
+      userName: map['userName'] ?? "-",
+      isAccountGenerated: map['isAccountGenerated'] ?? "-",
     );
   }
 
@@ -34,7 +44,7 @@ class HodAssignModel {
       if (department != null)
         'departmentId': department?.id,
       if (assignedDate != null)
-        'assignedDate': assignedDate!.toIso8601String(),
+        'assignedDate': formatDate(assignedDate!) ,
       if (status != null && status!.isNotEmpty)
         'status': status,
     };
@@ -46,10 +56,15 @@ class HodAssignModel {
     HodDepartmentModel? department,
     DateTime? assignedDate,
     String? status,
+
+     String? userName,
+     bool? isAccountGenerated,
   }) {
     return HodAssignModel(
       id: id ?? this.id,
       teacher: teacher ?? this.teacher,
+      userName: userName ?? this.userName,
+      isAccountGenerated: isAccountGenerated ?? this.isAccountGenerated,
       department: department ?? this.department,
       assignedDate: assignedDate ?? this.assignedDate,
       status: status ?? this.status,
@@ -119,7 +134,7 @@ class HodDepartmentModel {
       'name': name,
       'code': code,
       'status': status?.name??"Active",
-      'createdAt': date?.toIso8601String(),
+      'createdAt':formatDate(date!),
     };
   }
 }

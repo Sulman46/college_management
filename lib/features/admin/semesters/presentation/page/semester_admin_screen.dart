@@ -1,5 +1,6 @@
 import 'package:college_management/core/app/di_container.dart';
 import 'package:college_management/core/constants/app_widgets_size.dart';
+import 'package:college_management/core/theme/AppColor.dart';
 import 'package:college_management/features/admin/semesters/presentation/controller/cubit.dart';
 import 'package:college_management/features/admin/semesters/presentation/page/add_semester_screen.dart';
 import 'package:college_management/widgets/data_not_found_widget.dart';
@@ -48,7 +49,11 @@ class _SemesterAdminScreenState
               Column(
                 children: [
                   /// 🔹 TOP BAR
-                  CustomTopBar(text: "Semesters"),
+                  CustomTopBar(text: "Semesters",suffix: InkWell(
+                      onTap: () {
+                        _semesterCubit.canEdit(!_semesterCubit.isEdit);
+                      },
+                      child: Icon(_semesterCubit.isEdit? Icons.close:Icons.edit,color: AppColor.white,size: 20,)),),
 
                   Expanded(
                     child: SingleChildScrollView(
@@ -64,7 +69,7 @@ class _SemesterAdminScreenState
                               subTitle: "Search...",
                               isHintText: true,
                               onChanged: (p0) {
-                                _semesterCubit.filterData(p0.toLowerCase());
+                                _semesterCubit.getSearchVal(p0.toLowerCase());
                               },
                               borderSize: 1,
                               contentPadding: EdgeInsets.symmetric(horizontal: 5,vertical: 10),
@@ -72,9 +77,9 @@ class _SemesterAdminScreenState
 
                             SizedBox(height: 15,),
 
-                            if(_semesterCubit.filterSemesterList.isNotEmpty)
-                            ...List.generate(_semesterCubit.filterSemesterList.length, (index) => ProgramTimelineCard(
-                              semesterLevelsModel: _semesterCubit.filterSemesterList[index],),)
+                            if(_semesterCubit.groupedSemesterList.isNotEmpty)
+                            ...List.generate(_semesterCubit.groupedSemesterList.length, (index) => ProgramTimelineCard(
+                              semesterLevelsModel: _semesterCubit.groupedSemesterList[index],),)
                             else
                               DataNotFoundWidget(onTap: ()async{
                               await  _semesterCubit.getSemesterList();
@@ -89,6 +94,8 @@ class _SemesterAdminScreenState
                   )
                 ],
               ),
+
+              if(_semesterCubit.isEdit)
               AnimatedPositioned(
                 duration: Duration(milliseconds: 100),
                 top: _semesterCubit.top,

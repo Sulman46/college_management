@@ -25,7 +25,7 @@ class _HodNeuralListState extends State<HodNeuralList> {
             _neuralGeneratorCubit.hodFilterList.length,
                 (index) {
               var hod=_neuralGeneratorCubit.hodFilterList[index];
-              NeuralWidgetModel model=NeuralWidgetModel(id: hod.id??"",name: hod.teacher?.teacherName??'-', status: hod.status??"-", email: hod.teacher?.email??"-", department:[hod.department?.name??""], role: UserRole.hod, canSelect:hod.teacher?.isAccountGenerated??false, userName: hod.teacher?.userName??"-");
+              NeuralWidgetModel model=NeuralWidgetModel(id: hod.id??"",name: hod.teacher?.teacherName??'-', status: hod.status??"-", email: hod.teacher?.email??"-", department:[hod.department?.name??""], role: UserRole.hod, canSelect:hod.isAccountGenerated??false, userName: hod.userName);
               return NeuralWidget(model: model);
             },)
         else

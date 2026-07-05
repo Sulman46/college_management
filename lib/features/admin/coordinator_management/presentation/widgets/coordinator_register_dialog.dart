@@ -91,16 +91,16 @@ if(widget.coordinatorRegisterModel!=null){
                 SizedBox(height: 10),
 
                 CustomTextFormField(controller: coordinatorName, subTitle: "e.g. M Ali",title: "Name",isHintText: true,),
-                SizedBox(height: 10),
 
-                CustomTextFormField(controller: email, subTitle: "coordinator@gmail.com",title: "Email",isHintText: true,),
+                SizedBox(height: 10),
+                CustomTextFormField(controller: email, subTitle: "coordinator@gmail.com",title: "Email${widget.coordinatorRegisterModel!=null?" (read only)":""}",readOnly: widget.coordinatorRegisterModel!=null,isHintText: true,),
+
                 SizedBox(height: 10),
 
                 CustomTextFormField(controller: phone,
                   keyboardType: TextInputType.number,
                   inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly,
-
                   ],
                   subTitle: "03XXXX",title: "Name",isHintText: true,),
                 SizedBox(height: 10),

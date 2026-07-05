@@ -1,5 +1,6 @@
 class AttendancePolicyModel {
-  int id;
+  String id;
+  String? objectId;
   String type;
   String tag;
   String title;
@@ -8,6 +9,7 @@ class AttendancePolicyModel {
 
   AttendancePolicyModel({
     required this.id,
+     this.objectId,
     required this.type,
     required this.tag,
     required this.title,
@@ -18,7 +20,8 @@ class AttendancePolicyModel {
   factory AttendancePolicyModel.fromMap(
       Map<String, dynamic> map) {
     return AttendancePolicyModel(
-      id: map['_id'] ?? 0,
+      id: map['id'] ?? "",
+      objectId: map['_id'] ?? "",
       type: map['type'] ?? 'safe',
       tag: map['tag'] ?? '',
       title: map['title'] ?? '',
@@ -29,7 +32,9 @@ class AttendancePolicyModel {
 
   Map<String, dynamic> toMap() {
     return {
-      '_id': id,
+      'id': id,
+      if(objectId!=null)
+        "_id":objectId,
       'type': type,
       'tag': tag,
       'title': title,

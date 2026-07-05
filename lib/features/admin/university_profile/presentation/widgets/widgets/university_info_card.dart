@@ -29,7 +29,7 @@ class UniversityInfoCard extends StatelessWidget {
             ),
             child: Center(
               child: AppText(
-                text: model.name[0],
+                text: model.name.toString()[0].toUpperCase(),
                 fontWeight: FontWeight.bold,
                 color: AppColor.white,
               ),

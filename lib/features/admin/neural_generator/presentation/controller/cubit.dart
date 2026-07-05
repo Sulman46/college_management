@@ -148,7 +148,7 @@ class NeuralGeneratorCubit extends Cubit<NeuralGeneratorState> {
     List<NeuralWidgetModel> temp=List.from(userIds);
     bool val=true;
     for(var i in temp){
-      NeuralGenerateModel model=NeuralGenerateModel(email: i.email,name: i.name,userName: i.userName??makeUsername(i.name),role: userRole!.toJson(),userId: i.id,password:makePassword() );
+      NeuralGenerateModel model=NeuralGenerateModel(departmentValue: i.department,email: i.email,name: i.name,userName: i.userName==null || i.userName=="-" || i.userName==""?makeUsername(i.name):i.userName,role: userRole!.toJson(),userId: i.id,password:makePassword() );
       var response=await registerAccount(model);
       if(!response){
         val=false;
@@ -162,7 +162,7 @@ class NeuralGeneratorCubit extends Cubit<NeuralGeneratorState> {
     }
     closeLoadingDialog();
     emit(NeuralGeneratorLoading());
-    return true;
+    return val;
   }
 
 

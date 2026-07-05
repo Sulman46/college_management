@@ -1,3 +1,5 @@
+import '../../../../../core/helper/app_date_picker.dart';
+
 class DepartmentModel {
   String id;
   String name;
@@ -32,7 +34,7 @@ class DepartmentModel {
       'name': name,
       'code': code,
       'status': status.name,
-      'createdAt': date?.toIso8601String(),
+      'createdAt':formatDate(date!),
     };
   }
 }

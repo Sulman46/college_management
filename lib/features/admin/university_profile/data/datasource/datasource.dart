@@ -4,6 +4,7 @@ import 'package:college_management/core/constants/app_apis.dart';
 import 'package:college_management/core/controllers/dio_helper.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../models/profile_update_model.dart';
 import '../../models/university_model.dart';
@@ -101,18 +102,36 @@ class FunctionClassUniversityProfile extends UniversityProfileDataSource{
   @override
   Future<Either<String,String>> uploadProfile({required ProfileImageUpdateModel profileModel})async{
     try{
-      FormData formData=FormData.fromMap({
-        "userId":profileModel.userId,
-        "image":await MultipartFile.fromFile(profileModel.image.path.split('/').last)
+      MultipartFile imageFile;
+
+      final fileName =
+          "${profileModel.image.name}-${DateTime.now().millisecondsSinceEpoch}";
+
+      if (kIsWeb) {
+        imageFile = MultipartFile.fromBytes(
+          await profileModel.image.readAsBytes(),
+          filename: fileName,
+        );
+      } else {
+        imageFile = await MultipartFile.fromFile(
+          profileModel.image.path,
+          filename: fileName,
+        );
+      }
+
+      FormData formData = FormData.fromMap({
+        "userId": profileModel.userId,
+        "profileImage": imageFile,
       });
       var response=await _dioHelper.postWithFile(AppApis.profileImageUpdate,data: formData);
       var data=response.data;
+      log("@#432: ${data}");
       if(response.statusCode! >=200 && response.statusCode! <=300){
         String url=data["imageUrl"]??"";
         return Right(url);
       }
       return Left(
-        data==null? "Failed":  data['message'] ??
+        data==null? "Failed":  data['message'] ??data['error'] ??
             "Failed",
       );
     }catch(e){

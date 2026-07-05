@@ -95,6 +95,13 @@ class AppApis {
   static String bulkSaveMarks="/api/bulk-save";
   static String markingLock="/api/lock";
 
+  /// result
+  static String resultSheet="/api/result-sheet";
+
+  /// exam date fetch
+  static String fetchExamDate="/api/exam-schedule/fetch";
+  static String examScheduleBulkSave="/api/exam-schedule/bulk-save";
+
 
 
 

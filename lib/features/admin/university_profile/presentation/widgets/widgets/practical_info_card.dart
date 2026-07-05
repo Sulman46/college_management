@@ -24,7 +24,7 @@ class PracticalInfoCard extends StatelessWidget {
                 text: "Practical Component",
                 fontWeight: FontWeight.w600,
               ),
-              BadgeWidget(text:"Pass: ${model.practical?.passPercentage??0}%", color:AppColor.primary),
+              BadgeWidget(text:"Pass: ${model.practical?.passPercentage??0}%", color:AppColor.white),
             ],
           ),
           SizedBox(height: 10),

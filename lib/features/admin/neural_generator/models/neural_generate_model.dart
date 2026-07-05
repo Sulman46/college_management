@@ -6,6 +6,7 @@ class NeuralGenerateModel {
   final String? password;
   final String? email;
   final String? role;
+  dynamic departmentValue;
 
   NeuralGenerateModel({
     this.id,
@@ -15,6 +16,7 @@ class NeuralGenerateModel {
     this.password,
     this.email,
     this.role,
+    this.departmentValue,
   });
 
   factory NeuralGenerateModel.fromMap(Map<String, dynamic> map) {
@@ -26,6 +28,7 @@ class NeuralGenerateModel {
       userId: map['userId'] ?? '',
       email: map['email'] ?? '',
       role: map['role'] ?? '',
+      departmentValue: map['departmentValue'] ?? '',
     );
   }
 
@@ -38,6 +41,7 @@ class NeuralGenerateModel {
       if (password != null) 'password': password,
       if (email != null) 'email': email,
       if (role != null) 'role': role,
+      if (role != null) 'departmentValue': departmentValue,
     };
   }
 
@@ -49,6 +53,7 @@ class NeuralGenerateModel {
     String? password,
     String? email,
     String? role,
+    String? departmentValue,
   }) {
     return NeuralGenerateModel(
       id: id ?? this.id,
@@ -58,6 +63,7 @@ class NeuralGenerateModel {
       password: password ?? this.password,
       email: email ?? this.email,
       role: role ?? this.role,
+      departmentValue: departmentValue ?? this.departmentValue,
     );
   }
 
