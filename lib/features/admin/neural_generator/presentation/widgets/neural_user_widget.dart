@@ -75,7 +75,7 @@ class _NeuralUserWidgetState extends State<NeuralUserWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               UserNeuralStatusWidget(status: widget.model.status??"Active"),
-              CustomPopMenuButton(
+              widget.model.role=="Admin"? SizedBox():CustomPopMenuButton(
                 menus:statusList,
                 onSelected: (p0) async {
                   final neuralGeneratorCubit=DiContainer().sl<NeuralGeneratorCubit>();

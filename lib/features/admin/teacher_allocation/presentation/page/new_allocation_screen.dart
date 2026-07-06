@@ -19,6 +19,7 @@ import '../../../../../widgets/custom_button.dart';
 import '../../../../../widgets/custom_top_bar.dart';
 import '../../../course_catalog/presentation/widgets/catalog_depart_widget.dart';
 import '../../../course_mapping/model/course_mapping_model.dart';
+import '../../../teacher_records/models/teacher_model.dart';
 
 
 
@@ -41,13 +42,13 @@ class _NewAllocationScreenState extends State<NewAllocationScreen> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       if(widget.allocationModel!=null){
-        if(widget.allocationModel!.isCombinedClass!=null && widget.allocationModel!.isCombinedClass==false){
-          var temp=widget.allocationModel;
-          temp=widget.allocationModel!.copyWith(combinedPrograms: [widget.allocationModel?.programName??""]);
-          _teacherAllocationCubit.getTeacherAllocationModel(temp);
-        }else{
+        // if(widget.allocationModel!.isCombinedClass!=null && widget.allocationModel!.isCombinedClass==false){
+        //   var temp=widget.allocationModel;
+        //   temp=widget.allocationModel!.copyWith(combinedPrograms: [...[widget.allocationModel?.programName??""],]);
+        //   _teacherAllocationCubit.getTeacherAllocationModel(temp);
+        // }else{
           _teacherAllocationCubit.getTeacherAllocationModel(widget.allocationModel!);
-        }
+        // }
       }else{
         _teacherAllocationCubit.getTeacherAllocationModel(TeacherAllocationModel());
       }
@@ -187,19 +188,26 @@ class _NewAllocationScreenState extends State<NewAllocationScreen> {
                                   String program=data.map((e) => e.programName??"",).toSet().toList()[p0];
                                   String id=data.firstWhere((element) => element.programName==program,).programId??"";
 
-                                  List<String> list=_teacherAllocationCubit.teacherAllocationModel.combinedPrograms??[];
-                                  list.add(program);
-                                  list=list.toSet().toList();
-                                  List<String> idsList=_teacherAllocationCubit.teacherAllocationModel.combinedProgramsIds??[];
+                                  ///todo uncomment if need for multiple mapping ids
+                                  // List<String> list=_teacherAllocationCubit.teacherAllocationModel.combinedPrograms??[];
+                                  // list.add(program);
+                                  // list=list.toSet().toList();
+                                  // List<String> idsList=_teacherAllocationCubit.teacherAllocationModel.combinedProgramsIds??[];
+                                  // idsList.add(id);
+                                  // idsList=idsList.toSet().toList();
+
+                                  List<String> list=[];
+                                  List<String> idsList=[];
                                   idsList.add(id);
-                                  idsList=idsList.toSet().toList();
+                                  list.add(program);
+
                                   _teacherAllocationCubit.getTeacherAllocationModel(TeacherAllocationModel(affiliation: _teacherAllocationCubit.teacherAllocationModel.affiliation,department: _teacherAllocationCubit.teacherAllocationModel.department,combinedPrograms:list,combinedProgramsIds: idsList));
                                 },
                                 widget: DropDownFieldWidget(
                                   canTap: _teacherAllocationCubit.teacherAllocationModel.department!=null,
-                                  text: "Select..",
+                                  text:_teacherAllocationCubit.teacherAllocationModel.combinedPrograms!=null? "${_teacherAllocationCubit.teacherAllocationModel.combinedPrograms!.isEmpty? "Select...":_teacherAllocationCubit.teacherAllocationModel.combinedPrograms?.join(", ")}":"Select..",
                                   maxLine: 1,
-                                  isFilled: false,
+                                  isFilled: _teacherAllocationCubit.teacherAllocationModel.combinedPrograms !=null && _teacherAllocationCubit.teacherAllocationModel.combinedPrograms!.isNotEmpty,
                                 ),
                               ):InkWell(
                                 onTap: ()async {
@@ -209,9 +217,9 @@ class _NewAllocationScreenState extends State<NewAllocationScreen> {
                                 },
                                 child: DropDownFieldWidget(
                                   canTap: _teacherAllocationCubit.teacherAllocationModel.department!=null,
-                                  text:"Select..",
+                                  text:_teacherAllocationCubit.teacherAllocationModel.combinedPrograms!=null? "${_teacherAllocationCubit.teacherAllocationModel.combinedPrograms!.isEmpty? "Select...":_teacherAllocationCubit.teacherAllocationModel.combinedPrograms?.join(", ")}":"Select..",
                                   maxLine: 1,
-                                  isFilled: false,
+                                  isFilled: _teacherAllocationCubit.teacherAllocationModel.combinedPrograms !=null && _teacherAllocationCubit.teacherAllocationModel.combinedPrograms!.isNotEmpty,
                                 ),
                               ),
                             );
@@ -219,20 +227,20 @@ class _NewAllocationScreenState extends State<NewAllocationScreen> {
                         ),
                       ),
 
-                      if(_teacherAllocationCubit.teacherAllocationModel.combinedPrograms!=null && _teacherAllocationCubit.teacherAllocationModel.combinedPrograms!.isNotEmpty)
-                        Wrap(
-                          children: List.generate(_teacherAllocationCubit.teacherAllocationModel.combinedPrograms?.length??0, (index) => CatalogDepartWidget(text: _teacherAllocationCubit.teacherAllocationModel.combinedPrograms![index], onTap: () {
-                            List<String> list=List.from(_teacherAllocationCubit.teacherAllocationModel.combinedPrograms??[]);
-                            list.removeWhere((element) => element==_teacherAllocationCubit.teacherAllocationModel.combinedPrograms![index],);
-                             List<String> ids=List.from(_teacherAllocationCubit.teacherAllocationModel.combinedProgramsIds??[]);
-                            ids.removeWhere((element) => element==_teacherAllocationCubit.teacherAllocationModel.combinedProgramsIds![index],);
-                            if(list.isEmpty){
-                              _teacherAllocationCubit.getTeacherAllocationModel(TeacherAllocationModel(affiliation: _teacherAllocationCubit.teacherAllocationModel.affiliation,department: _teacherAllocationCubit.teacherAllocationModel.department,combinedPrograms: [],combinedProgramsIds: []));
-                            }else{
-                              _teacherAllocationCubit.getTeacherAllocationModel(_teacherAllocationCubit.teacherAllocationModel.copyWith(combinedPrograms: list,combinedProgramsIds: ids));
-                            }
-                          },),),
-                        ),
+                      // if(_teacherAllocationCubit.teacherAllocationModel.combinedPrograms!=null && _teacherAllocationCubit.teacherAllocationModel.combinedPrograms!.isNotEmpty)
+                      //   Wrap(
+                      //     children: List.generate(_teacherAllocationCubit.teacherAllocationModel.combinedPrograms?.length??0, (index) => CatalogDepartWidget(text: _teacherAllocationCubit.teacherAllocationModel.combinedPrograms![index], onTap: () {
+                      //       List<String> list=List.from(_teacherAllocationCubit.teacherAllocationModel.combinedPrograms??[]);
+                      //       list.removeWhere((element) => element==_teacherAllocationCubit.teacherAllocationModel.combinedPrograms![index],);
+                      //        List<String> ids=List.from(_teacherAllocationCubit.teacherAllocationModel.combinedProgramsIds??[]);
+                      //       ids.removeWhere((element) => element==_teacherAllocationCubit.teacherAllocationModel.combinedProgramsIds![index],);
+                      //       if(list.isEmpty){
+                      //         _teacherAllocationCubit.getTeacherAllocationModel(TeacherAllocationModel(affiliation: _teacherAllocationCubit.teacherAllocationModel.affiliation,department: _teacherAllocationCubit.teacherAllocationModel.department,combinedPrograms: [],combinedProgramsIds: []));
+                      //       }else{
+                      //         _teacherAllocationCubit.getTeacherAllocationModel(_teacherAllocationCubit.teacherAllocationModel.copyWith(combinedPrograms: list,combinedProgramsIds: ids));
+                      //       }
+                      //     },),),
+                      //   ),
                       SizedBox(height: 15),
 
                       /// 🔹 SESSION
@@ -495,10 +503,14 @@ class _NewAllocationScreenState extends State<NewAllocationScreen> {
                         child:  BlocBuilder(
                           bloc: _teacherRecordCubit,
                           builder: (context,statebkkl) {
-                            var list=_teacherRecordCubit.activeTeacherList.where((element) => element.department!.where((element) => element.name==_teacherAllocationCubit.teacherAllocationModel.department ,).isNotEmpty,).where((element) => !_teacherAllocationCubit.teacherAllocationList.any((aloc) => aloc.teacherId==element.id && aloc.courseMappingId==_teacherAllocationCubit.teacherAllocationModel.courseMappingId),).toList();
+                            List<TeacherModel> list=List.from(_teacherRecordCubit.activeTeacherList.where((element) => element.department!.where((element) => element.name==_teacherAllocationCubit.teacherAllocationModel.department ,).isNotEmpty,).where((element) => !_teacherAllocationCubit.teacherAllocationList.any((aloc) => aloc.teacherId==element.id && aloc.courseMappingId==_teacherAllocationCubit.teacherAllocationModel.courseMappingId),).toList());
                            if(widget.allocationModel!=null){
-                             if(!list.any((element) => element.id==widget.allocationModel!.teacherId,)){
-                               list.add(_teacherRecordCubit.teacherList.where((element) => element.id==widget.allocationModel!.teacherId,).first);
+                             final index = _teacherRecordCubit.teacherList.indexWhere(
+                                   (e) => e.id == widget.allocationModel!.teacherId,
+                             );
+
+                             if (index != -1) {
+                               list.add(_teacherRecordCubit.teacherList[index]);
                              }
                            }
 

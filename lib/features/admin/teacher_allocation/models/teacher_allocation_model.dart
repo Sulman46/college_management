@@ -77,9 +77,9 @@ class TeacherAllocationModel {
 
       combinedPrograms: map['combinedPrograms'] == null
           ? []
-          : List<String>.from(
+          : [...List<String>.from(
         map['combinedPrograms'].map((e) => e.toString()),
-      ),
+      ),map['programName']?.toString()??""],
 
       teacherId: map['teacherId']?.toString(),
       teacherName: map['teacherName']?.toString(),

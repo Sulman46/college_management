@@ -9,8 +9,13 @@ class AppApis {
 
   static String login = "/api/auth/login";
 
-  /// access generated
+  /// access generated neural
   static String accessGenerate="/api/admin/generate-user";
+
+  /// users lists neural
+  static String userList="/api/admin/users-list";
+  static String userListStatus="/api/admin/user-status";
+  static String userResetKey="/api/admin/user-reset-key";
 
   /// university profile update, affiliation etc
   static String universityProfileSetup="/api/university-setup";
@@ -77,11 +82,6 @@ class AppApis {
   /// leave
   static String leave="/api/leaves";
 
-
-  /// users lists
-  static String userList="/api/admin/users-list";
-  static String userListStatus="/api/admin/user-status";
-  static String userResetKey="/api/admin/user-reset-key";
 
   /// freeze request
   static String freezePendingRequest="/api/admin/pending-requests";

@@ -125,7 +125,7 @@ class _AddNewStudentScreenState extends State<AddNewStudentScreen> {
                                     title: "Gender",
                                     widget: DropDownFieldWidget(
                                       text:_studentRegisterCubit.gender??"Select..",
-                                      isFilled: false,
+                                      isFilled: _studentRegisterCubit.gender!=null,
                                     ),
                                   ),
                                   SizedBox(height: 10),
