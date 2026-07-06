@@ -591,7 +591,7 @@ class _AddTeacherAttendanceScreenState
                       ),
                       SizedBox(height: 10),
 
-                      /// slot time
+                      /// slot timee
                       BlocBuilder(
                         bloc: _timeTableCubit,
                         builder: (context, statseba) {
