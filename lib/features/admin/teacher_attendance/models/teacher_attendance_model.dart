@@ -3,6 +3,7 @@ import '../../../../core/helper/app_date_picker.dart';
 
 class TeacherAttendanceModel {
   final String? id;
+  final String? timetableId;
   final String? department;
   final String? programName;
   final String? affiliation;
@@ -26,6 +27,7 @@ class TeacherAttendanceModel {
 
   TeacherAttendanceModel({
     this.id,
+    this.timetableId,
     this.department,
     this.programName,
     this.affiliation,
@@ -51,6 +53,7 @@ class TeacherAttendanceModel {
   factory TeacherAttendanceModel.fromMap(Map<String, dynamic> map) {
     return TeacherAttendanceModel(
       id: map['_id'] ?? "",
+      timetableId: map['timetableId'] ?? "",
       department: map['department'] ?? "",
       programName: map['programName'] ?? "",
       affiliation: map['affiliation'] ?? "",
@@ -86,6 +89,7 @@ class TeacherAttendanceModel {
   Map<String, dynamic> toMap() {
     return {
       if (id != null && id!.isNotEmpty) '_id': id,
+      if (timetableId != null) 'timetableId': timetableId,
       if (department != null) 'department': department,
       if (programName != null) 'programName': programName,
       if (affiliation != null) 'affiliation': affiliation,
@@ -111,6 +115,7 @@ class TeacherAttendanceModel {
 
   TeacherAttendanceModel copyWith({
     String? id,
+    String? timetableId,
     String? department,
     String? programName,
     String? affiliation,
@@ -134,6 +139,7 @@ class TeacherAttendanceModel {
   }) {
     return TeacherAttendanceModel(
       id: id ?? this.id,
+      timetableId: timetableId ?? this.timetableId,
       department: department ?? this.department,
       programName: programName ?? this.programName,
       affiliation: affiliation ?? this.affiliation,
@@ -160,11 +166,14 @@ class TeacherAttendanceModel {
 
   bool get hasNullFields =>
       department == null ||
+      department == null ||
           affiliation == null ||
           degree == null ||
           semesterLevel == null ||
           section == null ||
           session == null ||
+          timetableId == null ||
+
           teacher == null ||
           subject == null ||
           slotTime == null ||

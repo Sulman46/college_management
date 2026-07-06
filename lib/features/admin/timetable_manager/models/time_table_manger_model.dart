@@ -99,12 +99,14 @@ class TimeTableManagerModel {
 
 class TimeTableCellModel {
   final String? courseId;
+  final String? teacherId;
   final String? teacher;
   final String? subject;
   final String? room;
 
   TimeTableCellModel({
     this.courseId,
+    this.teacherId,
     this.teacher,
     this.subject,
     this.room,
@@ -112,7 +114,8 @@ class TimeTableCellModel {
 
   factory TimeTableCellModel.fromMap(Map<String, dynamic> map) {
     return TimeTableCellModel(
-      courseId: map['teacherId'] ?? "",
+      courseId: map['courseId'] ?? "",
+      teacherId: map['teacherId'] ?? "",
       teacher: map['teacher'] ?? "",
       subject: map['subject'] ?? "",
       room: map['room'] ?? "",
@@ -122,6 +125,7 @@ class TimeTableCellModel {
   Map<String, dynamic> toMap() {
     return {
       if (courseId != null) 'courseId': courseId,
+      if (teacherId != null) 'teacherId': teacherId,
       if (teacher != null) 'teacher': teacher,
       if (subject != null) 'subject': subject,
       if (room != null) 'room': room,
@@ -130,12 +134,14 @@ class TimeTableCellModel {
 
   TimeTableCellModel copyWith({
     String? courseId,
+    String? teacherId,
     String? teacher,
     String? subject,
     String? room,
   }) {
     return TimeTableCellModel(
       courseId: courseId ?? this.courseId,
+      teacherId: teacherId ?? this.teacherId,
       teacher: teacher ?? this.teacher,
       subject: subject ?? this.subject,
       room: room ?? this.room,
