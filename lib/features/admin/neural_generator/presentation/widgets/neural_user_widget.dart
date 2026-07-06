@@ -19,11 +19,14 @@ class NeuralUserWidget extends StatefulWidget {
 
 class _NeuralUserWidgetState extends State<NeuralUserWidget> {
   
-  List<String> statusList=[ "Active","Inactive","Blocked","Reset key"];
+  List<String> statusList=[];
   
   @override
   void initState() {
-    statusList.remove(widget.model.status??"");
+    List<String> temp=[ "Active",if(widget.model.role!="Admin") "Inactive",if(widget.model.role!="Admin")"Blocked","Reset key"];
+    temp.removeWhere((element) => element==widget.model.status,);
+
+    statusList=temp;
     // TODO: implement initState
     super.initState();
   }
@@ -75,7 +78,7 @@ class _NeuralUserWidgetState extends State<NeuralUserWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               UserNeuralStatusWidget(status: widget.model.status??"Active"),
-              widget.model.role=="Admin"? SizedBox():CustomPopMenuButton(
+              CustomPopMenuButton(
                 menus:statusList,
                 onSelected: (p0) async {
                   final neuralGeneratorCubit=DiContainer().sl<NeuralGeneratorCubit>();
