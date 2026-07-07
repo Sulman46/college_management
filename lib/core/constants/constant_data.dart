@@ -52,7 +52,7 @@ class ConstantData{
   static List<String> hodAssignStatus=["Active", "On Leave", "Former"];
 
 
-  static List<String> teacherAttendanceStatus=['Present', 'Absent', 'Late', 'Early Left', 'Short', 'Half Day'];
+  static List<String> teacherAttendanceStatus=["Present", "Absent", "Late", "Early Left", "Short", "Half Day"];
   static List<String> teacherAttendanceType=['Subject-Wise', 'Overall', 'Live-Marking', 'Manual-Entry'];
   static List<String> filterTeacherAttendanceRecord=[
     "All",
@@ -72,5 +72,6 @@ class ConstantData{
   static List<String> coordinatorDesignation=["Program Coordinator","Assistant Coordinator","Deputy Coordinator","Senior Coordinator"];
 
   static List<String> courseTypes=['Theory', 'Lab', 'Theory + Lab'];
+
 
 }

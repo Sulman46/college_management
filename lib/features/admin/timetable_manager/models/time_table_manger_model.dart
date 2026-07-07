@@ -114,8 +114,8 @@ class TimeTableCellModel {
 
   factory TimeTableCellModel.fromMap(Map<String, dynamic> map) {
     return TimeTableCellModel(
-      courseId: map['courseId'] ?? "",
-      teacherId: map['teacherId'] ?? "",
+      courseId: map['courseId'],
+      teacherId: map['teacherId'],
       teacher: map['teacher'] ?? "",
       subject: map['subject'] ?? "",
       room: map['room'] ?? "",

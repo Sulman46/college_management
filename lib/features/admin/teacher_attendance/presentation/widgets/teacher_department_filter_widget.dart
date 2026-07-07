@@ -11,16 +11,12 @@ Widget? widget;
   Widget build(BuildContext context) {
     return  Container(
       padding: EdgeInsets.symmetric(horizontal: 10,vertical: 7),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(width: 1,color: AppColor.white),
-          color: AppColor.white
-      ),
+      decoration: AppColor.containerNeon,
       child:widget?? Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Expanded(child: AppText(text:text,fontSize: 12,color: AppColor.primary,overflow: TextOverflow.ellipsis,maxLines: 1,)),
-          Icon(Icons.keyboard_arrow_down,size: 17,color: AppColor.primary,)
+          Expanded(child: AppText(text:text,fontSize: 12,color: AppColor.white,overflow: TextOverflow.ellipsis,maxLines: 1,)),
+          Icon(Icons.keyboard_arrow_down,size: 17,color: AppColor.white,)
         ],
       ),
     );

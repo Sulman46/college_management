@@ -1,3 +1,4 @@
+import 'package:college_management/features/admin/teacher_attendance/presentation/page/get_semester_timetable_sheet_dialog.dart';
 import 'package:college_management/features/admin/teacher_attendance/presentation/widgets/teacher_attendance_tab_button.dart';
 import 'package:flutter/material.dart';
 
@@ -30,7 +31,8 @@ class TeacherAttendanceAdminHeader extends StatelessWidget {
       actions: [
         InkWell(
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => AddTeacherAttendanceScreen(),));
+            showDialog(context: context, builder: (context) => GetSemesterTimetableSheetDialog(),);
+            // Navigator.push(context, MaterialPageRoute(builder: (context) => AddTeacherAttendanceScreen(),));
           },
           child: Container(
               padding: EdgeInsets.all(3),

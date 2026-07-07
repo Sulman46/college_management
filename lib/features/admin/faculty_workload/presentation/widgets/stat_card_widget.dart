@@ -13,7 +13,7 @@ class StatCardWidget extends StatelessWidget {
       width: mdWidth(context) * .28,
       padding: EdgeInsets.symmetric(vertical: 15,horizontal: 5),
       decoration: BoxDecoration(
-        color: AppColor.white,
+        color: AppColor.bgPrimary,
         borderRadius: BorderRadius.circular(15),
         border: Border.all(color: color, width: 2),
       ),

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:college_management/core/app/di_container.dart';
 import 'package:college_management/core/helper/show_message.dart';
 import 'package:college_management/core/theme/AppColor.dart';
@@ -73,7 +75,8 @@ class _AddLectureTimeSlotDialogState extends State<AddLectureTimeSlotDialog> {
                 CustomPopMenuButton(menus: _teacherAllocationCubit.activeTeacherAllocationList.where((element) => element.semesterId==widget.timeTableManagerModel.semesterModel?.id && element.courseName==_timeTableManagerCubit.tableCellModel.subject).map((e) => e.teacherName??"",).toList(),
                   onSelected: (p0) {
                     String teacherName= _teacherAllocationCubit.activeTeacherAllocationList.where((element) => element.semesterId==widget.timeTableManagerModel.semesterModel?.id && element.courseName==_timeTableManagerCubit.tableCellModel.subject).map((e) => e.teacherName??"",).toList()[p0];
-                    String teacherId= _teacherAllocationCubit.activeTeacherAllocationList.where((element) => element.semesterId==widget.timeTableManagerModel.semesterModel?.id && element.courseName==_timeTableManagerCubit.tableCellModel.subject && element.teacherName==teacherName).map((e) => e.id??"",).first;
+                    String teacherId= _teacherAllocationCubit.activeTeacherAllocationList.where((element) => element.semesterId==widget.timeTableManagerModel.semesterModel?.id && element.courseName==_timeTableManagerCubit.tableCellModel.subject && element.teacherName==teacherName).map((e) => e.teacherId??"",).first;
+                    log("#24: ${teacherId}");
                     _timeTableManagerCubit.getTableCell(model:TimeTableCellModel(subject: _timeTableManagerCubit.tableCellModel.subject,courseId:_timeTableManagerCubit.tableCellModel.courseId,teacher: teacherName,teacherId:teacherId ));
                     },
                   title: "Instructor",
@@ -120,6 +123,8 @@ class _AddLectureTimeSlotDialogState extends State<AddLectureTimeSlotDialog> {
                       var oldTimeModel=widget.timeTableManagerModel;
                       var slotMap=oldTimeModel.data;
                       slotMap!.addAll({widget.keyValue:value});
+                      // log("23423: ${value.toMap()} /// ${slotMap}");
+                      // return ;
                       oldTimeModel=oldTimeModel.copyWith(data: slotMap);
                       var response=await _timeTableManagerCubit.update(oldTimeModel);
                       if(response){
