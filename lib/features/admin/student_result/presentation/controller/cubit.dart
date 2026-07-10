@@ -24,6 +24,7 @@ class StudentResultCubit extends Cubit<StudentResultState> {
 
   void dataInit(){
     emit(StudentResultLoading());
+    _dataList=[];
     searchController.clear();
     filterModel=FilterResultModel();
     filterName="";

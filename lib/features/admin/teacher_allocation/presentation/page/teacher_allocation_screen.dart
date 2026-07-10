@@ -7,7 +7,9 @@ import 'package:college_management/widgets/custom_text_form.dart';
 import 'package:college_management/widgets/custom_top_bar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../../core/enums/user_enums.dart';
 import '../../../../../widgets/custom_button.dart';
+import '../../../../Authentication/presentation/controller/cubit.dart';
 import '../widgets/teacher_allocation_item.dart';
 
 
@@ -21,6 +23,7 @@ class TeacherAllocationScreen extends StatefulWidget {
 
 class _TeacherAllocationScreenState extends State<TeacherAllocationScreen> {
 final _allocationCubit=DiContainer().sl<TeacherAllocationCubit>();
+final _authCubit=DiContainer().sl<AuthenticationCubit>();
 
   @override
   void initState() {
@@ -68,7 +71,7 @@ final _allocationCubit=DiContainer().sl<TeacherAllocationCubit>();
 
                             /// 🔹 LIST
                             if(_allocationCubit.filterTeacherAllocation.isNotEmpty)
-                            ...List.generate(_allocationCubit.filterTeacherAllocation.length, (index) => TeacherAllocationItem(model: _allocationCubit.filterTeacherAllocation[index],),)
+                            ...List.generate(_allocationCubit.filterTeacherAllocation.length, (index) => TeacherAllocationItem(canEdit: _authCubit.userModel!.role==UserRole.admin,model: _allocationCubit.filterTeacherAllocation[index],),)
                             else
                               DataNotFoundWidget(onTap: () async{
                                await _allocationCubit.get();
@@ -83,6 +86,7 @@ final _allocationCubit=DiContainer().sl<TeacherAllocationCubit>();
                   )
                 ],
               ),
+              if(_authCubit.userModel!.role==UserRole.admin)
               AnimatedPositioned(
                 duration: Duration(milliseconds: 100),
                 top: _allocationCubit.top,

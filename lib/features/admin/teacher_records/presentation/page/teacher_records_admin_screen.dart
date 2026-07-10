@@ -9,7 +9,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/app/di_container.dart';
 import '../../../../../core/app/myapp.dart';
 import '../../../../../core/constants/media_query.dart';
+import '../../../../../core/enums/user_enums.dart';
 import '../../../../../widgets/custom_button.dart';
+import '../../../../Authentication/presentation/controller/cubit.dart';
 import '../controller/cubit.dart';
 
 
@@ -23,7 +25,7 @@ class TeacherRecordsAdminScreen extends StatefulWidget {
 
 class _TeacherRecordsAdminScreenState extends State<TeacherRecordsAdminScreen> {
 
-  var _teacherRecordCubit=DiContainer().sl<TeacherRecordsCubit>();
+  final _teacherRecordCubit=DiContainer().sl<TeacherRecordsCubit>();
 
   @override
   void initState() {
@@ -74,7 +76,10 @@ class _TeacherRecordsAdminScreenState extends State<TeacherRecordsAdminScreen> {
 
                             /// 🔹 LIST
                             if(_teacherRecordCubit.filterTeacher.isNotEmpty)
-                            ...List.generate(_teacherRecordCubit.filterTeacher.length, (index) => TeacherRecordItemWidget(model: _teacherRecordCubit.filterTeacher[index],),)
+                            ...List.generate(_teacherRecordCubit.filterTeacher.length,
+                                  (index) => TeacherRecordItemWidget(
+                                    canEdit:_authCubit.userModel!.role==UserRole.admin,
+                                    model: _teacherRecordCubit.filterTeacher[index],),)
                             else
                             DataNotFoundWidget(onTap: () async{
                             await  _teacherRecordCubit.getTeachers();
@@ -89,6 +94,7 @@ class _TeacherRecordsAdminScreenState extends State<TeacherRecordsAdminScreen> {
                   )
                 ],
               ),
+              if(_authCubit.userModel!.role==UserRole.admin)
               AnimatedPositioned(
                 duration: Duration(milliseconds: 100),
                 top: _teacherRecordCubit.top,
@@ -116,3 +122,5 @@ class _TeacherRecordsAdminScreenState extends State<TeacherRecordsAdminScreen> {
     );
   }
 }
+
+final _authCubit=DiContainer().sl<AuthenticationCubit>();

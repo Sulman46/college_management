@@ -4,10 +4,12 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../../core/app/di_container.dart';
 import '../../../../../core/constants/app_widgets_size.dart';
+import '../../../../../core/enums/user_enums.dart';
 import '../../../../../core/theme/AppColor.dart';
 import '../../../../../widgets/app_text.dart';
 import '../../../../../widgets/custom_top_bar.dart';
 import '../../../../../widgets/more_vert_pop_menu_button.dart';
+import '../../../../Authentication/presentation/controller/cubit.dart';
 import '../../models/teacher_model.dart';
 import '../controller/cubit.dart';
 
@@ -20,13 +22,15 @@ class TeacherRecordDetailsScreen extends StatefulWidget {
 }
 
 class _TeacherRecordDetailsScreenState extends State<TeacherRecordDetailsScreen> {
+  final _authCubit=DiContainer().sl<AuthenticationCubit>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.bgPrimary,
       body: Column(
         children: [
-          CustomTopBar(text: "Teacher Details",suffix: CustomPopMenuButton(
+          CustomTopBar(text: "Teacher Details",suffix:
+          _authCubit.userModel!.role==UserRole.admin?CustomPopMenuButton(
             menus: ["Edit",widget.model.status=="Active"?"Inactive":"Active","Delete"],
             onSelected: (value) async{
               var teacherRecordCubit=DiContainer().sl<TeacherRecordsCubit>();
@@ -54,7 +58,7 @@ class _TeacherRecordDetailsScreenState extends State<TeacherRecordDetailsScreen>
                   }
               }
             },widget: Icon(Icons.more_vert,size: 20,color: AppColor.white,),
-          ),),
+          ):null,),
 
           Expanded(
             child: SingleChildScrollView(

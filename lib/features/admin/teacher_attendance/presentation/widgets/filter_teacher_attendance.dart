@@ -130,7 +130,7 @@ class _FilterTeacherAttendanceState extends State<FilterTeacherAttendance> {
                         onTap: () async {
                           DateTime? val = await AppDatePicker.pickCustomDate(
                             context: context,
-                            initialDate: DateTime.now(),
+                            initialDate:_teacherAttendanceCubit.historyFilterDate,
                             lastDate: DateTime(3000),
                             firstDate: DateTime(2000),
                           );

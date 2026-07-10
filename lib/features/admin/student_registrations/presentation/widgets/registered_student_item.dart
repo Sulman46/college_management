@@ -10,8 +10,9 @@ import '../controller/cubit.dart';
 import '../page/add_new_student_screen.dart';
 
 class RegisteredStudentItem extends StatelessWidget {
-   RegisteredStudentItem({super.key,required this.studentModel});
+   RegisteredStudentItem({super.key,required this.studentModel,required this.canEdit});
   StudentModel studentModel;
+  bool canEdit;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -151,6 +152,7 @@ class RegisteredStudentItem extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               ActiveInactiveStatusWidget(isActive: studentModel.status=="Active"),
+              if(canEdit)
               CustomPopMenuButton(
                 menus: ["Edit", "Delete"],
                 onSelected: (val) async {

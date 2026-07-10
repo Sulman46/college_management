@@ -15,6 +15,7 @@ abstract class StudentEnrollmentDataSource{
   Future<Either<String,String>> update({required StudentEnrollmentModel value});
   Future<Either<String,String>> delete({required StudentEnrollmentModel value});
   Future<Either<String,List<StudentEnrollmentModel>>> get({required StudentEnrollmentFilterModel value});
+  Future<Either<String,List<StudentEnrollmentModel>>> search({required String rollNumber});
 }
 
 
@@ -102,10 +103,41 @@ class FunctionClassStudentEnrollment extends StudentEnrollmentDataSource{
   @override
   Future<Either<String,List<StudentEnrollmentModel>>> get({required StudentEnrollmentFilterModel value})async{
     try{
-      var response=await _dioHelper.get(AppApis.studentEnrollments,queryParameters: value.toMap());
+      var response=
+      value.isDataProvided==false?
+      await _dioHelper.get(AppApis.studentEnrollments):
+      await _dioHelper.get(AppApis.studentEnrollments,queryParameters: value.toMap());
 
       if(response.statusCode! >= 200 && response.statusCode! <=300){
         log("3223423: ${response.data}");
+        var data=response.data;
+        if(data is List){
+          List<StudentEnrollmentModel> model=data.map((e)=>StudentEnrollmentModel.fromMap(e)).toList();
+          showMessage("32: ${model.length}");
+          return Right(model);
+        }else{
+          return Left(data['message'] ?? "Failed",
+          );
+        }
+      }
+      var data=response.data;
+      return Left(data['message'] ?? "Failed",
+      );
+    }catch(e){
+      return Left(e.toString());
+    }
+  }
+
+
+
+  @override
+  Future<Either<String,List<StudentEnrollmentModel>>> search({required String rollNumber})async{
+    try{
+      var response=await _dioHelper.get(AppApis.studentEnrollmentsSearch);
+
+      if(response.statusCode! >= 200 && response.statusCode! <=300){
+        log("3223423: ${response.data}");
+        showMessage("3242: ${response.data}");
         var data=response.data;
         if(data is List){
           List<StudentEnrollmentModel> model=data.map((e)=>StudentEnrollmentModel.fromMap(e)).toList();
@@ -122,4 +154,6 @@ class FunctionClassStudentEnrollment extends StudentEnrollmentDataSource{
       return Left(e.toString());
     }
   }
+
+
 }

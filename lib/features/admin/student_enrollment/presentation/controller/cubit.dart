@@ -1,6 +1,6 @@
-import 'dart:math';
-
+import 'package:college_management/core/enums/user_enums.dart';
 import 'package:college_management/core/helper/data_extractor.dart';
+import 'package:college_management/features/Authentication/presentation/controller/cubit.dart';
 import 'package:college_management/features/admin/student_enrollment/data/models/student_enrollment_filter_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/app/di_container.dart';
@@ -16,13 +16,14 @@ import 'state.dart';
 
 class StudentEnrollmentCubit extends Cubit<StudentEnrollmentState> {
   final StudentEnrollmentUseCase _useCase;
+
   StudentEnrollmentCubit(this._useCase) : super(StudentEnrollmentInit());
 
   StudentEnrollmentFilterModel filterModel=StudentEnrollmentFilterModel();
   StudentEnrollmentFilterModel submittedData=StudentEnrollmentFilterModel();
   List<StudentEnrollmentModel> _dataList=[];
   List<StudentEnrollmentModel> get dataList=>_dataList;
-  List<StudentEnrollmentModel> get filterDataList=>dataList.where((element) => element.status!="Promoted",).toList();
+  List<StudentEnrollmentModel> get filterDataList=>dataList.where((element) =>_authCubit.userModel!.role!=UserRole.student? element.status!="Promoted":true,).toList();
 
   List<StudentEnrollmentModel> _dataHistoryList=[];
   List<StudentEnrollmentModel> get dataHistoryList=>_dataHistoryList;
@@ -144,7 +145,32 @@ class StudentEnrollmentCubit extends Cubit<StudentEnrollmentState> {
     showLoadingDialog();
     isNewTab=false;
     emit(StudentEnrollmentLoading());
-    var response=await _useCase.get(value: submittedData);
+    var response=await _useCase.get(value: submittedData.copyWith(isDataProvided:_authCubit.userModel!.role!=UserRole.student ));
+    if(response.isLeft()){
+      showMessage(response.asLeft(),isError: true);
+      emit(StudentEnrollmentLoaded());
+      closeLoadingDialog();
+      return false;
+    }else{
+      var data=response.asRight();
+      _dataList=data;
+      emit(StudentEnrollmentLoaded());
+      closeLoadingDialog();
+      return true;
+    }
+  }
+
+  Future<bool> search()async{
+    var authCubit=DiContainer().sl<AuthenticationCubit>();
+    _dataList=[];
+    selectAllNewStudent([],selectAll: false);
+    selectAllEnrollment([],selectAll: false);
+    selectAllEnrollmentHistory([],selectAll: false);
+    showLoadingDialog();
+    isNewTab=false;
+    emit(StudentEnrollmentLoading());
+    showMessage("32432: ${ authCubit.userModel?.rollNo??""}");
+    var response=await _useCase.search(rollNumber: authCubit.userModel?.rollNo??"");
     if(response.isLeft()){
       showMessage(response.asLeft(),isError: true);
       emit(StudentEnrollmentLoaded());
@@ -303,3 +329,7 @@ class StudentEnrollmentCubit extends Cubit<StudentEnrollmentState> {
   }
   
 }
+
+var _authCubit=DiContainer().sl<AuthenticationCubit>();
+
+

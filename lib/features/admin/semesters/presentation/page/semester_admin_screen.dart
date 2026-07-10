@@ -1,6 +1,7 @@
 import 'package:college_management/core/app/di_container.dart';
 import 'package:college_management/core/constants/app_widgets_size.dart';
 import 'package:college_management/core/theme/AppColor.dart';
+import 'package:college_management/features/Authentication/presentation/controller/cubit.dart';
 import 'package:college_management/features/admin/semesters/presentation/controller/cubit.dart';
 import 'package:college_management/features/admin/semesters/presentation/page/add_semester_screen.dart';
 import 'package:college_management/widgets/data_not_found_widget.dart';
@@ -12,6 +13,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../../core/app/myapp.dart';
 import '../../../../../core/constants/media_query.dart';
+import '../../../../../core/enums/user_enums.dart';
 import '../../../../../widgets/custom_button.dart';
 import '../widgets/program_time_line_widget.dart';
 
@@ -27,6 +29,7 @@ class _SemesterAdminScreenState
     extends State<SemesterAdminScreen> {
 
   var _semesterCubit=DiContainer().sl<SemesterAdminCubit>();
+  var _authCubit=DiContainer().sl<AuthenticationCubit>();
   @override
   void initState() {
     super.initState();
@@ -49,11 +52,17 @@ class _SemesterAdminScreenState
               Column(
                 children: [
                   /// 🔹 TOP BAR
-                  CustomTopBar(text: "Semesters",suffix: InkWell(
+                  CustomTopBar(text: "Semesters",
+
+                    suffix:
+
+              _authCubit.userModel!.role==UserRole.admin?
+                    InkWell(
                       onTap: () {
                         _semesterCubit.canEdit(!_semesterCubit.isEdit);
                       },
-                      child: Icon(_semesterCubit.isEdit? Icons.close:Icons.edit,color: AppColor.white,size: 20,)),),
+                      child: Icon(_semesterCubit.isEdit? Icons.close:Icons.edit,color: AppColor.white,size: 20,))
+                  :null,),
 
                   Expanded(
                     child: SingleChildScrollView(

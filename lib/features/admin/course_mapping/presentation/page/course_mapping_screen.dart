@@ -8,8 +8,10 @@ import 'package:go_router/go_router.dart';
 import '../../../../../core/app/di_container.dart';
 import '../../../../../core/app/myapp.dart';
 import '../../../../../core/constants/media_query.dart';
+import '../../../../../core/enums/user_enums.dart';
 import '../../../../../widgets/custom_button.dart';
 import '../../../../../widgets/data_not_found_widget.dart';
+import '../../../../Authentication/presentation/controller/cubit.dart';
 import '../controller/cubit.dart';
 import '../widgets/course_mapping_widget.dart';
 import 'add_new_course_mapping_screen.dart';
@@ -23,6 +25,7 @@ class CourseMappingScreen extends StatefulWidget {
 
 class _CourseMappingScreenState extends State<CourseMappingScreen> {
   final _courseMappingCubit = DiContainer().sl<CourseMappingCubit>();
+  final _authCubit = DiContainer().sl<AuthenticationCubit>();
 
   @override
   void initState() {
@@ -83,6 +86,7 @@ class _CourseMappingScreenState extends State<CourseMappingScreen> {
                               ...List.generate(
                                 _courseMappingCubit.filterMapping.length,
                                 (index) => CourseMappingWidget(
+                                  canEdit: _authCubit.userModel!.role==UserRole.admin,
                                   model:
                                       _courseMappingCubit.filterMapping[index],
                                 ),
@@ -101,6 +105,8 @@ class _CourseMappingScreenState extends State<CourseMappingScreen> {
                   ),
                 ],
               ),
+              if(
+              _authCubit.userModel!.role==UserRole.admin)
               AnimatedPositioned(
                 duration: Duration(milliseconds: 100),
                 top: _courseMappingCubit.top,

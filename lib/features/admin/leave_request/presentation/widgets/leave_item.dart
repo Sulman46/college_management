@@ -10,8 +10,9 @@ import '../controller/cubit.dart';
 import 'approved_reject_widget.dart';
 
 class LeaveItem extends StatefulWidget {
-   LeaveItem({super.key,required this.model});
+   LeaveItem({super.key,required this.model,required this.canEdit});
   FacultyLeaveModel model;
+  bool canEdit;
   @override
   State<LeaveItem> createState() => _LeaveItemState();
 }
@@ -32,6 +33,7 @@ class _LeaveItemState extends State<LeaveItem> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               ApprovedRejectWidget(status:widget.model.status=="Approved"? LeaveRequestStatusEnum.approved:widget.model.status=="Rejected"? LeaveRequestStatusEnum.reject: LeaveRequestStatusEnum.pending),
+             if(widget.canEdit)
               CustomPopMenuButton(
                 menus: [ "Pending", "Approved", "Rejected"],
                 onSelected: (value) async {

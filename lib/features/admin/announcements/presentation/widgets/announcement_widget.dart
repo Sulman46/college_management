@@ -7,10 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../../core/app/di_container.dart';
+import '../../../../../core/enums/user_enums.dart';
 import '../../../../../core/helper/downloader_helper.dart';
 import '../../../../../widgets/confirmation_dialog.dart';
 import '../../../../../widgets/custom_animated_dialog.dart';
 import '../../../../../widgets/more_vert_pop_menu_button.dart';
+import '../../../../Authentication/presentation/controller/cubit.dart';
 import '../../../course_mapping/presentation/widgets/course_mapping_widget.dart';
 import '../controller/cubit.dart';
 
@@ -37,6 +39,7 @@ class _AnnouncementWidgetState extends State<AnnouncementWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               smallTag(widget.model.priority??""),
+              if(_authCubit.userModel!.role==UserRole.admin)
               CustomPopMenuButton(
                 menus: ["Edit",widget.model.isArchived==true?"Unarchive":"Archive", "Delete"],
                 onSelected: (val) async {
@@ -132,3 +135,6 @@ class _AnnouncementWidgetState extends State<AnnouncementWidget> {
     );
   }
 }
+
+
+final _authCubit=DiContainer().sl<AuthenticationCubit>();

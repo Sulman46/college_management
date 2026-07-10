@@ -9,8 +9,8 @@ import '../../../../../core/enums/user_enums.dart';
 import '../../../../../core/theme/AppColor.dart';
 import '../../../../Authentication/presentation/controller/cubit.dart';
 
-class EnrolledStudentWidget extends StatelessWidget {
-   EnrolledStudentWidget({super.key, this.studentEnrollmentModel, this.studentModel, this.onTap, this.isChecked, this.canCheck=true});
+class StudentRoleEnrollmentWidget extends StatelessWidget {
+  StudentRoleEnrollmentWidget({super.key, this.studentEnrollmentModel, this.studentModel, this.onTap, this.isChecked, this.canCheck=true});
   StudentEnrollmentModel? studentEnrollmentModel;
   StudentModel? studentModel;
   bool? isChecked;
@@ -31,11 +31,13 @@ class EnrolledStudentWidget extends StatelessWidget {
                 children: [
                   AppText(text:studentModel?.name?? studentEnrollmentModel?.name??"",fontSize: 12,color: AppColor.white,fontWeight: FontWeight.w600,),
                   SizedBox(height: 5,),
-                  AppText(text: "Reg-No: ${studentModel?.registrationNumber?? studentEnrollmentModel?.srNo??""}",fontSize: 11,color: AppColor.greyLight,fontWeight: FontWeight.w500,),
+                  AppText(text: "Reg-No: ${studentModel?.registrationNumber?? studentEnrollmentModel?.srNo??""}",fontSize: 11,color: AppColor.white,fontWeight: FontWeight.w500,),
                   SizedBox(height: 5,),
-                  AppText(text: "Roll-No: ${studentModel?.rollNo?? studentEnrollmentModel?.rollNo??""}",fontSize: 11,color: AppColor.greyLight,fontWeight: FontWeight.w500,),
+                  AppText(text: "Roll-No: ${studentModel?.rollNo?? studentEnrollmentModel?.rollNo??""}",fontSize: 11,color: AppColor.white,fontWeight: FontWeight.w500,),
                   SizedBox(height: 5,),
-                  AppText(text: "Roll-No: ${studentModel?.rollNo?? studentEnrollmentModel?.rollNo??""}",fontSize: 11,color: AppColor.greyLight,fontWeight: FontWeight.w500,),
+                  AppText(text: "Program: ${studentEnrollmentModel?.programName??""}",fontSize: 11,color: AppColor.white,fontWeight: FontWeight.w500,),
+                  SizedBox(height: 5,),
+                  AppText(text: "Sem: ${studentEnrollmentModel?.semester??""} | Sec: ${studentEnrollmentModel?.section??""}| Sess: ${studentEnrollmentModel?.session??""}",fontSize: 11,color: AppColor.white,fontWeight: FontWeight.w500,),
 
                 ],
               ),
@@ -45,10 +47,10 @@ class EnrolledStudentWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 if(_authCubit.userModel!.role==UserRole.admin|| _authCubit.userModel!.role==UserRole.hod)
-                canCheck? InkWell(
-                    onTap: onTap,
-                    child: Icon(isChecked==true? Icons.check_box_rounded:Icons.check_box_outline_blank,size: 20,color:isChecked==true? AppColor.white.withOpacity(.8):AppColor.grey.withOpacity(.8),)
-                ):SizedBox()
+                  canCheck? InkWell(
+                      onTap: onTap,
+                      child: Icon(isChecked==true? Icons.check_box_rounded:Icons.check_box_outline_blank,size: 20,color:isChecked==true? AppColor.white.withOpacity(.8):AppColor.grey.withOpacity(.8),)
+                  ):SizedBox()
                 else
                   SizedBox(),
                 ActiveInactiveStatusWidget(isActive: studentEnrollmentModel!.status=="Active",color:studentEnrollmentModel!.status=="Active" || studentEnrollmentModel!.status=="Inactive"?null:AppColor.blueLight ,text: studentEnrollmentModel?.status??"Active",),

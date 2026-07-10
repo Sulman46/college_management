@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/app/di_container.dart';
+import '../../../../../core/enums/user_enums.dart';
+import '../../../../Authentication/presentation/controller/cubit.dart';
 import '../controller/cubit.dart';
 import '../widgets/filter_teacher_attendance.dart';
 
@@ -28,7 +30,12 @@ class _TeacherAttendanceAdminScreenState
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       _teacherAttendanceCubit.getDepartmentFilterValue("");
-      _teacherAttendanceCubit.getTabVal(false);
+      if(_authCubit.userModel!.role==UserRole.admin){
+        _teacherAttendanceCubit.getTabVal(true);
+      }else{
+        _teacherAttendanceCubit.getTabVal(false);
+
+      }
       await _teacherAttendanceCubit.get();
     });
     // TODO: implement initState
@@ -200,3 +207,5 @@ class _TeacherAttendanceAdminScreenState
     );
   }
 }
+
+final _authCubit=DiContainer().sl<AuthenticationCubit>();

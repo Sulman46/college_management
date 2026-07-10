@@ -10,6 +10,8 @@ import 'package:college_management/widgets/custom_animated_dialog.dart';
 import 'package:college_management/widgets/data_not_found_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../../core/enums/user_enums.dart';
+import '../../../../Authentication/presentation/controller/cubit.dart';
 import '../controller/cubit.dart';
 
 
@@ -22,6 +24,7 @@ class TimetableManagerScreen extends StatefulWidget {
 
 class _TimetableManagerScreenState extends State<TimetableManagerScreen> {
   final _timeTableCubit = DiContainer().sl<TimetableManagerCubit>();
+  final _authCubit = DiContainer().sl<AuthenticationCubit>();
 
   @override
   void initState() {
@@ -65,6 +68,7 @@ class _TimetableManagerScreenState extends State<TimetableManagerScreen> {
                 ),
                 actionsPadding: EdgeInsets.only(right: screenPaddingHori),
                 actions: [
+                  if( _authCubit.userModel!.role==UserRole.admin)
                   InkWell(
                     onTap: () {
                       showDialog(

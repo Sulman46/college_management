@@ -1,7 +1,9 @@
 import 'package:college_management/features/admin/student_enrollment/presentation/widgets/student_enrollment_filter_dialog.dart';
+import 'package:college_management/features/admin/student_enrollment/presentation/widgets/student_role_enrollment_widget.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../core/app/di_container.dart';
+import '../../../../../core/enums/user_enums.dart';
 import '../../../../../core/helper/data_extractor.dart';
 import '../../../../../core/theme/AppColor.dart';
 import '../../../../../widgets/app_text.dart';
@@ -9,6 +11,7 @@ import '../../../../../widgets/confirmation_dialog.dart';
 import '../../../../../widgets/custom_animated_dialog.dart';
 import '../../../../../widgets/custom_button.dart';
 import '../../../../../widgets/data_not_found_widget.dart';
+import '../../../../Authentication/presentation/controller/cubit.dart';
 import '../../../semesters/presentation/controller/cubit.dart';
 import '../../../student_registrations/presentation/controller/cubit.dart';
 import '../../data/models/student_enrollment_filter_model.dart';
@@ -24,12 +27,13 @@ class StudentEnrolledSection extends StatefulWidget {
 
 class _StudentEnrolledSectionState extends State<StudentEnrolledSection> {
   final _studentEnrollCubit = DiContainer().sl<StudentEnrollmentCubit>();
+  final _authCubit=DiContainer().sl<AuthenticationCubit>();
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
 
-        if(_studentEnrollCubit.selectedEnrollment.isNotEmpty)
+        if(_studentEnrollCubit.selectedEnrollment.isNotEmpty && (_authCubit.userModel!.role==UserRole.admin|| _authCubit.userModel!.role==UserRole.hod))
           ...[
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -73,6 +77,7 @@ class _StudentEnrolledSectionState extends State<StudentEnrolledSection> {
             ),
             SizedBox(height: 10,),],
 
+        if(_authCubit.userModel!.role==UserRole.admin|| _authCubit.userModel!.role==UserRole.hod)
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -98,7 +103,16 @@ class _StudentEnrolledSectionState extends State<StudentEnrolledSection> {
         if (_studentEnrollCubit.filterDataList.isNotEmpty)
           ...List.generate(_studentEnrollCubit.filterDataList.length, (index) {
             var model = _studentEnrollCubit.filterDataList.toList()[index];
-            return EnrolledStudentWidget(
+            return
+              _authCubit.userModel!.role!=UserRole.student?
+              EnrolledStudentWidget(
+              isChecked: _studentEnrollCubit.selectedEnrollment.contains(model),
+              onTap: () {
+                _studentEnrollCubit.selectEnrollmentStudent(model);
+              },
+              studentEnrollmentModel: model,
+            ):
+              StudentRoleEnrollmentWidget(
               isChecked: _studentEnrollCubit.selectedEnrollment.contains(model),
               onTap: () {
                 _studentEnrollCubit.selectEnrollmentStudent(model);
@@ -109,6 +123,11 @@ class _StudentEnrolledSectionState extends State<StudentEnrolledSection> {
         else
           DataNotFoundWidget(
             onTap: () async {
+              if(_authCubit.userModel!.role!=UserRole.student){
+                await _studentEnrollCubit.get();
+                return;
+              }
+
               if (_studentEnrollCubit.submittedData.isAnyNull) {
                 showDialog(
                   context: context,

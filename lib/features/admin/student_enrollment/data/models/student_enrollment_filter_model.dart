@@ -1,4 +1,6 @@
 class StudentEnrollmentFilterModel {
+
+  bool? isDataProvided;
   final String? semester;
   final String? section;
   final String? department;
@@ -6,7 +8,8 @@ class StudentEnrollmentFilterModel {
   final String? affiliation;
   final String? program;
 
-  const StudentEnrollmentFilterModel({
+   StudentEnrollmentFilterModel({
+    this.isDataProvided,
     this.semester,
     this.section,
     this.department,
@@ -53,6 +56,7 @@ class StudentEnrollmentFilterModel {
     String? section,
     String? session,
     String? semester,
+    bool? isDataProvided,
   }) {
     // Affiliation changed
     if (affiliation != null) {
@@ -107,6 +111,7 @@ class StudentEnrollmentFilterModel {
       section: section ?? this.section,
       session: session ?? this.session,
       semester: semester ?? this.semester,
+      isDataProvided: isDataProvided??this.isDataProvided
     );
   }
 

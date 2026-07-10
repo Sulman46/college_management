@@ -76,6 +76,7 @@ class AppApis {
 
   /// student enrollment
   static String studentEnrollments="/api/enrollments";
+  static String studentEnrollmentsSearch="/api/enrollments/search/";
   static String studentEnrollmentsPromote="/api/enrollments/promote";
   static String studentEnrollmentsDemote="/api/enrollments/demote";
 

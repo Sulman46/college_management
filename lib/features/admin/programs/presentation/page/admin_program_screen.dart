@@ -10,9 +10,11 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../../core/app/myapp.dart';
 import '../../../../../core/constants/media_query.dart';
+import '../../../../../core/enums/user_enums.dart';
 import '../../../../../core/theme/AppColor.dart';
 import '../../../../../widgets/app_text.dart';
 import '../../../../../widgets/custom_button.dart';
+import '../../../../Authentication/presentation/controller/cubit.dart';
 
 
 class AdminProgramScreen extends StatefulWidget {
@@ -95,7 +97,7 @@ class _AdminProgramScreenState
                                 ],
                               ),
                             ) else
-                            ...List.generate(_programsCubit.filterProgramsList.length, (index) => AdminProgramWidget(model: _programsCubit.filterProgramsList[index],),),
+                            ...List.generate(_programsCubit.filterProgramsList.length, (index) => AdminProgramWidget(canEdit: _authCubit.userModel!.role==UserRole.admin,model: _programsCubit.filterProgramsList[index],),),
                             SafeArea(
                                 top: false,
                                 child: SizedBox(height: 30,)),
@@ -106,7 +108,8 @@ class _AdminProgramScreenState
                   )
                 ],
               ),
-              AnimatedPositioned(
+              if(_authCubit.userModel!.role==UserRole.admin)
+                AnimatedPositioned(
                 duration: Duration(milliseconds: 100),
                 top: _programsCubit.top,
                 right: _programsCubit.right,
@@ -133,3 +136,6 @@ class _AdminProgramScreenState
     );
   }
 }
+
+
+final _authCubit=DiContainer().sl<AuthenticationCubit>();

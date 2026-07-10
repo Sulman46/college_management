@@ -10,8 +10,9 @@ import '../../../../../widgets/app_text.dart';
 import '../../../../../widgets/more_vert_pop_menu_button.dart';
 
 class TeacherAllocationItem extends StatelessWidget {
-   TeacherAllocationItem({super.key,required this.model});
+   TeacherAllocationItem({super.key,required this.model,required this.canEdit});
   TeacherAllocationModel model;
+  bool canEdit;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -42,6 +43,7 @@ class TeacherAllocationItem extends StatelessWidget {
                             fontSize: 12,
                           ),
                         ),
+                        if(canEdit)
                         CustomPopMenuButton(
                           menus: ["Edit",model.status=="Active"?"Inactive":"Active", "Delete"],
                           onSelected: (val) async {

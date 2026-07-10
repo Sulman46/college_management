@@ -15,8 +15,9 @@ import '../../models/program_request_model.dart';
 import '../controller/cubit.dart';
 
 class AdminProgramWidget extends StatelessWidget {
-   AdminProgramWidget({super.key,required this.model});
+   AdminProgramWidget({super.key,required this.model,required this.canEdit});
 ProgramModel model;
+bool canEdit;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -45,6 +46,7 @@ ProgramModel model;
               ),
 
 
+              if(canEdit)
               CustomPopMenuButton(
                 menus: ["Edit",model.status==StatusEnum.Active?"Inactive":"Active","Delete"],
                 onSelected: (value) async {

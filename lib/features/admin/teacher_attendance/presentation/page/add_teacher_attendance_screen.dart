@@ -1,33 +1,18 @@
-import 'dart:developer';
-
 import 'package:college_management/core/app/di_container.dart';
 import 'package:college_management/core/constants/app_widgets_size.dart';
 import 'package:college_management/core/constants/constant_data.dart';
-import 'package:college_management/core/constants/media_query.dart';
-import 'package:college_management/core/helper/app_date_picker.dart';
-import 'package:college_management/core/helper/date_to_string_helper.dart';
-import 'package:college_management/core/helper/show_message.dart';
 import 'package:college_management/core/theme/AppColor.dart';
 import 'package:college_management/features/Authentication/presentation/controller/cubit.dart';
-import 'package:college_management/features/admin/teacher_attendance/models/teacher_attendance_model.dart';
-import 'package:college_management/features/admin/teacher_attendance/models/teacher_attendance_time_table_model.dart';
 import 'package:college_management/features/admin/teacher_attendance/presentation/controller/cubit.dart';
 import 'package:college_management/features/admin/teacher_attendance/presentation/widgets/add_teacher_attendance_widget.dart';
 import 'package:college_management/features/admin/teacher_attendance/presentation/widgets/teacher_attendance_type_widget.dart';
 import 'package:college_management/features/admin/timetable_manager/presentation/controller/cubit.dart';
 import 'package:college_management/widgets/app_text.dart';
-import 'package:college_management/widgets/custom_text_form.dart';
 import 'package:college_management/widgets/custom_top_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
-
 import '../../../../../widgets/custom_button.dart';
-import '../../../../../widgets/drop_down_field_widget.dart';
-import '../../../../../widgets/more_vert_pop_menu_button.dart';
-import '../../../course_catalog/presentation/widgets/catalog_depart_widget.dart';
-import '../../../timetable_manager/models/time_table_manger_model.dart';
+
 
 class AddTeacherAttendanceScreen extends StatefulWidget {
   const AddTeacherAttendanceScreen({super.key});

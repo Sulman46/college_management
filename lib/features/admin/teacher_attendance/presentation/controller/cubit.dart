@@ -39,6 +39,14 @@ class TeacherAttendanceCubit extends Cubit<TeacherAttendanceState> {
 
   String attendanceType="";
 
+  String updateTeacherAttendanceStatus="Present";
+
+  void getUpdateTeacherAttendType(String val){
+    emit(TeacherAttendanceLoading());
+    updateTeacherAttendanceStatus=val;
+    emit(TeacherAttendanceLoaded());
+  }
+
   void getAttendanceType(String val){
     emit(TeacherAttendanceLoading());
     attendanceType=val;
@@ -106,7 +114,7 @@ class TeacherAttendanceCubit extends Cubit<TeacherAttendanceState> {
     if(!val){
       teacherFilterName="All Teacher";
       historyFilterType="All";
-      historyFilterDate=DateTime.now();
+      // historyFilterDate=DateTime.now();
     }
     emit(TeacherAttendanceLoaded());
   }
@@ -157,7 +165,7 @@ class TeacherAttendanceCubit extends Cubit<TeacherAttendanceState> {
     emit(TeacherAttendanceLoading());
     showLoadingDialog();
     for(var i in list){
-      var model=teacherAttendanceModel.copyWith(slotTime: i.slotTime,slotIndex: i.slotIndex,minutes: i.status=="Late"|| i.status=="Early Left" ? int.parse(i.minutes):0,attendanceType: "Subject-Wise",teacher: i.tableCellModel.teacher,teacherId: i.tableCellModel.teacherId,subject: i.tableCellModel.subject,room: i.tableCellModel.room,status: i.status,markedBy: authCubit.userModel!.role.toJson());
+      var model=teacherAttendanceModel.copyWith(slotTime: i.slotTime,slotIndex: i.slotIndex,minutes: i.status=="Late"|| i.status=="Early Left" ? int.parse(i.minutes.isNotEmpty?i.minutes:"0"):0,attendanceType: "Subject-Wise",teacher: i.tableCellModel.teacher,teacherId: i.tableCellModel.teacherId,subject: i.tableCellModel.subject,room: i.tableCellModel.room,status: i.status,markedBy: authCubit.userModel!.role.toJson());
       var res=await post(model);
       if(res){
         _teacherDataList.remove(i);

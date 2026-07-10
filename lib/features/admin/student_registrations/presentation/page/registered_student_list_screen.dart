@@ -11,7 +11,9 @@ import 'package:college_management/widgets/custom_top_bar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/app/myapp.dart';
 import '../../../../../core/constants/media_query.dart';
+import '../../../../../core/enums/user_enums.dart';
 import '../../../../../widgets/custom_button.dart';
+import '../../../../Authentication/presentation/controller/cubit.dart';
 import '../../../teacher_allocation/presentation/widgets/teacher_allocation_item.dart';
 import '../widgets/registered_student_item.dart';
 import 'package:college_management/features/admin/student_registrations/presentation/controller/cubit.dart';
@@ -76,7 +78,8 @@ class _RegisteredStudentListScreenState extends State<RegisteredStudentListScree
 
                             /// 🔹 LIST
                             if(_studentRegisterCubit.filterList.isNotEmpty)
-                            ...List.generate(_studentRegisterCubit.filterList.length, (index) => RegisteredStudentItem(studentModel: _studentRegisterCubit.filterList[index],),)
+                            ...List.generate(_studentRegisterCubit.filterList.length,
+                                  (index) => RegisteredStudentItem(canEdit: _authCubit.userModel!.role==UserRole.admin,studentModel: _studentRegisterCubit.filterList[index],),)
                             else
                               DataNotFoundWidget(onTap: () async{
                               await _studentRegisterCubit.get();
@@ -91,6 +94,7 @@ class _RegisteredStudentListScreenState extends State<RegisteredStudentListScree
                   )
                 ],
               ),
+              if(_authCubit.userModel!.role==UserRole.admin)
               AnimatedPositioned(
                 duration: Duration(milliseconds: 100),
                 top: _studentRegisterCubit.top,
@@ -114,3 +118,8 @@ class _RegisteredStudentListScreenState extends State<RegisteredStudentListScree
     );
   }
 }
+
+
+final _authCubit=DiContainer().sl<AuthenticationCubit>();
+
+

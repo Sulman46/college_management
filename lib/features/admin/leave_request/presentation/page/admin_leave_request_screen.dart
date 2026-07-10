@@ -3,14 +3,17 @@ import 'package:college_management/core/constants/app_widgets_size.dart';
 import 'package:college_management/core/constants/constant_data.dart';
 import 'package:college_management/features/admin/leave_request/presentation/controller/cubit.dart';
 import 'package:college_management/features/admin/leave_request/presentation/widgets/leave_item.dart';
+import 'package:college_management/features/admin/leave_request/presentation/widgets/leave_request_dialog.dart';
 import 'package:college_management/features/admin/leave_request/presentation/widgets/leave_tab_widget.dart';
 import 'package:college_management/widgets/data_not_found_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/app/myapp.dart';
 import '../../../../../core/constants/media_query.dart';
+import '../../../../../core/enums/user_enums.dart';
 import '../../../../../core/theme/AppColor.dart';
 import '../../../../../widgets/app_text.dart';
+import '../../../../Authentication/presentation/controller/cubit.dart';
 
 
 class AdminLeaveRequestScreen extends StatefulWidget {
@@ -47,13 +50,30 @@ final _leaveCubit=DiContainer().sl<LeaveRequestCubit>();
               SliverAppBar(
                 expandedHeight: 140,
                 pinned: true,
-                backgroundColor: AppColor.primary,
+                backgroundColor: AppColor.primaryDarkest,
                 elevation: 0,
 
                 leading: IconButton(
                   icon: Icon(Icons.arrow_back, color: AppColor.white),
                   onPressed: () => Navigator.pop(context),
                 ),
+                actions:_authCubit.userModel!.role!=UserRole.teacher? []:[
+                  Container(
+                    margin: EdgeInsets.only(right: screenPaddingHori),
+                    child: InkWell(
+                      onTap: () {
+                        showDialog(context: context, builder: (context) => LeaveRequestDialog(),);
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(width: 1,color: AppColor.white)
+                          ),
+                          child: Icon(Icons.add,color: AppColor.white,size: 15,)),
+                    ),
+                  )
+                ],
 
                 /// 🔷 COLLAPSED TITLE (WHEN SCROLLED UP)
                 title: AppText(
@@ -77,10 +97,6 @@ final _leaveCubit=DiContainer().sl<LeaveRequestCubit>();
                         ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(20),
-                        bottomRight: Radius.circular(20),
                       ),
                     ),
 
@@ -168,7 +184,7 @@ final _leaveCubit=DiContainer().sl<LeaveRequestCubit>();
                       (context, index) {
                     return Padding(
                       padding:  EdgeInsets.symmetric(horizontal: screenPaddingHori),
-                      child: LeaveItem(model: _leaveCubit.filterList.where((element) => element.status!.toLowerCase().toString().contains(_leaveCubit.selectedCategory.toLowerCase()),).toList()[index],),
+                      child: LeaveItem(canEdit: _authCubit.userModel!.role!=UserRole.teacher,model: _leaveCubit.filterList.where((element) => element.status!.toLowerCase().toString().contains(_leaveCubit.selectedCategory.toLowerCase()),).toList()[index],),
                     );
                   },
                 ),
@@ -203,11 +219,7 @@ class StatCard extends StatelessWidget {
     return Container(
       width: mdWidth(context) * .28,
       padding: EdgeInsets.symmetric(vertical: 15),
-      decoration: BoxDecoration(
-        color: AppColor.white,
-        borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: color, width: 2),
-      ),
+      decoration: AppColor.containerDecoration,
       child: Column(
         children: [
           AppText(
@@ -241,7 +253,7 @@ class _RecentHeaderDelegate extends SliverPersistentHeaderDelegate {
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
       height: maxExtent,
-      color: AppColor.white.withOpacity(.7),
+      color: AppColor.primary.withOpacity(.2),
       alignment: Alignment.centerLeft,
       margin: EdgeInsets.only(bottom: 5),
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -262,7 +274,7 @@ class _RecentHeaderDelegate extends SliverPersistentHeaderDelegate {
                     margin: EdgeInsets.only(right: 5),
                     padding: EdgeInsets.symmetric(horizontal: 10,vertical: 4),
                     decoration:_leaveCubit.selectedCategory==[ "","Pending", "Approved", "Rejected"][index].toLowerCase()?  AppColor.containerNeon:BoxDecoration(
-                      color: AppColor.grey.withOpacity(.8), // glass tint
+                      color: AppColor.grey.withOpacity(.4), // glass tint
                       borderRadius: BorderRadius.circular(15),
                       border: Border.all(
                         color: AppColor.primary.withOpacity(.5),
@@ -284,4 +296,5 @@ class _RecentHeaderDelegate extends SliverPersistentHeaderDelegate {
 
 
 final _leaveCubit=DiContainer().sl<LeaveRequestCubit>();
+final _authCubit=DiContainer().sl<AuthenticationCubit>();
 

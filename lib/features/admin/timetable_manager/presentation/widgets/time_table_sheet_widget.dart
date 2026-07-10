@@ -10,8 +10,10 @@ import 'package:college_management/widgets/app_text.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../core/app/di_container.dart';
+import '../../../../../core/enums/user_enums.dart';
 import '../../../../../widgets/confirmation_dialog.dart';
 import '../../../../../widgets/custom_animated_dialog.dart';
+import '../../../../Authentication/presentation/controller/cubit.dart';
 import '../controller/cubit.dart';
 import 'lecture_slot_table_widget.dart';
 
@@ -79,17 +81,20 @@ class _TimeTableSheetWidgetState extends State<TimeTableSheetWidget> {
                       padding: EdgeInsetsGeometry.symmetric(horizontal: 10,vertical: 10),
                       child: Row(
                         children: [
+                          if( _authCubit.userModel!.role==UserRole.admin)
                           SmallButtonsOnlyIcon(icon: Icons.add, onTap: () {
                             showDialog(context: context, builder: (context) => CustomAnimatedDialog(child: AddNewTimeSlot(timeTableManagerModel: widget.model,)),);
                           }, color: AppColor.green),
                           if(widget.model.timeSlots!.isNotEmpty)
                           ...[SizedBox(width: 15,),
+                            if( _authCubit.userModel!.role==UserRole.admin)
                           SmallButtonsOnlyIcon(icon: Icons.remove, onTap: () {
                             showDialog(context: context, builder: (context) => CustomAnimatedDialog(child: RemoveSlotDialog(timeTableManagerModel: widget.model,)),);
                           }, color: AppColor.orange),],
                           SizedBox(width: 15,),
                           SmallButtonsOnlyIcon(icon: Icons.insert_drive_file_sharp, onTap: () {}, color: AppColor.blue),
                           SizedBox(width: 15,),
+                          if( _authCubit.userModel!.role==UserRole.admin)
                           SmallButtonsOnlyIcon(icon: Icons.delete,
 
                               onTap: ()  async {
@@ -133,3 +138,6 @@ Widget detailTextWidget({required String text1,required String text2}){
     ],
   );
 }
+
+final _authCubit = DiContainer().sl<AuthenticationCubit>();
+

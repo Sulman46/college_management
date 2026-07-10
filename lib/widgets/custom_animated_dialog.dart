@@ -35,7 +35,6 @@ class CustomAnimatedDialog extends StatelessWidget {
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX:3,sigmaY: 3),
               child: Container(
-                margin: EdgeInsets.only(bottom: 30),
                 padding: EdgeInsets.all(screenPaddingHori),
                 decoration: AppColor.containerNeon,
                 child: child,

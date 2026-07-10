@@ -10,4 +10,5 @@ abstract class StudentEnrollmentRepository{
   Future<Either<String,String>> update({required StudentEnrollmentModel value});
   Future<Either<String,String>> delete({required StudentEnrollmentModel value});
   Future<Either<String,List<StudentEnrollmentModel>>> get({required StudentEnrollmentFilterModel value});
+  Future<Either<String,List<StudentEnrollmentModel>>> search({required String rollNumber});
 }

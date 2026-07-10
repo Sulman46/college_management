@@ -30,5 +30,8 @@ class StudentEnrollmentUseCase{
     return repository.get(value: value);
   }
 
+  Future<Either<String,List<StudentEnrollmentModel>>> search({required String rollNumber}){
+    return repository.search(rollNumber: rollNumber);
+  }
 
 }

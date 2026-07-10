@@ -8,7 +8,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/app/di_container.dart';
 import '../../../../../core/app/myapp.dart';
 import '../../../../../core/constants/media_query.dart';
+import '../../../../../core/enums/user_enums.dart';
 import '../../../../../widgets/custom_button.dart';
+import '../../../../Authentication/presentation/controller/cubit.dart';
 import '../controller/cubit.dart';
 import '../widgets/course_list_widget.dart';
 
@@ -75,7 +77,8 @@ class _CourseCatalogAdminScreenState
 
 
                             if(_courseCatalogCubit.filterCourseCatalogList.isNotEmpty)
-                            ...List.generate(_courseCatalogCubit.filterCourseCatalogList.length, (index) => CourseListWidget(courseCatalogModel: _courseCatalogCubit.filterCourseCatalogList[index],),)
+                            ...List.generate(_courseCatalogCubit.filterCourseCatalogList.length,
+                                  (index) => CourseListWidget(canEdit: _authCubit.userModel!.role==UserRole.admin,courseCatalogModel: _courseCatalogCubit.filterCourseCatalogList[index],),)
                             else
                               DataNotFoundWidget(onTap: ()async{
                                await _courseCatalogCubit.getCourseCatalogList();
@@ -90,7 +93,9 @@ class _CourseCatalogAdminScreenState
                   )
                 ],
               ),
-              AnimatedPositioned(
+
+              if(_authCubit.userModel!.role==UserRole.admin)
+                AnimatedPositioned(
                 duration: Duration(milliseconds: 100),
                 top: _courseCatalogCubit.top,
                 right: _courseCatalogCubit.right,
@@ -118,3 +123,6 @@ class _CourseCatalogAdminScreenState
     );
   }
 }
+
+final _authCubit=DiContainer().sl<AuthenticationCubit>();
+

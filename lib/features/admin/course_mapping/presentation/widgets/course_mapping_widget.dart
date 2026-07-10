@@ -10,8 +10,9 @@ import '../../../../../widgets/app_text.dart';
 import '../../../../../widgets/more_vert_pop_menu_button.dart';
 
 class CourseMappingWidget extends StatelessWidget {
-   CourseMappingWidget({super.key,required this.model});
+   CourseMappingWidget({super.key,required this.model,required this.canEdit});
 CourseMappingModel model;
+bool canEdit;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -42,6 +43,7 @@ CourseMappingModel model;
                             fontSize: 14,
                           ),
                         ),
+                        if(canEdit)
                         CustomPopMenuButton(
                           menus: ["Edit",model.status=="Active"?"Inactive":"Active", "Delete"],
                           onSelected: (val) async {

@@ -3,13 +3,16 @@ import 'package:college_management/core/app/di_container.dart';
 import 'package:college_management/core/helper/date_to_string_helper.dart';
 import 'package:college_management/features/admin/teacher_allocation/models/teacher_allocation_model.dart';
 import 'package:college_management/features/admin/teacher_allocation/presentation/controller/cubit.dart';
+import 'package:college_management/features/admin/teacher_attendance/presentation/widgets/update_teacher_attendance_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../../core/enums/user_enums.dart';
 import '../../../../../core/theme/AppColor.dart';
 import '../../../../../widgets/active_inactive_status_widget.dart';
 import '../../../../../widgets/app_text.dart';
 import '../../../../../widgets/more_vert_pop_menu_button.dart';
+import '../../../../Authentication/presentation/controller/cubit.dart';
 import '../../models/teacher_attendance_model.dart';
 import '../controller/cubit.dart';
 
@@ -60,14 +63,16 @@ class _TeacherAttendanceWidgetState extends State<TeacherAttendanceWidget> {
                               fontSize: 14,
                             ),
                           ),
-                          CustomPopMenuButton(
+                          if(_authCubit.userModel!.role==UserRole.admin)
+                            CustomPopMenuButton(
                             menus: ["Edit", "Delete"],
                             onSelected: (val) async {
                               if(val==0){
-                                context.push("/Admin-add-teacher-allocation",extra: widget.model);
+                                showDialog(context: context, builder: (context) => UpdateTeacherAttendanceDialog(model: widget.model),);
+                                // context.push("/Admin-add-teacher-allocation",extra: widget.model);
                               }else{
-                                final _teacherAttendanceCubit = DiContainer().sl<TeacherAttendanceCubit>();
-                                await _teacherAttendanceCubit.delete(widget.model);
+                                final teacherAttendanceCubit = DiContainer().sl<TeacherAttendanceCubit>();
+                                await teacherAttendanceCubit.delete(widget.model);
                               }
                             },
                           )
@@ -88,7 +93,7 @@ class _TeacherAttendanceWidgetState extends State<TeacherAttendanceWidget> {
             Container(
               padding: EdgeInsets.all(10),
               decoration: AppColor.containerDecoration,
-              margin: EdgeInsets.only(bottom:showLess? 0:5),
+              margin: EdgeInsets.only(bottom:5),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -184,8 +189,7 @@ class _TeacherAttendanceWidgetState extends State<TeacherAttendanceWidget> {
                 ],
               ),
             ),
-            if(!showLess)
-            ...[SizedBox(height: 3),
+              SizedBox(height: 3),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -218,7 +222,7 @@ class _TeacherAttendanceWidgetState extends State<TeacherAttendanceWidget> {
                   ),
                 ),
               ],
-            )]
+            ),
 
 
           ],
@@ -260,3 +264,5 @@ Widget typeTag(String text, {bool isCore = true}) {
     ),
   );
 }
+
+final _authCubit=DiContainer().sl<AuthenticationCubit>();

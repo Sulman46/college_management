@@ -7,11 +7,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../../core/app/di_container.dart';
+import '../../../../../core/enums/user_enums.dart';
 import '../../../../../core/theme/AppColor.dart';
 import '../../../../../widgets/app_text.dart';
 import '../../../../../widgets/custom_animated_dialog.dart';
 import '../../../../../widgets/custom_text_form.dart';
 import '../../../../../widgets/custom_top_bar.dart';
+import '../../../../Authentication/presentation/controller/cubit.dart';
 import '../../data/model/department_model.dart';
 import '../controller/cubit.dart';
 import '../widgets/add_department_dialog.dart';
@@ -129,7 +131,7 @@ class _AdminDepartmentScreenState extends State<AdminDepartmentScreen> {
                                 final item = _departmentCubit.filterDepartmentList[index];
                                 return DepartmentItemWidget(
                                   model: item,
-
+                                  canEdit: _authCubit.userModel!.role==UserRole.admin,
                                 );
                               },
                             )
@@ -147,7 +149,9 @@ class _AdminDepartmentScreenState extends State<AdminDepartmentScreen> {
               ),
 
 
-              AnimatedPositioned(
+              if(_authCubit.userModel!.role==UserRole.admin)
+
+                AnimatedPositioned(
                 duration: Duration(milliseconds: 100),
                 top: _departmentCubit.top,
                 right: _departmentCubit.right,
@@ -175,3 +179,7 @@ class _AdminDepartmentScreenState extends State<AdminDepartmentScreen> {
     );
   }
 }
+
+
+final _authCubit=DiContainer().sl<AuthenticationCubit>();
+

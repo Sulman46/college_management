@@ -11,8 +11,9 @@ import '../../models/teacher_model.dart';
 import '../controller/cubit.dart';
 
 class TeacherRecordItemWidget extends StatelessWidget {
-   TeacherRecordItemWidget({super.key,required this.model});
+   TeacherRecordItemWidget({super.key,required this.model,required this.canEdit});
   TeacherModel model;
+  bool canEdit;
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -42,6 +43,7 @@ class TeacherRecordItemWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ActiveInactiveStatusWidget(isActive: model.status=="Active"),
+                if(canEdit)
                 CustomPopMenuButton(
                   menus: ["Edit",model.status=="Active"?"Inactive":"Active","Delete"],
                   onSelected: (value) async {

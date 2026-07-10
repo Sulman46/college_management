@@ -2,6 +2,7 @@
 import 'package:dartz/dartz.dart';
 import '../../domain/repository/repository.dart';
 import '../../models/faculty_leave_model.dart';
+import '../../models/teacher_send_leave_request_model.dart';
 import '../datasource/datasource.dart';
 
 class LeaveRequestRepositoryImpl extends LeaveRequestRepository{
@@ -10,7 +11,7 @@ class LeaveRequestRepositoryImpl extends LeaveRequestRepository{
 
 
   @override
-  Future<Either<String,String>> post({required FacultyLeaveModel value}){
+  Future<Either<String,String>> post({required TeacherSendLeaveRequestModel value}){
     return dataSource.post(value: value);
   }
   @override

@@ -9,6 +9,10 @@ import 'package:college_management/widgets/app_text.dart';
 import 'package:college_management/widgets/custom_animated_dialog.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../../core/app/di_container.dart';
+import '../../../../../core/enums/user_enums.dart';
+import '../../../../Authentication/presentation/controller/cubit.dart';
+
 class LectureSlotTableWidget extends StatefulWidget {
    LectureSlotTableWidget({super.key,required this.model});
 TimeTableManagerModel model;
@@ -113,9 +117,9 @@ class SheetNodeSubTextWidget extends StatelessWidget {
               TimeTableCellModel? slotModel=timeTableManagerModel.data![keyVal];
               bool valueExist=slotModel!=null;
               return InkWell(
-                onTap: () {
+                onTap: _authCubit.userModel!.role==UserRole.admin? () {
                   showDialog(context: context, builder: (context) => CustomAnimatedDialog(child: AddLectureTimeSlotDialog(timeTableManagerModel: timeTableManagerModel,keyValue: keyVal,)),);
-                },
+                }:null,
                 child: Container(
                   constraints: BoxConstraints(minHeight: 40),
                   width: 140,
@@ -145,3 +149,5 @@ class SheetNodeSubTextWidget extends StatelessWidget {
 
 
 
+
+final _authCubit = DiContainer().sl<AuthenticationCubit>();

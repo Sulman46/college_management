@@ -56,7 +56,9 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
       navigatorKey.currentContext!.pushReplacement('/Admin-dashboard');
 
     }else{
-      showMessage("New role ${model.user.role.toString()}");
+      // showMessage("New role ${model.user.role.toString()}");
+      navigatorKey.currentContext!.pushReplacement('/Admin-dashboard');
+
     }
   }else{
     closeLoadingDialog();

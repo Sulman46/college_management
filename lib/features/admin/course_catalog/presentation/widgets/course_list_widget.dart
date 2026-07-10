@@ -14,8 +14,9 @@ import '../controller/cubit.dart';
 import 'add_new_course_catalog_dialog.dart';
 
 class CourseListWidget extends StatelessWidget {
-   const CourseListWidget({super.key,required this.courseCatalogModel});
+   const CourseListWidget({super.key,required this.courseCatalogModel,required this.canEdit});
 final CourseCatalogModel courseCatalogModel;
+final bool canEdit;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -54,6 +55,7 @@ final CourseCatalogModel courseCatalogModel;
               ),
 
 
+              if(canEdit)
               CustomPopMenuButton(
                 menus: ["Edit",courseCatalogModel.status=="Active"?"Inactive":"Active","Delete",],
                 onSelected: (value) async {

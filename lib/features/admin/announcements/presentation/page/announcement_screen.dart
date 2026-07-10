@@ -13,8 +13,10 @@ import 'package:go_router/go_router.dart';
 import '../../../../../core/app/di_container.dart';
 import '../../../../../core/app/myapp.dart';
 import '../../../../../core/constants/media_query.dart';
+import '../../../../../core/enums/user_enums.dart';
 import '../../../../../widgets/custom_button.dart';
 import '../../../../../widgets/custom_text_form.dart';
+import '../../../../Authentication/presentation/controller/cubit.dart';
 import '../controller/cubit.dart';
 
 class AnnouncementScreen extends StatefulWidget {
@@ -193,6 +195,7 @@ class _AnnouncementScreenState extends State<AnnouncementScreen> {
                   ),
                 ],
               ),
+              if(_authCubit.userModel!.role==UserRole.admin)
               AnimatedPositioned(
                 duration: Duration(milliseconds: 100),
                 top: _announcementCubit.top,
@@ -220,3 +223,6 @@ class _AnnouncementScreenState extends State<AnnouncementScreen> {
     );
   }
 }
+
+final _authCubit=DiContainer().sl<AuthenticationCubit>();
+

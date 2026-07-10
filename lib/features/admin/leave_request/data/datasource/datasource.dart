@@ -5,10 +5,11 @@ import 'package:dartz/dartz.dart';
 
 import '../../../../../core/constants/app_apis.dart';
 import '../../../../../core/controllers/dio_helper.dart';
+import '../../models/teacher_send_leave_request_model.dart';
 
 
 abstract class LeaveRequestDataSource{
-  Future<Either<String,String>> post({required FacultyLeaveModel value});
+  Future<Either<String,String>> post({required TeacherSendLeaveRequestModel value});
   Future<Either<String,String>> update({required FacultyLeaveModel value});
   Future<Either<String,String>> delete({required FacultyLeaveModel value});
   Future<Either<String,List<FacultyLeaveModel>>> get();
@@ -20,16 +21,16 @@ class FunctionClassLeaveRequest extends LeaveRequestDataSource{
   final DioHelper _dioHelper=DioHelper();
 
   @override
-  Future<Either<String,String>> post({required FacultyLeaveModel value})async{
+  Future<Either<String,String>> post({required TeacherSendLeaveRequestModel value})async{
     try{
       var response=await _dioHelper.post(AppApis.leave,data: value.toMap());
       var data=response.data;
       if(response.statusCode! >= 200 && response.statusCode! <=300){
         log("3223423: ${response.data}");
 
-        return Right(data["message"]??data["error"]??"Data added");
+        return Right(data["message"]??data["msg"]??data["error"]??"Data added");
       }
-      return Left(data["message"]??data["error"]??"Failed");
+      return Left(data["message"]??data["msg"]??data["error"]??"Failed");
     }catch(e){
       return Left(e.toString());
     }

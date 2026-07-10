@@ -4,6 +4,8 @@ import 'package:college_management/widgets/app_text.dart';
 import 'package:college_management/widgets/more_vert_pop_menu_button.dart';
 import 'package:flutter/material.dart';
 import '../../../../../core/app/di_container.dart';
+import '../../../../../core/enums/user_enums.dart';
+import '../../../../Authentication/presentation/controller/cubit.dart';
 import '../controller/cubit.dart';
 import 'freeze_request_status.dart';
 
@@ -51,7 +53,9 @@ class _FreezeRequestWidgetState extends State<FreezeRequestWidget> {
             children: [
               AppText(text: "Req: ${widget.model.requestType?? ""} ",fontSize: 11,color:widget.model.requestType=="Unfreeze"? AppColor.fieldYellowBorder: AppColor.red,),
               FreezeRequestStatus(status: widget.model.requestStatus??"Active"),
-              CustomPopMenuButton(
+
+              if(_authCubit.userModel!.role==UserRole.admin)
+                CustomPopMenuButton(
                 menus:statusList,
                 onSelected: (p0) async {
                   final freezeCubit=DiContainer().sl<FreezUnFreezCubit>();
@@ -84,3 +88,6 @@ class _FreezeRequestWidgetState extends State<FreezeRequestWidget> {
     );
   }
 }
+
+final _authCubit=DiContainer().sl<AuthenticationCubit>();
+

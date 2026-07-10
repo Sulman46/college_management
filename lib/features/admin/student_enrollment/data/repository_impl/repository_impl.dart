@@ -41,4 +41,9 @@ class StudentEnrollmentRepositoryImpl extends StudentEnrollmentRepository{
     return dataSource.get(value: value);
   }
 
+  @override
+  Future<Either<String,List<StudentEnrollmentModel>>> search({required String rollNumber}){
+    return dataSource.search(rollNumber: rollNumber);
+  }
+
 }

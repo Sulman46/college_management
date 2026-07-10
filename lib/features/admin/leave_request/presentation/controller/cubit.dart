@@ -1,3 +1,4 @@
+import 'package:college_management/features/admin/leave_request/models/teacher_send_leave_request_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/extensions/dart_extensions.dart';
@@ -23,9 +24,21 @@ class LeaveRequestCubit extends Cubit<LeaveRequestState> {
 
 
 
+  String? leaveType;
+  DateTime? startLeaveDate;
+  DateTime? endLeaveDate;
 
+ void  getTeacherLeaveData({required String? type,
+   required DateTime? startDate,
+   required DateTime? endDate}){
+   emit(LeaveRequestLoading());
+leaveType=type;
+startLeaveDate=startDate;
+endLeaveDate=endDate;
+   emit(LeaveRequestLoaded());
+}
 
-  Future<bool> post(FacultyLeaveModel value)async{
+  Future<bool> post(TeacherSendLeaveRequestModel value)async{
     showLoadingDialog();
     emit(LeaveRequestLoading());
     var response=await _useCase.post(value: value);

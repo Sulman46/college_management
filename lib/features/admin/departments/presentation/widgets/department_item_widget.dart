@@ -15,10 +15,11 @@ import 'add_department_dialog.dart';
 
 class DepartmentItemWidget extends StatelessWidget {
   final DepartmentModel model;
-
+final bool canEdit;
   const DepartmentItemWidget({
     super.key,
     required this.model,
+    required this.canEdit,
   });
 
   @override
@@ -59,6 +60,7 @@ class DepartmentItemWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              !canEdit?SizedBox():
               CustomPopMenuButton(
                 menus: ["Edit",model.status==DepartmentStatus.Active?"Inactive":"Active","Delete"],
                 onSelected: (value) async {

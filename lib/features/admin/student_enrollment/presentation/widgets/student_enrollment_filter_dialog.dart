@@ -46,112 +46,117 @@ class _StudentEnrollmentFilterDialogState extends State<StudentEnrollmentFilterD
         return CustomAnimatedDialog(child: BlocBuilder(
           bloc: _semesterCubit,
           builder: (context,statebhake) {
-            return  Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                AppText(text: "Filter Students",fontSize: 15,color: AppColor.white,fontWeight: FontWeight.w600,),
-                SizedBox(height: 15),
-               if(_semesterCubit.semesterList.isNotEmpty)
-               ...[
-                 CustomPopMenuButton(menus: _semesterCubit.semesterList.map((e) => e.programModel?.affiliationName??"",).toSet().toList(),
-                   onSelected: (p0) {
-                     _studentEnrollCubit.getStudentEnrollmentFilter(_studentEnrollCubit.filterModel.copyWith(affiliation: _semesterCubit.semesterList.map((e) => e.programModel?.affiliationName??"",).toSet().toList()[p0]));
-                   },
-                   title: "Affiliation",offset: Offset(0, 30),widget: SizedBox(
-                       width: mdWidth(context),
-                       child: DropDownFieldWidget(text:_studentEnrollCubit.filterModel.affiliation?? "Select..",maxLine: 1, isFilled: _studentEnrollCubit.filterModel.affiliation!=null)),),
+            return  SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  AppText(text: "Filter Students",fontSize: 15,color: AppColor.white,fontWeight: FontWeight.w600,),
+                  SizedBox(height: 15),
+                 if(_semesterCubit.semesterList.isNotEmpty)
+                 ...[
+                   CustomPopMenuButton(menus: _semesterCubit.semesterList.map((e) => e.programModel?.affiliationName??"",).toSet().toList(),
+                     onSelected: (p0) {
+                       _studentEnrollCubit.getStudentEnrollmentFilter(_studentEnrollCubit.filterModel.copyWith(affiliation: _semesterCubit.semesterList.map((e) => e.programModel?.affiliationName??"",).toSet().toList()[p0]));
+                     },
+                     title: "Affiliation",offset: Offset(0, 30),widget: SizedBox(
+                         width: mdWidth(context),
+                         child: DropDownFieldWidget(text:_studentEnrollCubit.filterModel.affiliation?? "Select..",maxLine: 1, isFilled: _studentEnrollCubit.filterModel.affiliation!=null)),),
 
-             SizedBox(height: 10),
+               SizedBox(height: 10),
 
-                 CustomPopMenuButton(menus: _semesterCubit.semesterList.where((element) => element.programModel!.affiliationName==_studentEnrollCubit.filterModel.affiliation,).map((e) => e.programModel?.departmentName??"",).toSet().toList(),
-                   onSelected: (p0) {
-                     _studentEnrollCubit.getStudentEnrollmentFilter(_studentEnrollCubit.filterModel.copyWith(department: _semesterCubit.semesterList.where((element) => element.programModel!.affiliationName==_studentEnrollCubit.filterModel.affiliation,).map((e) => e.programModel?.departmentName??"",).toSet().toList()[p0]));
-                   },
-                   title: "Department",offset: Offset(0, 30),widget: SizedBox(
-                       width: mdWidth(context),
-                       child: DropDownFieldWidget(text:_studentEnrollCubit.filterModel.department?? "Select..",maxLine: 1, isFilled: _studentEnrollCubit.filterModel.department!=null)),),
-                 SizedBox(height: 10),
-                 CustomPopMenuButton(menus: _semesterCubit.semesterList.where((element) => element.programModel!.affiliationName==_studentEnrollCubit.filterModel.affiliation && element.programModel!.departmentName==_studentEnrollCubit.filterModel.department,).map((e) => e.programModel?.name??"",).toSet().toList(),
-                   onSelected: (p0) {
-                     _studentEnrollCubit.getStudentEnrollmentFilter(_studentEnrollCubit.filterModel.copyWith(program: _semesterCubit.semesterList.where((element) => element.programModel!.affiliationName==_studentEnrollCubit.filterModel.affiliation && element.programModel!.departmentName==_studentEnrollCubit.filterModel.department,).map((e) =>  e.programModel?.name??"",).toSet().toList()[p0]));
-                   },
-                   title: "Program",offset: Offset(0, 30),widget: SizedBox(
-                       width: mdWidth(context),
-                       child: DropDownFieldWidget(text:_studentEnrollCubit.filterModel.program?? "Select..",maxLine: 1, isFilled: _studentEnrollCubit.filterModel.program!=null)),),
+                   CustomPopMenuButton(menus: _semesterCubit.semesterList.where((element) => element.programModel!.affiliationName==_studentEnrollCubit.filterModel.affiliation,).map((e) => e.programModel?.departmentName??"",).toSet().toList(),
+                     onSelected: (p0) {
+                       _studentEnrollCubit.getStudentEnrollmentFilter(_studentEnrollCubit.filterModel.copyWith(department: _semesterCubit.semesterList.where((element) => element.programModel!.affiliationName==_studentEnrollCubit.filterModel.affiliation,).map((e) => e.programModel?.departmentName??"",).toSet().toList()[p0]));
+                     },
+                     title: "Department",offset: Offset(0, 30),widget: SizedBox(
+                         width: mdWidth(context),
+                         child: DropDownFieldWidget(text:_studentEnrollCubit.filterModel.department?? "Select..",maxLine: 1, isFilled: _studentEnrollCubit.filterModel.department!=null)),),
+                   SizedBox(height: 10),
+                   CustomPopMenuButton(menus: _semesterCubit.semesterList.where((element) => element.programModel!.affiliationName==_studentEnrollCubit.filterModel.affiliation && element.programModel!.departmentName==_studentEnrollCubit.filterModel.department,).map((e) => e.programModel?.name??"",).toSet().toList(),
+                     onSelected: (p0) {
+                       _studentEnrollCubit.getStudentEnrollmentFilter(_studentEnrollCubit.filterModel.copyWith(program: _semesterCubit.semesterList.where((element) => element.programModel!.affiliationName==_studentEnrollCubit.filterModel.affiliation && element.programModel!.departmentName==_studentEnrollCubit.filterModel.department,).map((e) =>  e.programModel?.name??"",).toSet().toList()[p0]));
+                     },
+                     title: "Program",offset: Offset(0, 30),widget: SizedBox(
+                         width: mdWidth(context),
+                         child: DropDownFieldWidget(text:_studentEnrollCubit.filterModel.program?? "Select..",maxLine: 1, isFilled: _studentEnrollCubit.filterModel.program!=null)),),
 
 
-                 SizedBox(height: 10),
-                 CustomPopMenuButton(menus: _semesterCubit.semesterList.where((element) => element.programModel!.affiliationName==_studentEnrollCubit.filterModel.affiliation && element.programModel!.departmentName==_studentEnrollCubit.filterModel.department&& element.programModel!.name==_studentEnrollCubit.filterModel.program,).map((e) => e.programModel?.section??"",).toSet().toList(),
-                   onSelected: (p0) {
-                     _studentEnrollCubit.getStudentEnrollmentFilter(_studentEnrollCubit.filterModel.copyWith(section: _semesterCubit.semesterList.where((element) => element.programModel!.affiliationName==_studentEnrollCubit.filterModel.affiliation && element.programModel!.departmentName==_studentEnrollCubit.filterModel.department&& element.programModel!.name==_studentEnrollCubit.filterModel.program,).map((e) =>  e.programModel?.section??"",).toSet().toList()[p0]));
-                   },
-                   title: "Section",offset: Offset(0, 30),widget: SizedBox(
-                       width: mdWidth(context),
-                       child: DropDownFieldWidget(text:_studentEnrollCubit.filterModel.section?? "Select..",maxLine: 1, isFilled: _studentEnrollCubit.filterModel.section!=null)),),
+                   SizedBox(height: 10),
+                   CustomPopMenuButton(menus: _semesterCubit.semesterList.where((element) => element.programModel!.affiliationName==_studentEnrollCubit.filterModel.affiliation && element.programModel!.departmentName==_studentEnrollCubit.filterModel.department&& element.programModel!.name==_studentEnrollCubit.filterModel.program,).map((e) => e.programModel?.section??"",).toSet().toList(),
+                     onSelected: (p0) {
+                       _studentEnrollCubit.getStudentEnrollmentFilter(_studentEnrollCubit.filterModel.copyWith(section: _semesterCubit.semesterList.where((element) => element.programModel!.affiliationName==_studentEnrollCubit.filterModel.affiliation && element.programModel!.departmentName==_studentEnrollCubit.filterModel.department&& element.programModel!.name==_studentEnrollCubit.filterModel.program,).map((e) =>  e.programModel?.section??"",).toSet().toList()[p0]));
+                     },
+                     title: "Section",offset: Offset(0, 30),widget: SizedBox(
+                         width: mdWidth(context),
+                         child: DropDownFieldWidget(text:_studentEnrollCubit.filterModel.section?? "Select..",maxLine: 1, isFilled: _studentEnrollCubit.filterModel.section!=null)),),
 
-                      SizedBox(height: 10),
-                 CustomPopMenuButton(
-                   menus: _semesterCubit.semesterList.where((element) => element.programModel!.affiliationName==_studentEnrollCubit.filterModel.affiliation && element.programModel!.departmentName==_studentEnrollCubit.filterModel.department && element.programModel!.name==_studentEnrollCubit.filterModel.program && element.programModel!.section==_studentEnrollCubit.filterModel.section,).map((e) => e.programModel!.session,).toSet().toList(),
-                   onSelected: (p0) {
-                     _studentEnrollCubit.getStudentEnrollmentFilter(_studentEnrollCubit.filterModel.copyWith(session: _semesterCubit.semesterList.where((element) => element.programModel!.affiliationName==_studentEnrollCubit.filterModel.affiliation&& element.programModel!.name==_studentEnrollCubit.filterModel.program && element.programModel!.departmentName==_studentEnrollCubit.filterModel.department && element.programModel!.section==_studentEnrollCubit.filterModel.section,).map((e) => e.programModel!.session,).toSet().toList()[p0]));
-                   },
-                   title: "Session",offset: Offset(0, 30),widget: SizedBox(
-                       width: mdWidth(context),
-                       child: DropDownFieldWidget(text:_studentEnrollCubit.filterModel.session?? "Select..",maxLine: 1, isFilled: _studentEnrollCubit.filterModel.session!=null)),),
+                        SizedBox(height: 10),
+                   CustomPopMenuButton(
+                     menus: _semesterCubit.semesterList.where((element) => element.programModel!.affiliationName==_studentEnrollCubit.filterModel.affiliation && element.programModel!.departmentName==_studentEnrollCubit.filterModel.department && element.programModel!.name==_studentEnrollCubit.filterModel.program && element.programModel!.section==_studentEnrollCubit.filterModel.section,).map((e) => e.programModel!.session,).toSet().toList(),
+                     onSelected: (p0) {
+                       _studentEnrollCubit.getStudentEnrollmentFilter(_studentEnrollCubit.filterModel.copyWith(session: _semesterCubit.semesterList.where((element) => element.programModel!.affiliationName==_studentEnrollCubit.filterModel.affiliation&& element.programModel!.name==_studentEnrollCubit.filterModel.program && element.programModel!.departmentName==_studentEnrollCubit.filterModel.department && element.programModel!.section==_studentEnrollCubit.filterModel.section,).map((e) => e.programModel!.session,).toSet().toList()[p0]));
+                     },
+                     title: "Session",offset: Offset(0, 30),widget: SizedBox(
+                         width: mdWidth(context),
+                         child: DropDownFieldWidget(text:_studentEnrollCubit.filterModel.session?? "Select..",maxLine: 1, isFilled: _studentEnrollCubit.filterModel.session!=null)),),
 
-                 SizedBox(height: 10),
-                 CustomPopMenuButton(
-                   menus: _semesterCubit.semesterList.where((element) => element.programModel!.affiliationName==_studentEnrollCubit.filterModel.affiliation && element.programModel!.departmentName==_studentEnrollCubit.filterModel.department && element.programModel!.name==_studentEnrollCubit.filterModel.program&& element.programModel!.section==_studentEnrollCubit.filterModel.section && element.programModel!.session==_studentEnrollCubit.filterModel.session,).map((e) => "${e.semesterName??""} (${e.status})",).toSet().toList(),
-                   onSelected: (p0) {
-                     _studentEnrollCubit.getStudentEnrollmentFilter(_studentEnrollCubit.filterModel.copyWith(semester: _semesterCubit.semesterList.where((element) => element.programModel!.affiliationName==_studentEnrollCubit.filterModel.affiliation && element.programModel!.departmentName==_studentEnrollCubit.filterModel.department&& element.programModel!.name==_studentEnrollCubit.filterModel.program && element.programModel!.section==_studentEnrollCubit.filterModel.section && element.programModel!.session==_studentEnrollCubit.filterModel.session,).map((e) => "${e.semesterName??""} (${e.status})",).toSet().toList()[p0]));
-                   },
-                   title: "Semester",offset: Offset(0, 30),widget: SizedBox(
-                       width: mdWidth(context),
-                       child: DropDownFieldWidget(text:_studentEnrollCubit.filterModel.semester?? "Select..",maxLine: 1, isFilled: _studentEnrollCubit.filterModel.semester!=null)),),
+                   SizedBox(height: 10),
+                   CustomPopMenuButton(
+                     menus: _semesterCubit.semesterList.where((element) => element.programModel!.affiliationName==_studentEnrollCubit.filterModel.affiliation && element.programModel!.departmentName==_studentEnrollCubit.filterModel.department && element.programModel!.name==_studentEnrollCubit.filterModel.program&& element.programModel!.section==_studentEnrollCubit.filterModel.section && element.programModel!.session==_studentEnrollCubit.filterModel.session,).map((e) => "${e.semesterName??""} (${e.status})",).toSet().toList(),
+                     onSelected: (p0) {
+                       _studentEnrollCubit.getStudentEnrollmentFilter(_studentEnrollCubit.filterModel.copyWith(semester: _semesterCubit.semesterList.where((element) => element.programModel!.affiliationName==_studentEnrollCubit.filterModel.affiliation && element.programModel!.departmentName==_studentEnrollCubit.filterModel.department&& element.programModel!.name==_studentEnrollCubit.filterModel.program && element.programModel!.section==_studentEnrollCubit.filterModel.section && element.programModel!.session==_studentEnrollCubit.filterModel.session,).map((e) => "${e.semesterName??""} (${e.status})",).toSet().toList()[p0]));
+                     },
+                     title: "Semester",offset: Offset(0, 30),widget: SizedBox(
+                         width: mdWidth(context),
+                         child: DropDownFieldWidget(text:_studentEnrollCubit.filterModel.semester?? "Select..",maxLine: 1, isFilled: _studentEnrollCubit.filterModel.semester!=null)),),
 
-                 SizedBox(height: 25),
+                   SizedBox(height: 25),
 
-                /// 🔹 BUTTONS
-                Row(
-                  children: [
-                    Expanded(
-                      child: CustomElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        text: "Discard",
-                        bgColor: AppColor.white,
-                        textColor: AppColor.red,
-                        borderColor: AppColor.red,
+                  /// 🔹 BUTTONS
+                  Row(
+                    children: [
+                      Expanded(
+                        child: CustomElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          text: "Discard",
+                          bgColor: AppColor.white,
+                          textColor: AppColor.red,
+                          borderColor: AppColor.red,
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: CustomElevatedButton(
-                        onPressed: () async{
-                          if(_studentEnrollCubit.filterModel.isAnyNull){
-                            showMessage("Please fill all fields",isError: true);
-                            return;
-                          }
-                          _studentEnrollCubit.initFunction(_studentEnrollCubit.filterModel);
-                       var response= await  _studentEnrollCubit.get();
-                       if(DataExtractor.extractInt(_studentEnrollCubit.filterModel.semester)!=1){
-                         var res=    await _studentEnrollCubit.getHistory(_studentEnrollCubit.submittedData.copyWith(semester:"${ DataExtractor.extractInt(_studentEnrollCubit.submittedData.semester)-1}"));
-                       }
-                       if(response){
-                         Navigator.pop(context);
-                       }
-                        },
-                        text: "Save",
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: CustomElevatedButton(
+                          onPressed: () async{
+                            if(_studentEnrollCubit.filterModel.isAnyNull){
+                              showMessage("Please fill all fields",isError: true);
+                              return;
+                            }
+                            _studentEnrollCubit.initFunction(_studentEnrollCubit.filterModel);
+                         var response= await  _studentEnrollCubit.get();
+                         if(DataExtractor.extractInt(_studentEnrollCubit.filterModel.semester)!=1){
+                           var res=    await _studentEnrollCubit.getHistory(_studentEnrollCubit.submittedData.copyWith(semester:"${ DataExtractor.extractInt(_studentEnrollCubit.submittedData.semester)-1}"));
+                         }
+                         if(response){
+                           Navigator.pop(context);
+                         }
+                          },
+                          text: "Save",
+                        ),
                       ),
-                    ),
-                  ],
-                )]
-                else
-                  DataNotFoundWidget(onTap: () async{
-                    await _semesterCubit.getSemesterList();
-                  },),
-              ],
+                    ],
+                  )]
+                  else
+                    DataNotFoundWidget(onTap: () async{
+                      await _semesterCubit.getSemesterList();
+                    },),
+                  SafeArea(
+                      top: false,
+                      child: SizedBox())
+                ],
+              ),
             );
           }
         ));

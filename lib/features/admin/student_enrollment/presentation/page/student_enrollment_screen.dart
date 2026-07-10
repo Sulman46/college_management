@@ -15,6 +15,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/app/di_container.dart';
 import '../../../../../core/app/myapp.dart';
 import '../../../../../core/constants/media_query.dart';
+import '../../../../../core/enums/user_enums.dart';
+import '../../../../Authentication/presentation/controller/cubit.dart';
 import '../../../programs/presentation/controller/cubit.dart';
 import '../../../student_registrations/presentation/controller/cubit.dart';
 import '../controller/cubit.dart';
@@ -42,9 +44,14 @@ class _StudentEnrollmentScreenState extends State<StudentEnrollmentScreen> {
       _studentEnrollCubit.initDataList();
       _studentEnrollCubit.initFunction(StudentEnrollmentFilterModel());
       _studentEnrollCubit.getTabIndex(false);
-      await _semesterCubit.getSemesterList();
-      await _studentRegisterCubit.get();
-      showDialog(context: context, builder: (context) => StudentEnrollmentFilterDialog(),);
+
+      if(_authCubit.userModel!.role==UserRole.student){
+      await  _studentEnrollCubit.get();
+      }else{
+        await _semesterCubit.getSemesterList();
+        await _studentRegisterCubit.get();
+        showDialog(context: context, builder: (context) => StudentEnrollmentFilterDialog(),);
+      }
     },);
     super.initState();
   }
@@ -66,7 +73,9 @@ class _StudentEnrollmentScreenState extends State<StudentEnrollmentScreen> {
             return Column(
               children: [
                 /// 🔹 TOP BAR
-                CustomTopBar(text: "Student Enrollment",suffix: InkWell(
+                CustomTopBar(text: "Student Enrollment",suffix:
+            _authCubit.userModel!.role==UserRole.student?null:
+                InkWell(
                     onTap: () {
                       showDialog(context: context, builder: (context) => StudentEnrollmentFilterDialog(),);
                     },
@@ -86,7 +95,7 @@ class _StudentEnrollmentScreenState extends State<StudentEnrollmentScreen> {
                         ))
                       ],
                     )),),
-                if(_studentRegisterCubit.dataList.isEmpty)
+                if(_studentRegisterCubit.dataList.isEmpty && _authCubit.userModel!.role!=UserRole.student)
                   Expanded(
                     child: DataNotFoundWidget(onTap: () async {
                       await _studentRegisterCubit.get();
@@ -100,8 +109,9 @@ class _StudentEnrollmentScreenState extends State<StudentEnrollmentScreen> {
                       padding: EdgeInsets.symmetric(horizontal:screenPaddingHori),
                       child: Column(
                         children: [
-                          SizedBox(height: 10,),
-                          StudentEnrollmentTabs(),
+                          if(_authCubit.userModel!.role==UserRole.admin || _authCubit.userModel!.role==UserRole.hod)
+                          ...[SizedBox(height: 10,),
+                          StudentEnrollmentTabs(),],
                           SizedBox(height: 10,),
 
                          if(!_studentEnrollCubit.isNewTab)
@@ -127,6 +137,6 @@ class _StudentEnrollmentScreenState extends State<StudentEnrollmentScreen> {
   }
 }
 
-
+final _authCubit=DiContainer().sl<AuthenticationCubit>();
 
 
