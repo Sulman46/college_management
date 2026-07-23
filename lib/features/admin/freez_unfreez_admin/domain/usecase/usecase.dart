@@ -1,6 +1,7 @@
 
 import 'package:dartz/dartz.dart';
 import '../../models/freeze_request_model.dart';
+import '../../models/student_freeze_request_model.dart';
 import '../repository/repository.dart';
 
 class FreezUnFreezUseCase{
@@ -24,5 +25,14 @@ class FreezUnFreezUseCase{
   Future<Either<String,String>> delete({required FreezeRequestModel value}){
     return repository.delete(value: value);
   }
+
+  Future<Either<String,List<FreezeRequestModel>>> getMyRequest({required String srNo}){
+    return repository.getMyRequest(srNo: srNo);
+  }
+
+  Future<Either<String,String>> post({required StudentFreezeRequestModel value}){
+    return repository.post(value: value);
+  }
+
 
 }

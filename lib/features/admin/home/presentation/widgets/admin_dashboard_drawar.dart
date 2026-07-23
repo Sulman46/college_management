@@ -161,6 +161,7 @@ class _AdminDashboardDrawarState extends State<AdminDashboardDrawar> {
           );
         },
       ),
+      if(_authCubit.userModel!.role!=UserRole.student)
       AdminDrawerButtonModel(
         title: "Teachers",
         icon: Icons.list_alt_sharp,
@@ -233,7 +234,7 @@ class _AdminDashboardDrawarState extends State<AdminDashboardDrawar> {
         ],
       ),
       AdminDrawerButtonModel(
-        title: "Students",
+        title:_authCubit.userModel!.role==UserRole.student? "Action-Oriented": "Students",
         icon: Icons.boy,
         onTap: () {},
         subList: [
@@ -251,7 +252,7 @@ class _AdminDashboardDrawarState extends State<AdminDashboardDrawar> {
             },
           ),
           SubDrawerButtonModel(
-            title: "Student Enrollment",
+            title:_authCubit.userModel!.role==UserRole.student? "Enrollment": "Student Enrollment",
             icon: Icons.workspaces,
             onTap: () {
               Navigator.push(
@@ -272,9 +273,9 @@ class _AdminDashboardDrawarState extends State<AdminDashboardDrawar> {
               );
             },
           ),
-          if(_authCubit.userModel!.role==UserRole.admin||_authCubit.userModel!.role==UserRole.hod)
+          if(_authCubit.userModel!.role==UserRole.admin||_authCubit.userModel!.role==UserRole.hod||_authCubit.userModel!.role==UserRole.student)
           SubDrawerButtonModel(
-            title: "Marking Engine",
+            title:_authCubit.userModel!.role==UserRole.student? "Result":"Marking Engine",
             icon: Icons.newspaper_outlined,
             onTap: () {
               Navigator.push(
@@ -283,6 +284,7 @@ class _AdminDashboardDrawarState extends State<AdminDashboardDrawar> {
               );
             },
           ),
+          if(_authCubit.userModel!.role!=UserRole.student)
           SubDrawerButtonModel(
             title: "Result",
             icon: Icons.chrome_reader_mode_outlined,
@@ -336,19 +338,19 @@ class _AdminDashboardDrawarState extends State<AdminDashboardDrawar> {
         ],
       ),
 
-      if(_authCubit.userModel!.role==UserRole.admin)
-      AdminDrawerButtonModel(
-        title: "Payroll & Salary Management",
-        icon: Icons.payment,
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => PayrollAndSalaryManagementScreen(),
-            ),
-          );
-        },
-      ),
+      // if(_authCubit.userModel!.role==UserRole.admin)
+      // AdminDrawerButtonModel(
+      //   title: "Payroll & Salary Management",
+      //   icon: Icons.payment,
+      //   onTap: () {
+      //     Navigator.push(
+      //       context,
+      //       MaterialPageRoute(
+      //         builder: (context) => PayrollAndSalaryManagementScreen(),
+      //       ),
+      //     );
+      //   },
+      // ),
       AdminDrawerButtonModel(
         title: "Announcements",
         icon: Icons.announcement,
@@ -461,6 +463,13 @@ class _AdminDashboardDrawarState extends State<AdminDashboardDrawar> {
                   fontSize: 15,
                   color: AppColor.white,
                 ),
+                const SizedBox(height: 10),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 5,vertical: 5),
+                  decoration: AppColor.containerNeonGreen,
+                  child: AppText(text: _authCubit.userModel?.role.toJson()??"Active",color: AppColor.green,fontSize: 11,),
+                ),
+
                 const SizedBox(height: 15),
               ],
             ),

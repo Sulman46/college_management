@@ -26,7 +26,7 @@ VoidCallback onTap;
           children: [
             Icon(Icons.close,color: AppColor.white,size: 13,),
             SizedBox(width: 2,),
-            AppText(text: text,fontSize: 11,color: AppColor.white.withOpacity(.7),),
+            Expanded(child: AppText(text: text,fontSize: 11,color: AppColor.white.withOpacity(.7),)),
           ],
         ),
       ),

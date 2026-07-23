@@ -5,6 +5,7 @@ import '../../domain/repository/repository.dart';
 import '../../models/bulk_save_marking_model.dart';
 import '../../models/marking_student_filter_model.dart';
 import '../../models/marks_student_model.dart';
+import '../../models/student_history_marks_model.dart';
 import '../datasource/datasource.dart';
 
 class MarkingStudentRepositoryImpl extends MarkingStudentRepository{
@@ -15,6 +16,10 @@ class MarkingStudentRepositoryImpl extends MarkingStudentRepository{
   @override
   Future<Either<String,MarksResponseModel>> get({required MarkingStudentFilterModel model}) {
     return dataSource.get(model: model);
+  }
+  @override
+  Future<Either<String,List<StudentHistoryMarksModel>>> search({required String rollNo}){
+    return dataSource.search(rollNo: rollNo);
   }
 
   @override

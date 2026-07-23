@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../announcements/presentation/page/announcement_screen.dart';
+
 
 class AdminHomeTopBar extends StatelessWidget {
   AdminHomeTopBar({super.key,});
@@ -19,7 +21,7 @@ class AdminHomeTopBar extends StatelessWidget {
       ),
       child: Column(
         children: [
-          SafeArea(child: SizedBox(),bottom: false,),
+          SafeArea(bottom: false,child: SizedBox(),),
           SizedBox(height: 10,),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -28,7 +30,15 @@ class AdminHomeTopBar extends StatelessWidget {
                 Scaffold.of(context).openDrawer();
               },child:  FaIcon(FontAwesomeIcons.bars,size: 18,color: AppColor.white,)),
               AppText(text:"Dashboard",fontSize: 13,color: AppColor.white,),
-              SizedBox(width: 20,),
+
+              InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AnnouncementScreen()),
+                    );
+                  } ,
+                  child: Icon(Icons.notifications_active,color: AppColor.white,size: 15,)),
             ],
           ),
 

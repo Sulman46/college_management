@@ -1,7 +1,7 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:flutter/material.dart';
-import '../../../../../core/constants/media_query.dart';
+
 import '../../../../../core/theme/AppColor.dart';
 import '../../../../../widgets/app_text.dart';
 
@@ -12,65 +12,124 @@ class HomeCardsWidget extends StatelessWidget {
     required this.icon,
     this.onTap,
   });
-  String title;
-  IconData icon;
-  VoidCallback? onTap;
+
+  final String title;
+  final IconData icon;
+  final VoidCallback? onTap;
+
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap:onTap ,
-      child: Container(
-        decoration: BoxDecoration(
-          boxShadow: AppColor.shadowBlack,
-          borderRadius: BorderRadius.circular(20),
-          color: AppColor.white,
-        ),
-        child: Stack(
-          children: [
-            Container(
-              height: 120,
-              padding: EdgeInsets.symmetric(horizontal: 15,vertical: 10),
-              width: mdWidth(context)*.43,
-              decoration: BoxDecoration(
-                gradient:  LinearGradient(
-                  stops: [.4,.5],
-                  colors: [AppColor.primary, AppColor.white],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: AppColor.white
-                        ),
-                        child: Icon(icon,color: AppColor.primary,size: 25,),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 0,),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      AppText(text: title,fontSize: 13,color: AppColor.white.withOpacity(.5),),
-                      // AppText(text: subTitle,fontSize: 10,color: AppColor.greyLight,fontFamily: 'pm',maxLines: 1,overflow: TextOverflow.ellipsis,),
-                    ],
-                  ),
-                  SizedBox(height: 5,),
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(24),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(24),
+        splashColor: AppColor.white.withOpacity(.08),
+        highlightColor: Colors.transparent,
+        onTap: onTap,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(24),
+          child: Ink(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  AppColor.primary,
+                  AppColor.primary.withOpacity(.88),
+                  AppColor.primary.withOpacity(.75),
                 ],
               ),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColor.primary.withOpacity(.28),
+                  blurRadius: 20,
+                  offset: const Offset(0, 10),
+                ),
+              ],
             ),
-          ],
+            child: Stack(
+              children: [
+                Positioned(
+                  top: -35,
+                  right: -35,
+                  child: Container(
+                    height: 100,
+                    width: 100,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppColor.white.withOpacity(.08),
+                    ),
+                  ),
+                ),
+
+                Positioned(
+                  bottom: -25,
+                  left: -25,
+                  child: Container(
+                    height: 70,
+                    width: 70,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppColor.white.withOpacity(.05),
+                    ),
+                  ),
+                ),
+
+                Padding(
+                  padding: const EdgeInsets.all(18),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            padding:  EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: AppColor.white.withOpacity(.18),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Icon(
+                              icon,
+                              color: AppColor.white,
+                              size: 20,
+                            ),
+                          ),
+
+                          const Spacer(),
+
+                          Container(
+                            padding: const EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: AppColor.white.withOpacity(.15),
+                            ),
+                            child: const Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              color: AppColor.white,
+                              size: 15,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      AppText(
+                        text: title,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: AppColor.white,
+                        maxLines: 2,
+                      ),
+
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

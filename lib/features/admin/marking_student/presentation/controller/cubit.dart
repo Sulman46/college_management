@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:college_management/features/Authentication/presentation/controller/cubit.dart';
 import 'package:college_management/features/admin/marking_student/models/bulk_save_marking_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,6 +13,7 @@ import '../../../course_mapping/presentation/controller/cubit.dart';
 import '../../domain/usecase/usecase.dart';
 import '../../models/marking_student_filter_model.dart';
 import '../../models/marks_student_model.dart';
+import '../../models/student_history_marks_model.dart';
 import 'state.dart';
 
 class MarkingStudentCubit extends Cubit<MarkingStudentState> {
@@ -25,6 +27,9 @@ class MarkingStudentCubit extends Cubit<MarkingStudentState> {
 
   MarksResponseModel _marksResponseModel=MarksResponseModel(dataList: [], isLocked: false);
   MarksResponseModel get marksResponseModel=>_marksResponseModel;
+
+  List<StudentHistoryMarksModel> _historyList=[];
+  List<StudentHistoryMarksModel> get historyList=>_historyList;
 
   List<MarksStudentModel> get dataList=>marksResponseModel.dataList;
 
@@ -84,6 +89,28 @@ class MarkingStudentCubit extends Cubit<MarkingStudentState> {
     }else{
       var data=response.asRight();
       _marksResponseModel=data;
+      emit(MarkingStudentLoaded());
+      closeLoadingDialog();
+      return true;
+    }
+  }
+
+  Future<bool> searchStudentMarks()async{
+    filterName="";
+    searchController.clear();
+
+    _marksResponseModel=MarksResponseModel(dataList: [], isLocked: false);
+    showLoadingDialog();
+    emit(MarkingStudentLoading());
+    var response=await _useCase.search(rollNo: _authCubit.userModel?.rollNo??"");
+    if(response.isLeft()){
+      showMessage(response.asLeft(),isError: true);
+      emit(MarkingStudentLoaded());
+      closeLoadingDialog();
+      return false;
+    }else{
+      var data=response.asRight();
+      _historyList=data;
       emit(MarkingStudentLoaded());
       closeLoadingDialog();
       return true;
@@ -240,3 +267,6 @@ class MarkingStudentCubit extends Cubit<MarkingStudentState> {
 
   
 }
+
+
+var _authCubit=DiContainer().sl<AuthenticationCubit>();

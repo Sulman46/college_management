@@ -57,6 +57,11 @@ import '../../features/admin/hod_assignment/data/repository_impl/repository_impl
 import '../../features/admin/hod_assignment/domain/repository/repository.dart';
 import '../../features/admin/hod_assignment/domain/usecase/usecase.dart';
 import '../../features/admin/hod_assignment/presentation/controller/cubit.dart';
+import '../../features/admin/home/data/datasource/datasource.dart';
+import '../../features/admin/home/data/repository_impl/repository_impl.dart';
+import '../../features/admin/home/domain/repository/repository.dart';
+import '../../features/admin/home/domain/usecase/usecase.dart';
+import '../../features/admin/home/presentation/controller/cubit.dart';
 import '../../features/admin/leave_request/data/datasource/datasource.dart';
 import '../../features/admin/leave_request/data/repository_impl/repository_impl.dart';
 import '../../features/admin/leave_request/domain/repository/repository.dart';
@@ -122,6 +127,7 @@ import '../../features/admin/university_profile/data/repository_impl/repository_
 import '../../features/admin/university_profile/domain/repository/repository.dart';
 import '../../features/admin/university_profile/domain/usecase/usecase.dart';
 import '../../features/admin/university_profile/presentation/controller/cubit.dart';
+import '../constants/app_apis.dart';
 import '../domain/connectivity/presentaion/connectivity_controller.dart';
 
 
@@ -130,6 +136,7 @@ class DiContainer{
 
   Future<void> init()async{
     WidgetsFlutterBinding.ensureInitialized();
+    await AppApis.init();
     // sl.registerLazySingleton(() => LocalizationGetx(),);
     await executeFirstTime();
     cubits();
@@ -274,6 +281,11 @@ class DiContainer{
     sl.registerLazySingleton<ExamScheduleRepository>(() => ExamScheduleRepositoryImpl(dataSource: sl()),);
     sl.registerLazySingleton(() => ExamScheduleUseCase(repository: sl()),);
 
+    // dashboard
+    sl.registerLazySingleton<AdminHomeDataSource>(() => FunctionClassAdminHome(),);
+    sl.registerLazySingleton<AdminHomeRepository>(() => AdminHomeRepositoryImpl(dataSource: sl()),);
+    sl.registerLazySingleton(() => AdminHomeUseCase(repository: sl()),);
+
 
     ConnectivityController().init();
     await sl.allReady();
@@ -304,6 +316,7 @@ class DiContainer{
     sl.registerLazySingleton(() => MarkingStudentCubit(sl()),);
     sl.registerLazySingleton(() => StudentResultCubit(sl()),);
     sl.registerLazySingleton(() => ExamScheduleCubit(sl()),);
+    sl.registerLazySingleton(() => AdminHomeCubit(sl()),);
 
     sl.registerLazySingleton(() => ScreenResizeCubit(),);
   }

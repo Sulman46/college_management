@@ -70,6 +70,7 @@ dependencies:
   flutter_svg: any
   percent_indicator: ^4.2.5
   font_awesome_flutter: any
+  smooth_page_indicator: ^2.0.1
 
   flutter_map: ^8.2.2
   latlong2: ^0.9.1

@@ -12,6 +12,7 @@ import '../../models/login_respons_model.dart';
 
 abstract class AuthenticationDataSource{
   Future<Either<String, LoginResponseModel>> login({required LoginRequestModel request});
+  Future<Either<String, String>> status();
 }
 
 
@@ -29,7 +30,6 @@ class FunctionClassAuthentication extends AuthenticationDataSource {
       final response = await dioHelper.post(AppApis.login,data:request.toJson() );
 
       final data = response.data;
-
       // SUCCESS
       if (response.statusCode! >= 200 &&
           response.statusCode! <= 300) {
@@ -45,6 +45,30 @@ class FunctionClassAuthentication extends AuthenticationDataSource {
       // ERROR RESPONSE FROM SERVER
       return Left(
         data==null? "Login failed":  data['message'] ??data['error'] ??
+            "Login failed",
+      );
+
+    } catch (e) {
+      return Left(e.toString());
+    }
+  }
+
+  @override
+  Future<Either<String, String>> status() async {
+    try {
+
+      final response = await dioHelper.get(AppApis.authStatus);
+
+      final data = response.data;
+log("324243: ${data}");
+      // SUCCESS
+      if (response.statusCode! >= 200 &&
+          response.statusCode! <= 300) {
+        return Right(data["status"]);
+      }
+      // ERROR RESPONSE FROM SERVER
+      return Left(
+        data==null? "Login failed":  data['message'] ??data['msg'] ??data['error'] ??
             "Login failed",
       );
 

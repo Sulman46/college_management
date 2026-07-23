@@ -68,7 +68,8 @@ class _StudentResultScreenState extends State<StudentResultScreen> {
 
 
                       if(_studentResultCubit.dataList.where((element) => element.studentName!.toLowerCase().contains(_studentResultCubit.filterName.toLowerCase())||element.rollNo!.toLowerCase().contains(_studentResultCubit.filterName.toLowerCase()),).toList().isNotEmpty)
-                        ...List.generate(_studentResultCubit.dataList.where((element) => element.studentName!.toLowerCase().contains(_studentResultCubit.filterName.toLowerCase())||element.rollNo!.toLowerCase().contains(_studentResultCubit.filterName.toLowerCase()),).toList().length, (index) => StudentResultWidget(model: _studentResultCubit.dataList.where((element) => element.studentName!.toLowerCase().contains(_studentResultCubit.filterName.toLowerCase())||element.rollNo!.toLowerCase().contains(_studentResultCubit.filterName.toLowerCase()),).toList()[index],),)
+                        ...List.generate(_studentResultCubit.dataList.where((element) => element.studentName!.toLowerCase().contains(_studentResultCubit.filterName.toLowerCase())||element.rollNo!.toLowerCase().contains(_studentResultCubit.filterName.toLowerCase()),).toList().length,
+                              (index) => StudentResultWidget(model: _studentResultCubit.dataList.where((element) => element.studentName!.toLowerCase().contains(_studentResultCubit.filterName.toLowerCase())||element.rollNo!.toLowerCase().contains(_studentResultCubit.filterName.toLowerCase()),).toList()[index],),)
 
                       else if(_studentResultCubit.submittedData.isAnyNull)
                           Center(

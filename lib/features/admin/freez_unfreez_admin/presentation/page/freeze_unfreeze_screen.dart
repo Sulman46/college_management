@@ -1,4 +1,7 @@
 import 'package:college_management/core/constants/app_widgets_size.dart';
+import 'package:college_management/core/enums/user_enums.dart';
+import 'package:college_management/features/Authentication/presentation/controller/cubit.dart';
+import 'package:college_management/features/admin/freez_unfreez_admin/presentation/widgets/student_freeze_request_dialog.dart';
 import 'package:college_management/widgets/data_not_found_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,7 +29,12 @@ class _FreezeUnfreezeScreenState extends State<FreezeUnfreezeScreen> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       _freezeCubit.getTabVal(true);
-      await _freezeCubit.getPen();
+      if(_authCubit.userModel!.role!=UserRole.student) {
+
+        await _freezeCubit.getPen();
+      }else{
+        await _freezeCubit.getMyRequest();
+      }
     },);
     // TODO: implement initState
     super.initState();
@@ -40,13 +48,30 @@ class _FreezeUnfreezeScreenState extends State<FreezeUnfreezeScreen> {
           builder: (context,stateus) {
             return Column(
               children: [
-                CustomTopBar(text: "Freeze/Withdrawals"),
+                CustomTopBar(text: "Freeze/Withdrawals",suffix:
+
+                _authCubit.userModel!.role!=UserRole.student?null:InkWell(
+                  splashColor: AppColor.transparent,
+                  hoverColor: AppColor.transparent,
+                  onTap: () {
+                    showDialog(context: context, builder: (context) => StudentFreezeRequestDialog(),);
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(width: 1,color: AppColor.white),
+                      shape: BoxShape.circle,
+                    ),
+                    padding: EdgeInsets.all(5),
+                    child: Icon(Icons.add,size: 15,color: AppColor.white,),
+                  ),
+                ),),
                 Expanded(
                     child: SingleChildScrollView(
                       padding: EdgeInsets.symmetric(horizontal: screenPaddingHori),
                       child: Column(
                         children: [
                           SizedBox(height: 5,),
+                          if(_authCubit.userModel!.role!=UserRole.student)
                           Container(
                             padding: EdgeInsets.symmetric(horizontal: 2,vertical: 2),
                             decoration: BoxDecoration(
@@ -91,6 +116,10 @@ class _FreezeUnfreezeScreenState extends State<FreezeUnfreezeScreen> {
                             ...List.generate(_freezeCubit.filterList.length, (index) => FreezeRequestWidget(model:_freezeCubit.filterList[index],),)
                           else
                             DataNotFoundWidget(onTap: () async {
+                              if(_authCubit.userModel!.role==UserRole.student){
+                                await _freezeCubit.getMyRequest();
+                                return;
+                              }
                               if(_freezeCubit.isPendingTab){
                                 await _freezeCubit.getPen();
                               }else{
@@ -113,3 +142,5 @@ class _FreezeUnfreezeScreenState extends State<FreezeUnfreezeScreen> {
     );
   }
 }
+
+var _authCubit=DiContainer().sl<AuthenticationCubit>();

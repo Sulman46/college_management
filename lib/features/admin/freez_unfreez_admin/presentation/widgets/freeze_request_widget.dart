@@ -5,6 +5,7 @@ import 'package:college_management/widgets/more_vert_pop_menu_button.dart';
 import 'package:flutter/material.dart';
 import '../../../../../core/app/di_container.dart';
 import '../../../../../core/enums/user_enums.dart';
+import '../../../../../core/helper/downloader_helper.dart';
 import '../../../../Authentication/presentation/controller/cubit.dart';
 import '../controller/cubit.dart';
 import 'freeze_request_status.dart';
@@ -47,6 +48,7 @@ class _FreezeRequestWidgetState extends State<FreezeRequestWidget> {
 
 
 
+
           SizedBox(height: 5,),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -83,6 +85,31 @@ class _FreezeRequestWidgetState extends State<FreezeRequestWidget> {
               ),
             ],
           ),
+
+          if(widget.model.attachmentUrl!=null && widget.model.attachmentUrl!="")
+            Container(
+              margin: EdgeInsets.only(top: 5),
+              child: InkWell(
+                splashColor: Colors.transparent,
+                hoverColor: Colors.transparent,
+                onTap: () async {
+                  await FileDownloader.download(
+                    url: widget.model.attachmentUrl??"",
+                    fileName: "${widget.model.studentName??""}-${widget.model.requestType??""}-${widget.model.srNo??""}",
+                    onProgress: (progress) {
+                      debugPrint("${(progress * 100).toStringAsFixed(0)}%");
+                    },
+                  );
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    AppText(text: "Attachment",fontSize: 12,color: AppColor.blueLight,fontWeight: FontWeight.w600,),
+                    Icon(Icons.download_rounded,color: AppColor.blueLight,size: 20,),
+                  ],
+                ),
+              ),
+            ),
         ],
       ),
     );

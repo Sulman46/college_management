@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:college_management/core/helper/show_message.dart';
+
 import '../../../core/enums/user_enums.dart';
 
 class UserModel {
@@ -49,6 +51,8 @@ class UserModel {
   factory UserModel.fromJson(Map<String, dynamic> json) {
 
     bool isDptList=json['department'] is List;
+
+
     return UserModel(
       id: json['id'] ?? '',
 
@@ -74,19 +78,31 @@ class UserModel {
         programName: json['programName'] ?? '',
         session: json['session'] ?? '',
         section: json['section'] ?? '',
-        studentDepartment:isDptList?"": json['department'] ?? '',
+        studentDepartment:json['studentDepartment']!=null?json['studentDepartment']??"": isDptList?"": json['department'] ??  '',
 
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      "id": id,
-      "role": role.toJson(),
-      "name": name,
-      "email": email,
-      "profileImg": profileImg,
-      "department": department.toList(),
+      'id': id,
+      'role': role.toJson(),
+      'name': name,
+      'email': email,
+      'profileImg': profileImg,
+      'department': department,
+
+      'teacherType': teacherType,
+      'teacherId': teacherId,
+      'teacherFullName': teacherFullName,
+
+      'studentObjectId': studentObjectId,
+      'programName': programName,
+      'studentDepartment': studentDepartment,
+      'srNo': srNo,
+      'rollNo': rollNo,
+      'section': section,
+      'session': session,
     };
   }
 }

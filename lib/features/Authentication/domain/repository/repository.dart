@@ -5,4 +5,5 @@ import '../../models/login_respons_model.dart';
 
 abstract class AuthenticationRepository{
   Future<Either<String, LoginResponseModel>> login({required LoginRequestModel request});
+  Future<Either<String, String>> status();
 }

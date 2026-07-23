@@ -1,5 +1,7 @@
 import 'package:college_management/core/constants/app_widgets_size.dart';
+import 'package:college_management/core/enums/user_enums.dart';
 import 'package:college_management/core/theme/AppColor.dart';
+import 'package:college_management/features/Authentication/presentation/controller/cubit.dart';
 import 'package:college_management/features/admin/marking_student/models/marking_student_filter_model.dart';
 import 'package:college_management/features/admin/marking_student/presentation/widgets/filter_marking_student_dialog.dart';
 import 'package:college_management/features/admin/marking_student/presentation/widgets/marks_student_widget.dart';
@@ -15,6 +17,7 @@ import '../../../../../widgets/app_text.dart';
 import '../../../../../widgets/custom_text_form.dart';
 import '../../../semesters/presentation/controller/cubit.dart';
 import '../controller/cubit.dart';
+import '../widgets/student_marking_history_widget.dart';
 
 class MarkingStudentScreen extends StatefulWidget {
   const MarkingStudentScreen({super.key});
@@ -34,11 +37,16 @@ class _MarkingStudentScreenState extends State<MarkingStudentScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async{
       _markingCubit.dataInit();
-      if(_programCubit.programsList.isEmpty){
-        await _programCubit.getPrograms();
+      if(_authCubit.userModel!.role==UserRole.student){
+        await _markingCubit.searchStudentMarks();
+      }else{
+        if(_programCubit.programsList.isEmpty){
+          await _programCubit.getPrograms();
+        }
+        await _semesterCubit.getSemesterList();
+        showDialog(context: context, builder: (context) => FilterMarkingStudentDialog(),);
       }
-      await _semesterCubit.getSemesterList();
-      showDialog(context: context, builder: (context) => FilterMarkingStudentDialog(),);
+
     },);
 
   }
@@ -53,7 +61,7 @@ class _MarkingStudentScreenState extends State<MarkingStudentScreen> {
             builder: (context,styavkl) {
               return Column(
                 children: [
-                  CustomTopBar(text: "Marking",suffix: InkWell(
+                  CustomTopBar(text: "Marking",suffix:_authCubit.userModel!.role==UserRole.student? null:InkWell(
                       onTap: () {
                         showDialog(context: context, builder: (context) => FilterMarkingStudentDialog(),);
                       },
@@ -74,7 +82,7 @@ class _MarkingStudentScreenState extends State<MarkingStudentScreen> {
                           contentPadding: EdgeInsets.symmetric(horizontal: 5,vertical: 10),
                         ),
                         SizedBox(height: 10,),
-                        if(_programCubit.programsList.isNotEmpty && _markingCubit.dataList.isNotEmpty)
+                        if(_programCubit.programsList.isNotEmpty && _markingCubit.dataList.isNotEmpty &&_authCubit.userModel!.role!=UserRole.student)
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -108,7 +116,12 @@ class _MarkingStudentScreenState extends State<MarkingStudentScreen> {
                           ],
                         ),
 
-                        if(_programCubit.programsList.isNotEmpty && _markingCubit.dataList.where((element) => element.name.toString().toLowerCase().contains(_markingCubit.filterName.toLowerCase()),).isNotEmpty)
+                        if(_authCubit.userModel!.role==UserRole.student && _markingCubit.historyList.where((element) => element.courseMapping!.course!.courseTitle.toString().toLowerCase().contains(_markingCubit.filterName.toLowerCase()),).isNotEmpty)
+                        ...List.generate(_markingCubit.historyList.where((element) => element.courseMapping!.course!.courseTitle.toString().toLowerCase().contains(_markingCubit.filterName.toLowerCase()),).length,
+                              (index) => StudentMarkingHistoryWidget(isFirst: index==0,model: _markingCubit.historyList.where((element) => element.courseMapping!.course!.courseTitle.toString().toLowerCase().contains(_markingCubit.filterName.toLowerCase()),).toList()[index],),)
+                       else if(_authCubit.userModel!.role==UserRole.student)
+              DataNotFoundWidget(onTap: ()async{await _markingCubit.searchStudentMarks();})
+                        else if(_programCubit.programsList.isNotEmpty && _markingCubit.dataList.where((element) => element.name.toString().toLowerCase().contains(_markingCubit.filterName.toLowerCase()),).isNotEmpty)
                         ...List.generate(_markingCubit.dataList.where((element) => element.name.toString().toLowerCase().contains(_markingCubit.filterName.toLowerCase()),).length, (index) => MarksStudentWidget(model: _markingCubit.dataList.where((element) => element.name.toString().toLowerCase().contains(_markingCubit.filterName.toLowerCase()),).toList()[index],),)
                         else if(_programCubit.programsList.isEmpty)
                           DataNotFoundWidget(onTap: ()async{await _programCubit.getPrograms();})
@@ -152,3 +165,6 @@ class _MarkingStudentScreenState extends State<MarkingStudentScreen> {
     );
   }
 }
+
+
+var _authCubit=DiContainer().sl<AuthenticationCubit>();

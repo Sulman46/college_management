@@ -13,4 +13,8 @@ class AuthenticationUseCase{
     return repository.login(request:request);
   }
 
+  Future<Either<String, String>> status() {
+    return repository.status();
+  }
+
 }

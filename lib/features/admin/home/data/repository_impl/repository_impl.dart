@@ -1,6 +1,7 @@
 
 import 'package:dartz/dartz.dart';
 import '../../domain/repository/repository.dart';
+import '../../models/dashboard_model.dart';
 import '../datasource/datasource.dart';
 
 class AdminHomeRepositoryImpl extends AdminHomeRepository{
@@ -9,8 +10,8 @@ class AdminHomeRepositoryImpl extends AdminHomeRepository{
 
 
   @override
-  Future<Either<String, bool>> function1() {
-    return dataSource.function1();
+  Future<Either<String,DashboardModel>> get() {
+    return dataSource.get();
   }
 
 }

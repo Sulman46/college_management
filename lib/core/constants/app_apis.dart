@@ -1,3 +1,5 @@
+import 'package:shared_preferences/shared_preferences.dart';
+
 class AppApis {
   AppApis._();
 
@@ -5,9 +7,28 @@ class AppApis {
   // static String baseUrl = "http://172.29.64.1:9500";
   // static String baseUrl = "http://192.168.0.100:9500";
   // static String baseUrl = "http://192.168.100.198:9500";
-  static String baseUrl = "http://10.234.210.161:9500";
+  static String _baseUrl = "http://10.234.210.161:9500";
+
+
+  static String get baseUrl => _baseUrl;
+
+  static Future<void> init() async {
+    final prefs = await SharedPreferences.getInstance();
+    final ip = prefs.getString("server_ip") ?? "http://10.234.210.161:9500";
+    _baseUrl = "http://$ip";
+  }
+
+  static Future<void> setBaseUrl(String ip) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString("server_ip", ip);
+    _baseUrl = "http://$ip";
+  }
+
 
   static String login = "/api/auth/login";
+  static String authStatus = "/api/auth/status-check";
+  /// admin,coord dashboard api
+  static String dashboardApi = "/api/app-dashboard-data";
 
   /// access generated neural
   static String accessGenerate="/api/admin/generate-user";
@@ -55,16 +76,16 @@ class AppApis {
   static String teacherAttendanceDelete="/api/teacher-attendance/delete/";
   static String teacherAttendanceHistory="/api/teacher-attendance/history";
 
-  // announcement
+  /// announcement
   static String announcement="/api/notices";
 
-  // hod
+  /// hod
   static String hodAssign="/api/hod/assign";
   static String hodList="/api/hod/list";
   static String hodUpdate="/api/hod/update";
   static String hodDelete="/api/hod/delete";
 
-  // timetable manager
+  /// timetable manager
   static String timeTableManager="/api/timetables";
 
 
@@ -89,12 +110,15 @@ class AppApis {
   static String freezeFinalizedRequest="/api/admin/all-status-history";
   static String updateFreezeStatus="/api/update-status-request";
   static String deleteFreezeRequest="/api/admin/delete-request";
+  static String studentRequestFreeze="/api/student/my-status-requests";
+  static String sendStudentRequestFreeze="/api/student/submit-status-request";
 
   /// marking students
   static String markingStudents="/api/marks";
   static String markingCourseData="/api/marking-engine/course-data";
   static String bulkSaveMarks="/api/bulk-save";
   static String markingLock="/api/lock";
+  static String studentMarkingHistory="/api/marking/student-history-roll/";
 
   /// result
   static String resultSheet="/api/result-sheet";

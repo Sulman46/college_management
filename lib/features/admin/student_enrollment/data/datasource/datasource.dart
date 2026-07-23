@@ -113,7 +113,6 @@ class FunctionClassStudentEnrollment extends StudentEnrollmentDataSource{
         var data=response.data;
         if(data is List){
           List<StudentEnrollmentModel> model=data.map((e)=>StudentEnrollmentModel.fromMap(e)).toList();
-          showMessage("32: ${model.length}");
           return Right(model);
         }else{
           return Left(data['message'] ?? "Failed",
@@ -133,7 +132,7 @@ class FunctionClassStudentEnrollment extends StudentEnrollmentDataSource{
   @override
   Future<Either<String,List<StudentEnrollmentModel>>> search({required String rollNumber})async{
     try{
-      var response=await _dioHelper.get(AppApis.studentEnrollmentsSearch);
+      var response=await _dioHelper.get("${AppApis.studentEnrollmentsSearch}$rollNumber");
 
       if(response.statusCode! >= 200 && response.statusCode! <=300){
         log("3223423: ${response.data}");

@@ -7,16 +7,20 @@ import 'package:flutter/cupertino.dart';
 
 class DioHelper {
   static Dio _dio = Dio();
-  final String _baseUrl = AppApis.baseUrl;
   final Duration _connectTimeout = Duration(seconds: 10); // 5 seconds
   final Duration _receiveTimeout = Duration(seconds: 10); // 3 seconds
 
+  static void refresh() {
+    _dio.options.baseUrl = AppApis.baseUrl;
+  }
+
   DioHelper._internal() {
     _dio = Dio(BaseOptions(
-      baseUrl: _baseUrl,
+      baseUrl: AppApis.baseUrl,
       connectTimeout: _connectTimeout,
       receiveTimeout: _receiveTimeout,
     ));
+
 
     // Add interceptors (logging, error handling)
     _dio.interceptors.add(InterceptorsWrapper(

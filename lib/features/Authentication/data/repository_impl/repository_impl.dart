@@ -15,4 +15,9 @@ class AuthenticationRepositoryImpl extends AuthenticationRepository{
     return dataSource.login(request:request);
   }
 
+  @override
+  Future<Either<String, String>> status() {
+    return dataSource.status();
+  }
+
 }

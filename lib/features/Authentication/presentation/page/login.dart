@@ -1,5 +1,6 @@
 import 'package:college_management/core/app/di_container.dart';
 import 'package:college_management/core/constants/constant_data.dart';
+import 'package:college_management/core/constants/get_ip_dialog/get_ip_dialog.dart';
 import 'package:college_management/core/helper/show_message.dart';
 import 'package:college_management/features/Authentication/models/login_request_model.dart';
 import 'package:college_management/features/Authentication/presentation/controller/cubit.dart';
@@ -69,7 +70,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   Center(child: AppText(text: "Welcome Back!",fontSize: 14,color: AppColor.white,)),
                   SizedBox(height: 2,),
-                  Center(child: AppText(text: "Login to your Portal",fontSize: 12,color: AppColor.greyLight,)),
+                  Center(child: InkWell(
+                      onLongPress: () async{
+                       await ServerConfigDialog.show(context);
+                      },
+                      child: AppText(text: "Login to your Portal",fontSize: 12,color: AppColor.greyLight,))),
 
                   SizedBox(height: 30,),
 

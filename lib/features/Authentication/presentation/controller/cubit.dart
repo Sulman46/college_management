@@ -39,7 +39,6 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
 
   UserModel? userModel;
   String? token;
-
   String? selectedRole;
 
   Future<void> login(LoginRequestModel loginModel)async{
@@ -64,6 +63,34 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     closeLoadingDialog();
     log("@#4324223: ${response.asLeft()} ${loginModel.toJson()}");
     showMessage(response.asLeft(),isError: true);
+  }
+    emit(AuthenticationLoaded());
+  }
+
+  Future<void> statusCheck()async{
+    if(userModel==null){
+      return;
+    }
+
+    emit(AuthenticationLoading());
+  var response= await _useCase.status();
+  if(response.isRight()){
+    String val=response.asRight();
+    if(val=="Blocked"){
+      showMessage("Your account has been blocked");
+      navigatorKey.currentContext!.pushReplacement('/login');
+    await  logout();
+    }else{
+      // showMessage("New role ${model.user.role.toString()}");
+    }
+  }else{
+    final error = response.asLeft();
+    if (error == "Invalid token") {
+      showMessage("Please login your account");
+      await logout();
+      navigatorKey.currentContext?.pushReplacement('/login');
+    }
+    // showMessage(response.asLeft(),isError: true);
   }
     emit(AuthenticationLoaded());
   }
